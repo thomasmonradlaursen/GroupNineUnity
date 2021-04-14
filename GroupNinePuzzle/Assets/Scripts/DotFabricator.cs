@@ -7,8 +7,8 @@ public class DotFabricator : MonoBehaviour
     // Fields for setup of vertices
     static int xAxisLength = 5;
     static int yAxisLength = 4;
-    static int numberOfVerticesAlongX = 4;
-    static int numberOfVerticesAlongY = 3;
+    static int numberOfVerticesAlongX = 6;
+    static int numberOfVerticesAlongY = 8;
     public GameObject prefabDot = null;
 
     // Arrays for coordinates
@@ -69,6 +69,10 @@ public class DotFabricator : MonoBehaviour
 
     private Vector3[,] initializeCoordinatesForCenterVertices(Vector3[,] centerCoordinatesArray, Vector3[,] xCoordinates, Vector3[,] yCoordinates)
     { 
+        for(int i=0; i<yCoordinates.Length/2; i++){
+                Debug.Log("x0: " + yCoordinates[i,0].x + " ; y0: " + yCoordinates[i,0].y);
+                Debug.Log("x1: " + yCoordinates[i,1].x + " ; y1: " + yCoordinates[i,1].y);
+        }
         for(int outer = 0; outer<numberOfVerticesAlongY-1; outer++)
         {
             for(int inner = 0; inner<numberOfVerticesAlongX-1; inner++)
@@ -82,7 +86,10 @@ public class DotFabricator : MonoBehaviour
                 // {
                 // centerCoordinatesArray[inner, outer].y = generateRandomCoordinatFromBounds(yCoordinates[outer,0].y, );
                 // }
-                centerCoordinatesArray[inner, outer].y = generateRandomCoordinatFromBounds(yCoordinates[outer,0].y, yCoordinates[outer+1,0].y);
+                var test = generateRandomCoordinatFromBounds(yCoordinates[outer,0].y, yCoordinates[outer+1,0].y);
+                Debug.Log("outer: " + outer + ". inner: " + inner + "upper bound y: " + yCoordinates[outer,0].y + " ; " + yCoordinates[outer+1,0].y);
+                centerCoordinatesArray[inner, outer].y = test;
+
             }
         }
 
@@ -105,7 +112,7 @@ public class DotFabricator : MonoBehaviour
                     float upperBound = lowerBound + boundInterval;
                     //float lowerBound = coordinateArray[counter-1,oppAxisVal].x;
                     float newCoordinate = generateRandomCoordinatFromBounds(lowerBound,upperBound);
-                    Debug.Log("Upperbound " + counter + ": " + upperBound);
+                    // Debug.Log("Upperbound " + counter + ": " + upperBound);
                     // Debug.Log("Lowerbound " + counter + ": " + lowerBound);
                     // Debug.Log("Coordinate " + counter + ":" + newCoordinate);
                     // if(oppAxisVal == 0)
@@ -133,7 +140,7 @@ public class DotFabricator : MonoBehaviour
                     float upperBound = lowerBound + boundInterval;
                     //float lowerBound = coordinateArray[counter-1,oppAxisVal].y;
                     float newCoordinate = generateRandomCoordinatFromBounds(lowerBound,upperBound);
-                    Debug.Log("Upperbound " + counter + ": " + upperBound);
+                    // Debug.Log("Upperbound " + counter + ": " + upperBound);
                     // Debug.Log("Lowerbound " + counter + ": " + lowerBound);
                     // if(oppAxisVal == 0){
                         coordinateArray[counter,0].y = newCoordinate;
@@ -168,10 +175,10 @@ public class DotFabricator : MonoBehaviour
         // Initialize corners
         yCoordArray[0,0].x = (float) (-xAxisLength);
         yCoordArray[0,0].y = (float) (-yAxisLength);
-        yCoordArray[finalIndexY,0].x = (float) (xAxisLength);
-        yCoordArray[finalIndexY,0].y = (float) (-yAxisLength);
-        yCoordArray[0,1].x = (float) (-xAxisLength);
-        yCoordArray[0,1].y = (float) (yAxisLength);
+        yCoordArray[finalIndexY,0].x = (float) (-xAxisLength); // reversed compared to X coordinates. This way it works with the current version of initializeCoordinatesForCenterVertices
+        yCoordArray[finalIndexY,0].y = (float) (yAxisLength);
+        yCoordArray[0,1].x = (float) (xAxisLength);
+        yCoordArray[0,1].y = (float) (-yAxisLength);
         yCoordArray[finalIndexY,1].x = (float) (xAxisLength);
         yCoordArray[finalIndexY,1].y = (float) (yAxisLength);
 
