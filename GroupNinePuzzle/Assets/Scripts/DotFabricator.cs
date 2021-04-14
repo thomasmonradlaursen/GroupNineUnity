@@ -30,8 +30,8 @@ public class DotFabricator : MonoBehaviour
 
         initializeCoordinatesForAxisVertices(coordinatesOfXAxisVertices, 'x', xAxisLength, yAxisLength, numberOfVerticesAlongX);
         for(int counter = 0; counter<numberOfVerticesAlongX; counter++){
-            Debug.Log("X-botton " + (counter+1) + ":" + coordinatesOfXAxisVertices[counter,0].ToString());
-            Debug.Log("X-botton " + (counter+1) + ":" + coordinatesOfXAxisVertices[counter,1].ToString());
+            Debug.Log("X-bottom " + (counter+1) + ":" + coordinatesOfXAxisVertices[counter,0].ToString());
+            Debug.Log("X-top " + (counter+1) + ":" + coordinatesOfXAxisVertices[counter,1].ToString());
         }
 
         // Render vertices
