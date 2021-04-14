@@ -4,51 +4,39 @@ using UnityEngine;
 
 public class DotFabricator : MonoBehaviour
 {
-    
-
-    static int xLength = 6;
-    static int yLength = 4;
-    int boardDots = xLength*yLength;
+    // Fields for setup of vertices
+    static int xAxisLength = 6;
+    static int yAxisLength = 4;
+    static int numberOfVerticesAlongX = 6;
+    static int numberOfVerticesAlongY = 4;
+    static int centerVerticesAtCenter = numberOfVerticesAlongX*numberOfVerticesAlongY;
     public GameObject prefabDot = null;
+
+    // Arrays for coordinates
+    Vector3[] coordinatesOfCenterVertices = new Vector3[centerVerticesAtCenter];
+    Vector3[,] coordinatesOfXAxisVertices = new Vector3[numberOfVerticesAlongX,2];
+    Vector3[,] coordinatesOfYAxisVertices = new Vector3[numberOfVerticesAlongY,2];
     
     // Start is called before the first frame update
     void Start()
     {
 
-        Debug.Log("Number of dots along x-axis: " + xLength);
-        Debug.Log("Number of dots along x-axis: " + yLength);
-        Debug.Log("Number of dots on the board: " + boardDots);
+        initializeCornerVertices(coordinatesOfXAxisVertices, 'x', xAxisLength, yAxisLength);
+        initializeCornerVertices(coordinatesOfYAxisVertices, 'y', yAxisLength, xAxisLength);
 
-        // Generates the points along the x-axis (top/bottom)
-        for(int i = 0; i<xLength; i++){
-            
-            Vector3 positionVectorBottom = generateXAxisPointsAtRandom(-4.0f);
-            Instantiate(prefabDot, positionVectorBottom, Quaternion.identity);
+        Debug.Log("Number of dots along x-axis: " + numberOfVerticesAlongX);
+        Debug.Log("Number of dots along x-axis: " + numberOfVerticesAlongY);
+        Debug.Log("Number of dots on the board: " + centerVerticesAtCenter);
 
-            Vector3 positionVectorTop = generateXAxisPointsAtRandom(4.0f);
-            Instantiate(prefabDot, positionVectorTop, Quaternion.identity);
-            
+        initializeCoordinatesForAxisVertices(coordinatesOfXAxisVertices, 'x', xAxisLength, yAxisLength, numberOfVerticesAlongX);
+        for(int counter = 0; counter<numberOfVerticesAlongX; counter++){
+            Debug.Log("X-botton " + (counter+1) + ":" + coordinatesOfXAxisVertices[counter,0].ToString());
+            Debug.Log("X-botton " + (counter+1) + ":" + coordinatesOfXAxisVertices[counter,1].ToString());
         }
 
-        // Generates the points along the y-axis (left/right)
-        for(int i = 0; i<yLength; i++){
-            
-            Vector3 positionVectorLeft = generateYAxisPointsAtRandom(-6.0f);
-            Instantiate(prefabDot, positionVectorLeft, Quaternion.identity);
+        // Render vertices
+        //Instantiate(prefabDot, positionVectorTop, Quaternion.identity);
 
-            Vector3 positionVectorRight = generateYAxisPointsAtRandom(6.0f);
-            Instantiate(prefabDot, positionVectorRight, Quaternion.identity);
-
-        }
-
-
-        // Generates the points on the board
-        while(boardDots > 0)
-        {
-            Vector3 positionVector = generateBoardPointsAtRandom();
-            Instantiate(prefabDot, positionVector, Quaternion.identity);
-            boardDots--;
-        }  
     }
 
     // Update is called once per frame
@@ -57,37 +45,93 @@ public class DotFabricator : MonoBehaviour
            
     }
 
-    private Vector3 generateXAxisPointsAtRandom(float yPosition)
+    private Vector3[] initializeCoordinatesForCenterVertices(Vector3[] coordinateArray)
     {
-        Vector3 result;
         
-        result.x = Random.Range(-6.0f, 6.0f);
-        result.y = yPosition;
-        result.z = 0.0f;
+        // Generates the points on the board
+        while(centerVerticesAtCenter > 0)
+        {
+            //Vector3 positionVector = generateBoardPointsAtRandom();
+            //Instantiate(prefabDot, positionVector, Quaternion.identity);
+            centerVerticesAtCenter--;
+        }  
         
-        return result;
+        return coordinateArray;
     }
 
-    private Vector3 generateYAxisPointsAtRandom(float xPosition)
-    {
-        Vector3 result;
+    private Vector3[,] initializeCoordinatesForAxisVertices(Vector3[,] coordinateArray, char axis, int axisLength, int oppositeAxisLength, int numberOfVertices)
+    {   
         
-        result.x = xPosition;
-        result.y = Random.Range(-4.0f, 4.0f);
-        result.z = 0.0f;
-        
-        return result;
+        int boundInterval = numberOfVertices/axisLength;
+
+        if(axis == 'x')
+            for(int oppisiteAxisValue = 0; oppisiteAxisValue<2; oppisiteAxisValue++)
+            {
+                float startingCoordinate = (float) (-axisLength/2);
+                for(int counter = 1; counter<numberOfVertices-1; counter++){           
+                    float upperBound = startingCoordinate + boundInterval;
+                    float lowerBound = coordinateArray[counter-1,oppisiteAxisValue].x;
+                    float newCoordinate = generateRandomCoordinatFromBounds(lowerBound,upperBound);
+                    if(oppisiteAxisValue == 0)
+                    {
+                        coordinateArray[counter,oppisiteAxisValue].x = newCoordinate;
+                        coordinateArray[counter,oppisiteAxisValue].y = -oppositeAxisLength;
+                    }
+                    else
+                    {
+                        coordinateArray[counter,oppisiteAxisValue].x = newCoordinate;
+                        coordinateArray[counter,oppisiteAxisValue].y = oppositeAxisLength;
+                    }
+                    
+                }
+            }
+
+        return coordinateArray;
     }
-    
-    private Vector3 generateBoardPointsAtRandom()
+
+    private Vector3[,] initializeCornerVertices(Vector3[,] coordinateArray, char axis, int axisLength, int oppositeAxisLength)
     {
-        Vector3 result;
         
-        result.x = Random.Range(-6.0f, 6.0f);
-        result.y = Random.Range(-4.0f, 4.0f);
-        result.z = 0.0f;
+        // For indexes
+        int finalIndex = axisLength - 1;
         
-        return result;
+        if(axis == 'x')
+        {
+            // Initialize corners
+            coordinateArray[0,0].x = (float) (-axisLength);
+            coordinateArray[0,0].y = (float) (-oppositeAxisLength);
+            coordinateArray[finalIndex,0].x = (float) (axisLength);
+            coordinateArray[finalIndex,0].y = (float) (-oppositeAxisLength);
+            coordinateArray[0,1].x = (float) (-axisLength);
+            coordinateArray[0,1].y = (float) (oppositeAxisLength);
+            coordinateArray[finalIndex,1].x = (float) (axisLength);
+            coordinateArray[finalIndex,1].y = (float) (oppositeAxisLength);
+        }
+
+        if(axis == 'y')
+        {
+            // Initialize corners
+            coordinateArray[0,0].x = (float) (-oppositeAxisLength);
+            coordinateArray[0,0].y = (float) (-axisLength);
+            coordinateArray[finalIndex,0].x = (float) (-oppositeAxisLength);
+            coordinateArray[finalIndex,0].y = (float) (axisLength);
+            coordinateArray[0,1].x = (float) (oppositeAxisLength);
+            coordinateArray[0,1].y = (float) (-axisLength);
+            coordinateArray[finalIndex,1].x = (float) (oppositeAxisLength);
+            coordinateArray[finalIndex,1].y = (float) (-axisLength);
+        }
+
+        return coordinateArray;
+    }
+
+    private float generateRandomCoordinatFromBounds(float lowerBound, float upperBound){
+
+        float resultingCoordinates;
+
+        resultingCoordinates = Random.Range(lowerBound, upperBound);
+
+        return resultingCoordinates;
+
     }
 }
         
