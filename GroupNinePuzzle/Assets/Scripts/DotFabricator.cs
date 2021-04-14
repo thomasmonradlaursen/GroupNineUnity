@@ -27,7 +27,6 @@ public class DotFabricator : MonoBehaviour
         Debug.Log("Number of dots on the board: " + centerVerticesAtCenter);
 
         initializeCoordinatesForAxisVertices(coordinatesOfXAxisVertices, 'x', xAxisLength, yAxisLength, numberOfVerticesAlongX);
-
         for(int counter = 0; counter<numberOfVerticesAlongX; counter++){
             Debug.Log("X-bottom " + (counter+1) + ":" + coordinatesOfXAxisVertices[counter,0].ToString());
             Debug.Log("X-top " + (counter+1) + ":" + coordinatesOfXAxisVertices[counter,1].ToString());
@@ -56,13 +55,11 @@ public class DotFabricator : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update(){
            
     }
 
-    private Vector3[] initializeCoordinatesForCenterVertices(Vector3[] coordinateArray)
-    {
+    private Vector3[] initializeCoordinatesForCenterVertices(Vector3[] coordinateArray){
         
         // Generates the points on the board
         while(centerVerticesAtCenter > 0)
@@ -75,75 +72,58 @@ public class DotFabricator : MonoBehaviour
         return coordinateArray;
     }
 
-    private Vector3[,] initializeCoordinatesForAxisVertices(Vector3[,] coordinateArray, char axis, int axisLength, int oppositeAxisLength, int numberOfVertices)
-    {   
+    private Vector3[,] initializeCoordinatesForAxisVertices(Vector3[,] coordinateArray, char axis, int axisLength, int oppositeAxisLength, int numberOfVertices){   
         
         int boundInterval = (axisLength*2)/numberOfVertices;
         float startingCoordinate = (float) (-axisLength);
-        float lastUpper = 0.0f;
 
-        if(axis == 'x')
-        {
-            for(int oppisiteAxisValue = 0; oppisiteAxisValue<2; oppisiteAxisValue++)
-            {
+        if(axis == 'x'){
+            for(int oppAxisVal = 0; oppAxisVal<2; oppAxisVal++){
+                float lowerBound = startingCoordinate;
                 for(int counter = 1; counter<numberOfVertices-1; counter++){
-                    if(counter == 1)
-                    {
-                        lastUpper = startingCoordinate;
-                    } 
-                    else 
-                    {
-                        lastUpper = lastUpper + boundInterval;
-                    }           
-                    float upperBound = lastUpper + boundInterval;
-                    float lowerBound = coordinateArray[counter-1,oppisiteAxisValue].x;
+                    
+                    float upperBound = lowerBound + boundInterval;
+                    //float lowerBound = coordinateArray[counter-1,oppAxisVal].x;
                     float newCoordinate = generateRandomCoordinatFromBounds(lowerBound,upperBound);
                     Debug.Log("Upperbound " + counter + ": " + upperBound);
                     Debug.Log("Lowerbound " + counter + ": " + lowerBound);
                     Debug.Log("Coordinate " + counter + ":" + newCoordinate);
-                    if(oppisiteAxisValue == 0)
+                    if(oppAxisVal == 0)
                     {
-                        coordinateArray[counter,oppisiteAxisValue].x = newCoordinate;
-                        coordinateArray[counter,oppisiteAxisValue].y = -oppositeAxisLength;
+                        coordinateArray[counter,oppAxisVal].x = newCoordinate;
+                        coordinateArray[counter,oppAxisVal].y = -oppositeAxisLength;
                     }
                     else
                     {
-                        coordinateArray[counter,oppisiteAxisValue].x = newCoordinate;
-                        coordinateArray[counter,oppisiteAxisValue].y = oppositeAxisLength;
+                        coordinateArray[counter,oppAxisVal].x = newCoordinate;
+                        coordinateArray[counter,oppAxisVal].y = oppositeAxisLength;
                     }
-                    
+                    lowerBound += boundInterval;
+                    //lastUpper2 = lastUpper2 + boundInterval;
                 }
             }
         }
 
-        if(axis == 'y')
-        {
-            for(int oppisiteAxisValue = 0; oppisiteAxisValue<2; oppisiteAxisValue++)
-            {
+        if(axis == 'y'){
+            for(int oppAxisVal = 0; oppAxisVal<2; oppAxisVal++) {
+                float lowerBound = startingCoordinate;
+
                 for(int counter = 1; counter<numberOfVertices-1; counter++){   
-                    if(counter == 1)
-                    {
-                        lastUpper = startingCoordinate;
-                    } 
-                    else 
-                    {
-                        lastUpper = lastUpper + boundInterval;
-                    }        
-                    float upperBound = lastUpper + boundInterval;
-                    float lowerBound = coordinateArray[counter-1,oppisiteAxisValue].y;
+                    
+                    float upperBound = lowerBound + boundInterval;
+                    //float lowerBound = coordinateArray[counter-1,oppAxisVal].y;
                     float newCoordinate = generateRandomCoordinatFromBounds(lowerBound,upperBound);
                     Debug.Log("Upperbound " + counter + ": " + upperBound);
                     Debug.Log("Lowerbound " + counter + ": " + lowerBound);
-                    if(oppisiteAxisValue == 0)
-                    {
-                        coordinateArray[counter,oppisiteAxisValue].y = newCoordinate;
-                        coordinateArray[counter,oppisiteAxisValue].x = -oppositeAxisLength;
+                    if(oppAxisVal == 0){
+                        coordinateArray[counter,oppAxisVal].y = newCoordinate;
+                        coordinateArray[counter,oppAxisVal].x = -oppositeAxisLength;
                     }
-                    else
-                    {
-                        coordinateArray[counter,oppisiteAxisValue].y = newCoordinate;
-                        coordinateArray[counter,oppisiteAxisValue].x = oppositeAxisLength;
+                    else{
+                        coordinateArray[counter,oppAxisVal].y = newCoordinate;
+                        coordinateArray[counter,oppAxisVal].x = oppositeAxisLength;
                     }
+                    lowerBound += boundInterval;
                     
                 }
             }
