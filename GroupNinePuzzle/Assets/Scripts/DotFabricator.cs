@@ -17,17 +17,14 @@ public class DotFabricator : MonoBehaviour
     Vector3[,] coordinatesOfYAxisVertices = new Vector3[numberOfVerticesAlongY,2];
     
     // Start is called before the first frame update
-    void Start()
-    {
-
-        initializeCornerVertices(coordinatesOfXAxisVertices, 'x', xAxisLength, yAxisLength);
-        initializeCornerVertices(coordinatesOfYAxisVertices, 'y', yAxisLength, xAxisLength);
+    void Start(){
+        initCornerVertices(coordinatesOfXAxisVertices, xAxisLength, yAxisLength);
+        initCornerVertices(coordinatesOfYAxisVertices, yAxisLength, xAxisLength);
 
         Debug.Log("Number of dots along x-axis: " + numberOfVerticesAlongX);
-        Debug.Log("Number of dots along x-axis: " + numberOfVerticesAlongY);
+        Debug.Log("Number of dots along y-axis: " + numberOfVerticesAlongY);
 
         initializeCoordinatesForAxisVertices(coordinatesOfXAxisVertices, 'x', xAxisLength, yAxisLength, numberOfVerticesAlongX);
-
         for(int counter = 0; counter<numberOfVerticesAlongX; counter++){
             Debug.Log("X-bottom " + (counter+1) + ":" + coordinatesOfXAxisVertices[counter,0].ToString());
             Debug.Log("X-top " + (counter+1) + ":" + coordinatesOfXAxisVertices[counter,1].ToString());
@@ -62,15 +59,11 @@ public class DotFabricator : MonoBehaviour
                 Instantiate(prefabDot, coordinatesOfCenterVertices[inner,outer], Quaternion.identity);
             }
         }
-
-        initializeCornerVertices(coordinatesOfXAxisVertices, 'x', xAxisLength, yAxisLength);
-        initializeCornerVertices(coordinatesOfYAxisVertices, 'y', yAxisLength, xAxisLength);
            
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update(){
            
     }
 
@@ -95,75 +88,58 @@ public class DotFabricator : MonoBehaviour
         return centerCoordinatesArray;
     }
 
-    private Vector3[,] initializeCoordinatesForAxisVertices(Vector3[,] coordinateArray, char axis, int axisLength, int oppositeAxisLength, int numberOfVertices)
-    {   
+    private Vector3[,] initializeCoordinatesForAxisVertices(Vector3[,] coordinateArray, char axis, int axisLength, int oppositeAxisLength, int numberOfVertices){   
         
         int boundInterval = (axisLength*2)/numberOfVertices;
         float startingCoordinate = (float) (-axisLength);
-        float lastUpper = 0.0f;
 
-        if(axis == 'x')
-        {
-            for(int oppisiteAxisValue = 0; oppisiteAxisValue<2; oppisiteAxisValue++)
-            {
-                for(int counter = 1; counter<numberOfVertices; counter++){
-                    if(counter == 1)
-                    {
-                        lastUpper = startingCoordinate;
-                    } 
-                    else 
-                    {
-                        lastUpper = lastUpper + boundInterval;
-                    }           
-                    float upperBound = lastUpper + boundInterval;
-                    float lowerBound = coordinateArray[counter-1,oppisiteAxisValue].x;
+        if(axis == 'x'){
+            for(int oppAxisVal = 0; oppAxisVal<2; oppAxisVal++){
+                float lowerBound = startingCoordinate;
+                for(int counter = 1; counter<numberOfVertices-1; counter++){
+                    
+                    float upperBound = lowerBound + boundInterval;
+                    //float lowerBound = coordinateArray[counter-1,oppAxisVal].x;
                     float newCoordinate = generateRandomCoordinatFromBounds(lowerBound,upperBound);
                     Debug.Log("Upperbound " + counter + ": " + upperBound);
                     Debug.Log("Lowerbound " + counter + ": " + lowerBound);
                     Debug.Log("Coordinate " + counter + ":" + newCoordinate);
-                    if(oppisiteAxisValue == 0)
+                    if(oppAxisVal == 0)
                     {
-                        coordinateArray[counter,oppisiteAxisValue].x = newCoordinate;
-                        coordinateArray[counter,oppisiteAxisValue].y = -oppositeAxisLength;
+                        coordinateArray[counter,oppAxisVal].x = newCoordinate;
+                        coordinateArray[counter,oppAxisVal].y = -oppositeAxisLength;
                     }
                     else
                     {
-                        coordinateArray[counter,oppisiteAxisValue].x = newCoordinate;
-                        coordinateArray[counter,oppisiteAxisValue].y = oppositeAxisLength;
+                        coordinateArray[counter,oppAxisVal].x = newCoordinate;
+                        coordinateArray[counter,oppAxisVal].y = oppositeAxisLength;
                     }
-                    
+                    lowerBound += boundInterval;
+                    //lastUpper2 = lastUpper2 + boundInterval;
                 }
             }
         }
 
-        if(axis == 'y')
-        {
-            for(int oppisiteAxisValue = 0; oppisiteAxisValue<2; oppisiteAxisValue++)
-            {
-                for(int counter = 1; counter<numberOfVertices; counter++){   
-                    if(counter == 1)
-                    {
-                        lastUpper = startingCoordinate;
-                    } 
-                    else 
-                    {
-                        lastUpper = lastUpper + boundInterval;
-                    }        
-                    float upperBound = lastUpper + boundInterval;
-                    float lowerBound = coordinateArray[counter-1,oppisiteAxisValue].y;
+        if(axis == 'y'){
+            for(int oppAxisVal = 0; oppAxisVal<2; oppAxisVal++) {
+                float lowerBound = startingCoordinate;
+
+                for(int counter = 1; counter<numberOfVertices-1; counter++){   
+                    
+                    float upperBound = lowerBound + boundInterval;
+                    //float lowerBound = coordinateArray[counter-1,oppAxisVal].y;
                     float newCoordinate = generateRandomCoordinatFromBounds(lowerBound,upperBound);
                     Debug.Log("Upperbound " + counter + ": " + upperBound);
                     Debug.Log("Lowerbound " + counter + ": " + lowerBound);
-                    if(oppisiteAxisValue == 0)
-                    {
-                        coordinateArray[counter,oppisiteAxisValue].y = newCoordinate;
-                        coordinateArray[counter,oppisiteAxisValue].x = -oppositeAxisLength;
+                    if(oppAxisVal == 0){
+                        coordinateArray[counter,oppAxisVal].y = newCoordinate;
+                        coordinateArray[counter,oppAxisVal].x = -oppositeAxisLength;
                     }
-                    else
-                    {
-                        coordinateArray[counter,oppisiteAxisValue].y = newCoordinate;
-                        coordinateArray[counter,oppisiteAxisValue].x = oppositeAxisLength;
+                    else{
+                        coordinateArray[counter,oppAxisVal].y = newCoordinate;
+                        coordinateArray[counter,oppAxisVal].x = oppositeAxisLength;
                     }
+                    lowerBound += boundInterval;
                     
                 }
             }
@@ -171,7 +147,22 @@ public class DotFabricator : MonoBehaviour
 
         return coordinateArray;
     }
+    private Vector3[,] initCornerVertices(Vector3[,] coordArray, int axisLength, int oppAxisLength){
+        // For indexes
+        int finalIndex = axisLength - 1;
+        // Initialize corners
+        coordArray[0,0].x = (float) (-axisLength);
+        coordArray[0,0].y = (float) (-oppAxisLength);
+        coordArray[finalIndex,0].x = (float) (axisLength);
+        coordArray[finalIndex,0].y = (float) (-oppAxisLength);
+        coordArray[0,1].x = (float) (-axisLength);
+        coordArray[0,1].y = (float) (oppAxisLength);
+        coordArray[finalIndex,1].x = (float) (axisLength);
+        coordArray[finalIndex,1].y = (float) (oppAxisLength);
 
+        return coordArray;
+    }
+    /*
     private Vector3[,] initializeCornerVertices(Vector3[,] coordinateArray, char axis, int axisLength, int oppositeAxisLength)
     {
         
@@ -206,7 +197,7 @@ public class DotFabricator : MonoBehaviour
 
         return coordinateArray;
     }
-
+    */
     private float generateRandomCoordinatFromBounds(float lowerBound, float upperBound){
 
         float resultingCoordinates;
