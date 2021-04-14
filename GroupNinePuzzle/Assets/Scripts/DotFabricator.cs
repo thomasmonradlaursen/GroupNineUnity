@@ -5,15 +5,14 @@ using UnityEngine;
 public class DotFabricator : MonoBehaviour
 {
     // Fields for setup of vertices
-    static int xAxisLength = 6;
-    static int yAxisLength = 4;
-    static int numberOfVerticesAlongX = 12;
-    static int numberOfVerticesAlongY = 8;
-    static int centerVerticesAtCenter = numberOfVerticesAlongX*numberOfVerticesAlongY;
+    static int xAxisLength = 3;
+    static int yAxisLength = 2;
+    static int numberOfVerticesAlongX = 6;
+    static int numberOfVerticesAlongY = 4;
     public GameObject prefabDot = null;
 
     // Arrays for coordinates
-    Vector3[] coordinatesOfCenterVertices = new Vector3[centerVerticesAtCenter];
+    Vector3[,] coordinatesOfCenterVertices = new Vector3[numberOfVerticesAlongX,numberOfVerticesAlongY];
     Vector3[,] coordinatesOfXAxisVertices = new Vector3[numberOfVerticesAlongX,2];
     Vector3[,] coordinatesOfYAxisVertices = new Vector3[numberOfVerticesAlongY,2];
     
@@ -26,7 +25,6 @@ public class DotFabricator : MonoBehaviour
 
         Debug.Log("Number of dots along x-axis: " + numberOfVerticesAlongX);
         Debug.Log("Number of dots along x-axis: " + numberOfVerticesAlongY);
-        Debug.Log("Number of dots on the board: " + centerVerticesAtCenter);
 
         initializeCoordinatesForAxisVertices(coordinatesOfXAxisVertices, 'x', xAxisLength, yAxisLength, numberOfVerticesAlongX);
 
@@ -54,6 +52,19 @@ public class DotFabricator : MonoBehaviour
                 Instantiate(prefabDot, coordinatesOfYAxisVertices[inner1,outer2], Quaternion.identity);
             }
         }
+
+        initializeCoordinatesForCenterVertices(coordinatesOfCenterVertices, coordinatesOfXAxisVertices, coordinatesOfYAxisVertices);
+        
+        for(int outer = 0; outer<numberOfVerticesAlongY; outer++)
+        {
+            for(int inner = 0; inner<numberOfVerticesAlongX; inner++)
+            {
+                Instantiate(prefabDot, coordinatesOfCenterVertices[inner,outer], Quaternion.identity);
+            }
+        }
+
+        initializeCornerVertices(coordinatesOfXAxisVertices, 'x', xAxisLength, yAxisLength);
+        initializeCornerVertices(coordinatesOfYAxisVertices, 'y', yAxisLength, xAxisLength);
            
     }
 
@@ -63,18 +74,25 @@ public class DotFabricator : MonoBehaviour
            
     }
 
-    private Vector3[] initializeCoordinatesForCenterVertices(Vector3[] coordinateArray)
-    {
-        
-        // Generates the points on the board
-        while(centerVerticesAtCenter > 0)
+    private Vector3[,] initializeCoordinatesForCenterVertices(Vector3[,] centerCoordinatesArray, Vector3[,] xCoordinates, Vector3[,] yCoordinates)
+    { 
+        for(int outer = 0; outer<(yCoordinates.Length/2); outer++)
         {
-            //Vector3 positionVector = generateBoardPointsAtRandom();
-            //Instantiate(prefabDot, positionVector, Quaternion.identity);
-            centerVerticesAtCenter--;
-        }  
-        
-        return coordinateArray;
+            for(int inner = 0; inner<(xCoordinates.Length/2)-1; inner++)
+            {
+                centerCoordinatesArray[inner, outer].x = generateRandomCoordinatFromBounds(xCoordinates[inner,0].x, xCoordinates[inner+1,0].x);
+            }
+        }
+
+        for(int outer = 0; outer<(xCoordinates.Length/2); outer++)
+        {
+            for(int inner = 0; inner<(yCoordinates.Length/2)-1; inner++)
+            {
+                centerCoordinatesArray[outer, inner].y = generateRandomCoordinatFromBounds(yCoordinates[inner,0].y, yCoordinates[inner+1,0].y);
+            }
+        }
+
+        return centerCoordinatesArray;
     }
 
     private Vector3[,] initializeCoordinatesForAxisVertices(Vector3[,] coordinateArray, char axis, int axisLength, int oppositeAxisLength, int numberOfVertices)
@@ -88,7 +106,7 @@ public class DotFabricator : MonoBehaviour
         {
             for(int oppisiteAxisValue = 0; oppisiteAxisValue<2; oppisiteAxisValue++)
             {
-                for(int counter = 1; counter<numberOfVertices-1; counter++){
+                for(int counter = 1; counter<numberOfVertices; counter++){
                     if(counter == 1)
                     {
                         lastUpper = startingCoordinate;
@@ -122,7 +140,7 @@ public class DotFabricator : MonoBehaviour
         {
             for(int oppisiteAxisValue = 0; oppisiteAxisValue<2; oppisiteAxisValue++)
             {
-                for(int counter = 1; counter<numberOfVertices-1; counter++){   
+                for(int counter = 1; counter<numberOfVertices; counter++){   
                     if(counter == 1)
                     {
                         lastUpper = startingCoordinate;
@@ -158,7 +176,7 @@ public class DotFabricator : MonoBehaviour
     {
         
         // For indexes
-        int finalIndex = axisLength - 1;
+        int finalIndex = (axisLength*2) - 1;
         
         if(axis == 'x')
         {
