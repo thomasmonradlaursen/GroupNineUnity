@@ -18,14 +18,12 @@ public class DotFabricator : MonoBehaviour
     Vector3[,] coordinatesOfYAxisVertices = new Vector3[numberOfVerticesAlongY,2];
     
     // Start is called before the first frame update
-    void Start()
-    {
-
-        initializeCornerVertices(coordinatesOfXAxisVertices, 'x', xAxisLength, yAxisLength);
-        initializeCornerVertices(coordinatesOfYAxisVertices, 'y', yAxisLength, xAxisLength);
+    void Start(){
+        initCornerVertices(coordinatesOfXAxisVertices, xAxisLength, yAxisLength);
+        initCornerVertices(coordinatesOfYAxisVertices, yAxisLength, xAxisLength);
 
         Debug.Log("Number of dots along x-axis: " + numberOfVerticesAlongX);
-        Debug.Log("Number of dots along x-axis: " + numberOfVerticesAlongY);
+        Debug.Log("Number of dots along y-axis: " + numberOfVerticesAlongY);
         Debug.Log("Number of dots on the board: " + centerVerticesAtCenter);
 
         initializeCoordinatesForAxisVertices(coordinatesOfXAxisVertices, 'x', xAxisLength, yAxisLength, numberOfVerticesAlongX);
@@ -153,7 +151,22 @@ public class DotFabricator : MonoBehaviour
 
         return coordinateArray;
     }
+    private Vector3[,] initCornerVertices(Vector3[,] coordArray, int axisLength, int oppAxisLength){
+        // For indexes
+        int finalIndex = axisLength - 1;
+        // Initialize corners
+        coordArray[0,0].x = (float) (-axisLength);
+        coordArray[0,0].y = (float) (-oppAxisLength);
+        coordArray[finalIndex,0].x = (float) (axisLength);
+        coordArray[finalIndex,0].y = (float) (-oppAxisLength);
+        coordArray[0,1].x = (float) (-axisLength);
+        coordArray[0,1].y = (float) (oppAxisLength);
+        coordArray[finalIndex,1].x = (float) (axisLength);
+        coordArray[finalIndex,1].y = (float) (oppAxisLength);
 
+        return coordArray;
+    }
+    /*
     private Vector3[,] initializeCornerVertices(Vector3[,] coordinateArray, char axis, int axisLength, int oppositeAxisLength)
     {
         
@@ -188,7 +201,7 @@ public class DotFabricator : MonoBehaviour
 
         return coordinateArray;
     }
-
+    */
     private float generateRandomCoordinatFromBounds(float lowerBound, float upperBound){
 
         float resultingCoordinates;
