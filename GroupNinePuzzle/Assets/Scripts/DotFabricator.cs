@@ -5,10 +5,17 @@ using UnityEngine;
 public class DotFabricator : MonoBehaviour
 {
     // Fields for setup of vertices
+<<<<<<< Updated upstream
     static int xAxisLength = 3;
     static int yAxisLength = 2;
     static int numberOfVerticesAlongX = 6;
     static int numberOfVerticesAlongY = 4;
+=======
+    static int xAxisLength = 6;
+    static int yAxisLength = 4;
+    static int numberOfVerticesAlongX = 10;
+    static int numberOfVerticesAlongY = 10;
+>>>>>>> Stashed changes
     public GameObject prefabDot = null;
 
     // Arrays for coordinates
