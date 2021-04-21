@@ -15,6 +15,7 @@ public class MeshGenerator : MonoBehaviour
     void Start()
     {
         mesh = new Mesh();
+        GetComponent<MeshFilter>().mesh = mesh;
 
         CreateShape();
 
@@ -29,12 +30,14 @@ public class MeshGenerator : MonoBehaviour
         {
             new Vector3(0,0,0),
             new Vector3(0,1,0),
-            new Vector3(1,0,0)
+            new Vector3(1,0,0),
+            new Vector3(2,1,0)
         };
 
         triangles = new int[]
         {
-            0,1,2
+            0,1,2,
+            1,3,2
         };
 
     }
