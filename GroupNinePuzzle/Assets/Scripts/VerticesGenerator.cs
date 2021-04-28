@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class VerticesGenerator : MonoBehaviour
 {
     
-    static int length = 8;
-    static int heigth = 8;
-    static int verticalVertices = 10;
-    static int horizontalVertices = 31;
-    Vector3[] vertices = new Vector3[verticalVertices*horizontalVertices];
+    public static int length = 3;
+    public static int heigth = 4;
+    public static int numberOfHorizontalVertices = 4;
+    public static int numberOfVerticalVertices = 4;
+    public Vector3[] vertices = new Vector3[16];
     public GameObject prefabDot = null;
 
 
@@ -18,62 +19,79 @@ public class VerticesGenerator : MonoBehaviour
         insertVertices();
         logVertices(); 
 
-        for(int i = 0; i<vertices.Length; i++)
+        for(int i = 0; i<numberOfHorizontalVertices*numberOfVerticalVertices; i++)
         {
+            Debug.Log(i);
             Instantiate(prefabDot, vertices[i], Quaternion.identity);
         }  
     }
 
     private void insertVertices()
     {
-        float xInterval = (float) length/((float) verticalVertices-2);
-        float yInterval = (float) heigth/((float) horizontalVertices-2);
+        float xInterval = (float) length/((float) numberOfHorizontalVertices-1);
+        float yInterval = (float) heigth/((float) numberOfVerticalVertices-1);
         Debug.Log(xInterval);
         Debug.Log(yInterval);
         Vector2 lowerBound = new Vector2(0,0);
-        Vector2 upperBound = new Vector2(xInterval, yInterval);
+        Vector2 upperBound = new Vector2(xInterval, 0); // y should be 0 for first row and if we start by setting upperbound to 
+                                                        // yInterval then the second row wil have upperbound 2*yInterval, which
+                                                        // is not what we want
 
-        for(int i = 0; i < verticalVertices * horizontalVertices; i++){
+        for(int i = 0; i < numberOfHorizontalVertices * numberOfVerticalVertices; i++){
             
-            if(i%verticalVertices == 0 && i!=0)
-            {
-                lowerBound.x = 0;
-                upperBound.x = xInterval;
-                if(i > verticalVertices) {
-                    lowerBound.y = upperBound.y;
-                    upperBound.y = lowerBound.y + yInterval;
+            if(i!=0){
+                if(i%numberOfHorizontalVertices == 0) // if max index in row of vertices has been reached
+                {
+                    // reset horizontal bounds
+                    lowerBound.x = 0;
+                    upperBound.x = xInterval;
+
+                    // reset vertical bounds
+                    lowerBound.y = vertices[i-1].y;
+                    upperBound.y += yInterval;
+                }
+                else // increase horizontally
+                {
+                    lowerBound.x = vertices[i-1].x;
+                    upperBound.x += xInterval;
                 }
             }
             
+            // Generate x and y value of vertice
             vertices[i].x = generateChaoticFloat(lowerBound.x, upperBound.x);
             vertices[i].y = generateChaoticFloat(upperBound.y, lowerBound.y);
 
-            if(i < verticalVertices) vertices[i].y = 0;
-            if(i >= vertices.Length - verticalVertices) vertices[i].y = heigth;
-            if(i%verticalVertices == verticalVertices-1) vertices[i].x = length;
-            if(i%verticalVertices == 0) vertices[i].x = 0;
-
-            if(i>0 && i%verticalVertices != 0)
+            // overwrite x and y values generated if vertice is on one of the sides of the game board
+            if(i < numberOfHorizontalVertices){
+                vertices[i].y = 0; // bottom
+            } 
+            if(i >= numberOfVerticalVertices * (numberOfHorizontalVertices-1))
             {
-                lowerBound.x = upperBound.x;
-                upperBound.x = lowerBound.x + xInterval;
+                vertices[i].y = heigth; // top
             }
+            if(i%numberOfHorizontalVertices == numberOfHorizontalVertices-1) 
+            {
+                vertices[i].x = length; // right
+            }
+            if(i%numberOfHorizontalVertices == 0) 
+            {
+                vertices[i].x = 0; // left
+            }
+
         }
     }
 
     private float generateChaoticFloat(float lowerBound, float upperBound)
     {
-        float resultingCoordinates;
-        resultingCoordinates = Random.Range(lowerBound, upperBound);
-        return resultingCoordinates;
+        return Random.Range(lowerBound, upperBound);
     }
 
     private void logVertices()
     {
         int counter = 1;
-        foreach(Vector3 vertex in vertices)
+        for(int i=0; i< numberOfHorizontalVertices*numberOfVerticalVertices; i++)
         {
-            Debug.Log("Vertex " + counter + ": " + vertex);
+            Debug.Log("Vertex " + counter + ": " + vertices[i].x + "    " + vertices[i].y);
             counter++;
         }
     }
