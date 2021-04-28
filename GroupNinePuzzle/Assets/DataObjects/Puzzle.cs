@@ -1,9 +1,39 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System; 
+namespace Tester{
+
+[Serializable]
 public class Puzzle{
-    private string name {get; set;}
-    private int nPieces {get; set;}
-    private List<Corner> form {get; set;}
-    private List<Piece> pieces {get; set;}
+    public PuzzleData[] result;
+}
+
+public class PuzzleData {
+    public string name;
+    public int nPieces;
+    public Form[] form;  //List<Corner>
+    public Piece[] pieces; //List<Piece>
+}
+
+[Serializable]
+public class Form{
+    public Corner[] form;
+
+}
+[Serializable]
+public class Piece{
+    public string piece;
+    public Corner[] corners;
+}
+
+[Serializable]
+public class Coord{
+        public double x;
+        public double y;
+    }
+[Serializable]
+public class Corner{
+    public Coord Coord;
+}
 }
