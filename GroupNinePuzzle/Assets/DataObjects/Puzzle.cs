@@ -3,21 +3,26 @@ using System.Collections;
 using System.Collections.Generic;
 using System; 
 
-public class Puzzle {
+[Serializable]
+public class JSONPuzzle {
+    public Puzzle puzzle;
     public string name;
     public int nPieces;
-    public Form[] form;  //List<Corner>
-    public Piece[] pieces; //List<Piece>
+    public Piece[] pieces;
 }
 
 [Serializable]
-public class Form{
-    public Coord coord1;
+public class Puzzle {
+    public Form[] form;
+}
 
+[Serializable]
+public class Form {
+    public Coord coord;
 }
 [Serializable]
 public class Piece{
-    public string piece;
+    public int piece;
     public Corner[] corners;
 }
 
