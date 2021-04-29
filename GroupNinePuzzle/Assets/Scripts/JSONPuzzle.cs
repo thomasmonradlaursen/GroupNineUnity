@@ -28,8 +28,8 @@ public class Piece{
 
 [Serializable]
 public class Coord{
-        public double x;
-        public double y;
+        public float x;
+        public float y;
     }
 [Serializable]
 public class Corner{
