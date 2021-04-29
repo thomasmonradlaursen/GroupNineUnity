@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 using System.IO;
 
-public class TestParser : MonoBehaviour {
+public class JSONDeserializer : MonoBehaviour {
     public void Start(){
   
         //Deserialize json file 
