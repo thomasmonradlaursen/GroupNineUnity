@@ -6,9 +6,9 @@ public class VerticesGenerator : MonoBehaviour
 {
     
     static int length = 8;
-    static int heigth = 3;
-    public static int verticalVertices = 17;
-    public static int horizontalVertices = 3;
+    static int heigth = 8;
+    public static int verticalVertices = 16;
+    public static int horizontalVertices = 16;
     Vector3[] vertices = new Vector3[verticalVertices*horizontalVertices];
     public GameObject prefabDot = null;
 
