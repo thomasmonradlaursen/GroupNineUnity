@@ -20,6 +20,8 @@ public class MeshGenerator : MonoBehaviour
         CreateShape();
 
         UpdateMesh();
+
+        GetComponent<MeshCollider>().sharedMesh = mesh;
         
     }
 
