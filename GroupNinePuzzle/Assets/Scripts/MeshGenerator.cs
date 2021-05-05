@@ -42,16 +42,25 @@ public class MeshGenerator : MonoBehaviour
     {
         var verticesGenerator = GetComponent<VerticesGenerator>();
 
+        verticesGenerator.Start();
+
         vertices = verticesGenerator.vertices;
+        // Debug.Log("length: " + vertices.Length + Environment.NewLine);
 
         var noOfVertical = VerticesGenerator.numberOfVerticalVertices;
         var noOfHorizontal = VerticesGenerator.numberOfHorizontalVertices;
 
-        for(int idx = 0; idx < (noOfVertical*(noOfHorizontal-1)); idx++){ // should only be -1 instead of -2 when we have coordinates of vertices on edges in array as well
+        for(int idx = 0; idx < (noOfVertical-1)*(noOfHorizontal); idx++){ // should only be -1 instead of -2 when we have coordinates of vertices on edges in array as well
             // Debug.Log("X :" + idx%noOfHorizontal);
             // Debug.Log("Y: " + Math.Floor((decimal) idx/noOfHorizontal));
             // Debug.Log("X :" + vertices[idx].x);
             // Debug.Log("Y: " + vertices[idx].y);
+            
+            // Debug.Log("c1: " + idx);
+            // Debug.Log("c1: " + idx);
+            // Debug.Log("c2: " + (idx+noOfHorizontal));
+            // Debug.Log("c3: " + (idx+1));
+            // Debug.Log("c4: " + (idx+noOfHorizontal+1));
 
             var mesh = new Mesh();
             mesh.vertices = new Vector3[]{
@@ -67,7 +76,7 @@ public class MeshGenerator : MonoBehaviour
             };
             meshArray.Add(mesh);
 
-            if(idx%(noOfHorizontal-2) == 0 && idx != 0){ // Should be -2 when we have coordinates of vertices on edges in array as well
+            if((idx+2)%(noOfHorizontal) == 0 && idx != 0){ 
                 idx++; // skips rightmost vertice in row
             }
         }

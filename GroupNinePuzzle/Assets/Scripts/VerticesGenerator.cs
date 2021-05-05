@@ -9,19 +9,20 @@ public class VerticesGenerator : MonoBehaviour
     public static int length = 3;
     public static int heigth = 4;
     public static int numberOfHorizontalVertices = 4;
-    public static int numberOfVerticalVertices = 4;
-    public Vector3[] vertices = new Vector3[16];
+    public static int numberOfVerticalVertices = 6;
+    public Vector3[] vertices {get; set;}
     public GameObject prefabDot = null;
 
 
-    void Start()
+    public void Start()
     {
+        vertices = new Vector3[numberOfHorizontalVertices * numberOfVerticalVertices];
         insertVertices();
         logVertices(); 
 
         for(int i = 0; i<numberOfHorizontalVertices*numberOfVerticalVertices; i++)
         {
-            Debug.Log(i);
+            Debug.Log("vertice i:" + i);
             Instantiate(prefabDot, vertices[i], Quaternion.identity);
         }  
     }
@@ -57,6 +58,7 @@ public class VerticesGenerator : MonoBehaviour
                 }
             }
             
+            // Debug.Log("i " + i);
             // Generate x and y value of vertice
             vertices[i].x = generateChaoticFloat(lowerBound.x, upperBound.x);
             vertices[i].y = generateChaoticFloat(upperBound.y, lowerBound.y);
@@ -91,7 +93,7 @@ public class VerticesGenerator : MonoBehaviour
         int counter = 1;
         for(int i=0; i< numberOfHorizontalVertices*numberOfVerticalVertices; i++)
         {
-            Debug.Log("Vertex " + counter + ": " + vertices[i].x + "    " + vertices[i].y);
+            // Debug.Log("Vertex " + counter + ": " + vertices[i].x + "    " + vertices[i].y);
             counter++;
         }
     }
