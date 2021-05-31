@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class RotationOfMesh : MonoBehaviour
 {
+    
+    private Transform target;
     private Mesh theMesh;
     private Vector3[] originalVertices;
     private Vector3[] rotatedVertices;
@@ -13,36 +15,44 @@ public class RotationOfMesh : MonoBehaviour
 
     void Update() 
     {
+        if(!target){
+            target = this.transform;
+        }
+        
+        theMesh = target.GetComponent<MeshFilter>().mesh as Mesh;
+     
+        originalVertices = new Vector3[ theMesh.vertices.Length];
+        originalVertices = theMesh.vertices;
+        rotatedVertices = new Vector3[ originalVertices.Length];
+
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             Debug.Log("Rotation pressed");
-            RotateMesh();
+            mouseZcoord = Camera.main.WorldToScreenPoint(gameObject.transform.position).z;
+            mouseOffset = gameObject.transform.position - MouseWorldPosition();
+            RotateMesh(); 
+            Debug.Log(theMesh.name);
         }
     }
     
     void RotateMesh() 
     {
-        Quaternion qAngle = Quaternion.AngleAxis(rotatedAngleY, Vector3.up );
+
+        foreach(Vector3 vertex in originalVertices){
+            Debug.Log("Original: " + vertex);
+        }
+
+        Quaternion qAngle = Quaternion.AngleAxis(rotatedAngleY, Vector3.up);
         for (int vertex = 0; vertex < originalVertices.Length; vertex ++)
         {
             rotatedVertices[vertex] = qAngle * originalVertices[vertex];
         }
         theMesh.vertices = rotatedVertices;
+
+        foreach(Vector3 vertex in rotatedVertices){
+            Debug.Log("Rotated: " + vertex);
+        }
     }
-
-    void OnMouseDown(){
-        mouseZcoord = Camera.main.WorldToScreenPoint(gameObject.transform.position).z;
-        mouseOffset = gameObject.transform.position - MouseWorldPosition();
-        transform.position = MouseWorldPosition() + mouseOffset;
-
-        theMesh = gameObject.GetComponent<MeshFilter>().mesh as Mesh;
-        
-        originalVertices = new Vector3[theMesh.vertices.Length];
-        originalVertices = theMesh.vertices;
-        
-        rotatedVertices = new Vector3[originalVertices.Length];
-    }
-
     private Vector3 MouseWorldPosition(){
         Vector3 mousePoint = Input.mousePosition;
         
