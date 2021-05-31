@@ -136,6 +136,7 @@ GameObject:
   - component: {fileID: 247557109}
   - component: {fileID: 247557108}
   - component: {fileID: 247557110}
+  - component: {fileID: 247557111}
   m_Layer: 0
   m_Name: MeshGenerator
   m_TagString: Untagged
@@ -256,6 +257,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabDot: {fileID: 8697019572017349557, guid: 219564e54a88c4ed29cc2ca6c0c44311,
     type: 3}
+--- !u!114 &247557111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 247557103}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36913213e2f1f4b0587d8a572fa23130, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  theObject: {fileID: 247557107}
+  rotatedAngleY: 0
 --- !u!1001 &277286957
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -32,6 +32,7 @@ public class MeshGenerator : MonoBehaviour
             // Instantiate(newGameObject);
             // newGameObject.GetComponent<MeshCollider>().sharedMesh = mesh;
             newGameObject.AddComponent<DragNDrop>();
+            newGameObject.AddComponent<RotationOfMesh>();
 
             idx++;
         }        
