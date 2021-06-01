@@ -42,7 +42,7 @@ public class RotationOfMesh : MonoBehaviour
         for(int index = 0; index < originalVertices.Length; index++)
         {
             rotatedVertices[index].x = originalVertices[index].x * Mathf.Cos(rotationTheta) - originalVertices[index].y * Mathf.Sin(rotationTheta);
-            rotatedVertices[index].y = originalVertices[index].y * Mathf.Sin(rotationTheta) + originalVertices[index].x * Mathf.Cos(rotationTheta);
+            rotatedVertices[index].y = originalVertices[index].x * Mathf.Sin(rotationTheta) + originalVertices[index].y * Mathf.Cos(rotationTheta);
         }
 
         LogVertices(rotatedVertices, "Rotated: ");
