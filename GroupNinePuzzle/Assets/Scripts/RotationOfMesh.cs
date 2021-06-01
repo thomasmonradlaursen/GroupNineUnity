@@ -15,12 +15,12 @@ public class RotationOfMesh : MonoBehaviour
             if(Input.GetKey(KeyCode.UpArrow))
             {
                 Debug.Log("Rotation clockwise");
-                RotateMesh((10*Mathf.PI)/180);
+                RotateMesh((1*Mathf.PI)/180);
             }
             if(Input.GetKey(KeyCode.DownArrow))
             {
                 Debug.Log("Rotation counter clockwise");
-                RotateMesh(-(10*Mathf.PI)/180);
+                RotateMesh(-(1*Mathf.PI)/180);
             }
         }
         if(Input.GetKeyUp(KeyCode.R)) Clear();   
@@ -30,7 +30,7 @@ public class RotationOfMesh : MonoBehaviour
     {
 
         CentralizeVertices();
-        
+
         Debug.Log("Entered Rotation");
         
         float rotationTheta = rotationIntervalAndDirection;
