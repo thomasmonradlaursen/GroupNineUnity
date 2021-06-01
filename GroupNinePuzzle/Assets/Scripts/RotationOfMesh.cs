@@ -4,39 +4,36 @@ using UnityEngine;
 
 public class RotationOfMesh : MonoBehaviour
 {
-    
-    private GameObject target;
-    private Mesh theMesh;
+    public Mesh mesh;
     private Vector3[] originalVertices;
     private Vector3[] rotatedVertices;
 
-
     void Update() 
     {
-        if (Input.GetKey(KeyCode.UpArrow) && target!=null)
+        if(Input.GetKey(KeyCode.R) && mesh != null)
         {
-            Debug.Log("Rotation pressed");
-            RotateMesh();
+            if(Input.GetKey(KeyCode.UpArrow))
+            {
+                Debug.Log("Rotation clockwise");
+                RotateMesh((10*Mathf.PI)/180);
+            }
+            if(Input.GetKey(KeyCode.DownArrow))
+            {
+                Debug.Log("Rotation counter clockwise");
+                RotateMesh(-(10*Mathf.PI)/180);
+            }
         }
-
-        if(Input.GetKeyDown(KeyCode.A) && target!=null)
-        {
-            Debug.Log("A has been pressed");
-            ScaleMesh();
-        }
-
-        if(Input.GetKeyDown(KeyCode.B) && target!=null)
-        {
-            Debug.Log("B has been pressed");
-            InverseVertices();
-        }
+        if(Input.GetKeyUp(KeyCode.R)) Clear();   
     }
 
-    void RotateMesh()
+    void RotateMesh(float rotationIntervalAndDirection)
     {
+
+        CentralizeVertices();
+        
         Debug.Log("Entered Rotation");
         
-        float rotationTheta = (10*Mathf.PI)/180;
+        float rotationTheta = rotationIntervalAndDirection;
         Debug.Log("Rotation theta: " + rotationTheta);
 
         for(int index = 0; index < originalVertices.Length; index++)
@@ -45,62 +42,31 @@ public class RotationOfMesh : MonoBehaviour
             rotatedVertices[index].y = originalVertices[index].x * Mathf.Sin(rotationTheta) + originalVertices[index].y * Mathf.Cos(rotationTheta);
         }
 
+        RestorePositionOfVertices();
         LogVertices(rotatedVertices, "Rotated: ");
 
-        theMesh.SetVertices(rotatedVertices);
-        //target.GetComponent<MeshCollider>().sharedMesh = theMesh;
+        mesh.SetVertices(rotatedVertices);
+        originalVertices = mesh.vertices;
+
+        GetComponentInParent<MeshCollider>().sharedMesh = mesh;
     }
-
-    void InverseVertices()
-    {
-        Debug.Log("Entered scaling");
-
-        for(int index = 0; index < originalVertices.Length; index++)
-        {
-            rotatedVertices[index] = -originalVertices[index];
-        }
-
-        LogVertices(rotatedVertices, "Inverted: ");
-
-        theMesh.SetVertices(rotatedVertices);
-        target.GetComponent<MeshCollider>().sharedMesh = theMesh;
-    }
-
-    void ScaleMesh()
-    {
-        Debug.Log("Entered scaling");
-        
-        float scalingFactor = 1.2f;
-
-        for(int index = 0; index < originalVertices.Length; index++)
-        {
-            rotatedVertices[index] = scalingFactor * originalVertices[index];
-        }
-
-        LogVertices(rotatedVertices, "Scaled: ");
-
-        theMesh.SetVertices(rotatedVertices);
-        target.GetComponent<MeshCollider>().sharedMesh = theMesh;
-    }
-
-    void OnMouseUp()
-    {
-        SelectMesh();
-    }
-
-    void SelectMesh()
-    {
-        Debug.Log("ROTATION: Selected mesh");
-
-        target = this.gameObject;
-        
-        theMesh = target.GetComponent<MeshFilter>().mesh;
+    
+    void OnMouseDown() {
+       
+        mesh = GetComponentInParent<MeshFilter>().mesh;
      
-        originalVertices = new Vector3[theMesh.vertices.Length];
-        originalVertices = theMesh.vertices;
+        originalVertices = new Vector3[mesh.vertices.Length];
+        originalVertices = mesh.vertices;
         rotatedVertices = new Vector3[ originalVertices.Length];
 
-        LogVertices(theMesh.vertices, "Current: ");
+        LogVertices(mesh.vertices, "Current: ");
+    }
+
+    void Clear()
+    {
+        mesh = null;
+        originalVertices = null;
+        rotatedVertices = null;
     }
 
     void LogVertices(Vector3[] vertices, string label) 
@@ -110,4 +76,38 @@ public class RotationOfMesh : MonoBehaviour
             Debug.Log(label + vertex);
         }
     }
+    
+    Vector3 CalculateCenterOfMass()
+    {
+        float xCoordinateForCenter = 0.0f;
+        float yCoordinateForCenter = 0.0f;
+        foreach(Vector3 vertex in originalVertices)
+        {
+            xCoordinateForCenter += vertex.x;
+            yCoordinateForCenter += vertex.y;
+        }
+        xCoordinateForCenter /= originalVertices.Length;
+        yCoordinateForCenter /= originalVertices.Length;
+        return new Vector3(xCoordinateForCenter, yCoordinateForCenter, 0.0f);
+    }
+
+    void CentralizeVertices()
+    {
+        Vector3 centerOfMass = CalculateCenterOfMass();
+        for(int index = 0; index < originalVertices.Length; index++)
+        {
+            originalVertices[index].x -= centerOfMass.x;
+            originalVertices[index].y -= centerOfMass.y;
+        }
+    }
+
+    void RestorePositionOfVertices()
+    {
+        Vector3 centerOfMass = CalculateCenterOfMass();
+        for(int index = 0; index < rotatedVertices.Length; index++)
+        {
+            rotatedVertices[index].x += centerOfMass.x;
+            rotatedVertices[index].y += centerOfMass.y;
+        }
+    } 
 }

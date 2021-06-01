@@ -6,15 +6,11 @@ using UnityEngine;
 public class MeshGenerator : MonoBehaviour
 
 {
-
     List<Mesh> meshArray = new List<Mesh>();
     Vector3[] vertices;
     int[] triangles;
-    
+    public string selected = "empty";
 
-    private  Vector3 mouseOffset;
-    private float mouseZcoord = -10;
-    
     // Start is called before the first frame update
     void Start()
     {
@@ -22,13 +18,14 @@ public class MeshGenerator : MonoBehaviour
 
         var idx = 0;
         foreach(var mesh in meshArray){
-            var newGameObject = new GameObject("mesh" + idx);
+            var newGameObject = new GameObject("Piece " + idx);
             newGameObject.AddComponent<MeshFilter>();
             newGameObject.GetComponent<MeshFilter>().mesh = mesh;
             newGameObject.AddComponent<MeshRenderer>();
             newGameObject.AddComponent<MeshCollider>();
             newGameObject.AddComponent<DragNDrop>();
             newGameObject.AddComponent<RotationOfMesh>();
+            newGameObject.AddComponent<TranslationCoordination>();
             idx++;
         }        
     }
