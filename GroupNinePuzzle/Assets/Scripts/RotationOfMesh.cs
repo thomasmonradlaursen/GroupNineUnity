@@ -5,7 +5,7 @@ using UnityEngine;
 public class RotationOfMesh : MonoBehaviour
 {
     
-    private Transform target;
+    private GameObject target;
     private Mesh theMesh;
     private Vector3[] originalVertices;
     private Vector3[] rotatedVertices;
@@ -13,7 +13,7 @@ public class RotationOfMesh : MonoBehaviour
 
     void Update() 
     {
-        if (Input.GetKeyDown(KeyCode.UpArrow) && target!=null)
+        if (Input.GetKey(KeyCode.UpArrow) && target!=null)
         {
             Debug.Log("Rotation pressed");
             RotateMesh();
@@ -36,7 +36,7 @@ public class RotationOfMesh : MonoBehaviour
     {
         Debug.Log("Entered Rotation");
         
-        float rotationTheta = (1.0f*180)/Mathf.PI;
+        float rotationTheta = (10*Mathf.PI)/180;
         Debug.Log("Rotation theta: " + rotationTheta);
 
         for(int index = 0; index < originalVertices.Length; index++)
@@ -46,10 +46,9 @@ public class RotationOfMesh : MonoBehaviour
         }
 
         LogVertices(rotatedVertices, "Rotated: ");
-        LogVertices(originalVertices, "Original: ");
 
         theMesh.SetVertices(rotatedVertices);
-        target.GetComponent<MeshCollider>().sharedMesh = theMesh;
+        //target.GetComponent<MeshCollider>().sharedMesh = theMesh;
     }
 
     void InverseVertices()
@@ -61,8 +60,7 @@ public class RotationOfMesh : MonoBehaviour
             rotatedVertices[index] = -originalVertices[index];
         }
 
-        LogVertices(rotatedVertices, "Scaled: ");
-        LogVertices(originalVertices, "Original: ");
+        LogVertices(rotatedVertices, "Inverted: ");
 
         theMesh.SetVertices(rotatedVertices);
         target.GetComponent<MeshCollider>().sharedMesh = theMesh;
@@ -80,20 +78,21 @@ public class RotationOfMesh : MonoBehaviour
         }
 
         LogVertices(rotatedVertices, "Scaled: ");
-        LogVertices(originalVertices, "Original: ");
 
         theMesh.SetVertices(rotatedVertices);
         target.GetComponent<MeshCollider>().sharedMesh = theMesh;
     }
 
-    void OnMouseDown()
+    void OnMouseUp()
     {
-        Debug.Log("ROTATION: Mouse pressed down");
+        SelectMesh();
+    }
 
-        if(!target)
-        {
-            target = this.transform;
-        }
+    void SelectMesh()
+    {
+        Debug.Log("ROTATION: Selected mesh");
+
+        target = this.gameObject;
         
         theMesh = target.GetComponent<MeshFilter>().mesh;
      
