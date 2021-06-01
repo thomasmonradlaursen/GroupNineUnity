@@ -16,7 +16,7 @@ public class RotationOfMesh : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.UpArrow) && target!=null)
         {
             Debug.Log("Rotation pressed");
-            MatrixRotation();
+            RotateMesh();
         }
 
         if(Input.GetKeyDown(KeyCode.A) && target!=null)
@@ -25,28 +25,47 @@ public class RotationOfMesh : MonoBehaviour
             ScaleMesh();
         }
 
-        if(Input.GetKeyDown(KeyCode.B))
+        if(Input.GetKeyDown(KeyCode.B) && target!=null)
         {
             Debug.Log("B has been pressed");
+            InverseVertices();
         }
     }
 
-    void MatrixRotation()
+    void RotateMesh()
     {
         Debug.Log("Entered Rotation");
         
-        float rotationTheta = 1.0f;
+        float rotationTheta = (1.0f*180)/Mathf.PI;
+        Debug.Log("Rotation theta: " + rotationTheta);
 
         for(int index = 0; index < originalVertices.Length; index++)
         {
             rotatedVertices[index].x = originalVertices[index].x * Mathf.Cos(rotationTheta) - originalVertices[index].y * Mathf.Sin(rotationTheta);
-            rotatedVertices[index].y = originalVertices[index].y * Mathf.Sin(rotationTheta) - originalVertices[index].x * Mathf.Cos(rotationTheta);
+            rotatedVertices[index].y = originalVertices[index].y * Mathf.Sin(rotationTheta) + originalVertices[index].x * Mathf.Cos(rotationTheta);
         }
 
         LogVertices(rotatedVertices, "Rotated: ");
         LogVertices(originalVertices, "Original: ");
 
         theMesh.SetVertices(rotatedVertices);
+        target.GetComponent<MeshCollider>().sharedMesh = theMesh;
+    }
+
+    void InverseVertices()
+    {
+        Debug.Log("Entered scaling");
+
+        for(int index = 0; index < originalVertices.Length; index++)
+        {
+            rotatedVertices[index] = -originalVertices[index];
+        }
+
+        LogVertices(rotatedVertices, "Scaled: ");
+        LogVertices(originalVertices, "Original: ");
+
+        theMesh.SetVertices(rotatedVertices);
+        target.GetComponent<MeshCollider>().sharedMesh = theMesh;
     }
 
     void ScaleMesh()
