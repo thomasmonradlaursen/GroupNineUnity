@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(MeshFilter))]
 public class MeshGenerator : MonoBehaviour
 
 {
@@ -12,32 +11,27 @@ public class MeshGenerator : MonoBehaviour
     Vector3[] vertices;
     int[] triangles;
     
+
+    private  Vector3 mouseOffset;
+    private float mouseZcoord = -10;
+    
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("HERE ALKSDÆJFASJDFÆLASJDFÆLASKJDFALÆSDFJKAÆLSKDFJASDJFLÆASDKJFÆLKASDJFÆASJDKFÆASJDFLÆASJDFÆLKASJDFÆLKAJSDFLÆKJASDKLÆFASDF");
-        // mesh = new Mesh();
-        
         GenerateMeshes();
 
         var idx = 0;
         foreach(var mesh in meshArray){
-            // GetComponent<MeshFilter>().mesh = mesh;
             var newGameObject = new GameObject("mesh" + idx);
             newGameObject.AddComponent<MeshFilter>();
             newGameObject.GetComponent<MeshFilter>().mesh = mesh;
-            // meshFilter.mesh = mesh;
             newGameObject.AddComponent<MeshRenderer>();
             newGameObject.AddComponent<MeshCollider>();
-            // Instantiate(newGameObject);
-            // newGameObject.GetComponent<MeshCollider>().sharedMesh = mesh;
             newGameObject.AddComponent<DragNDrop>();
             newGameObject.AddComponent<RotationOfMesh>();
-
             idx++;
         }        
     }
-
 
     void GenerateMeshes() 
     {
@@ -52,16 +46,6 @@ public class MeshGenerator : MonoBehaviour
         var noOfHorizontal = VerticesGenerator.numberOfHorizontalVertices;
 
         for(int idx = 0; idx < (noOfVertical-1)*(noOfHorizontal); idx++){ // should only be -1 instead of -2 when we have coordinates of vertices on edges in array as well
-            // Debug.Log("X :" + idx%noOfHorizontal);
-            // Debug.Log("Y: " + Math.Floor((decimal) idx/noOfHorizontal));
-            // Debug.Log("X :" + vertices[idx].x);
-            // Debug.Log("Y: " + vertices[idx].y);
-            
-            // Debug.Log("c1: " + idx);
-            // Debug.Log("c1: " + idx);
-            // Debug.Log("c2: " + (idx+noOfHorizontal));
-            // Debug.Log("c3: " + (idx+1));
-            // Debug.Log("c4: " + (idx+noOfHorizontal+1));
 
             var mesh = new Mesh();
             mesh.vertices = new Vector3[]{

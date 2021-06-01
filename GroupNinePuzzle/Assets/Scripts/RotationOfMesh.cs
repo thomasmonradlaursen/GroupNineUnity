@@ -9,57 +9,87 @@ public class RotationOfMesh : MonoBehaviour
     private Mesh theMesh;
     private Vector3[] originalVertices;
     private Vector3[] rotatedVertices;
-    public float rotatedAngleY = 0.0f;
-    private  Vector3 mouseOffset;
-    private float mouseZcoord = -10;
+
 
     void Update() 
     {
-        if(!target){
+        if (Input.GetKeyDown(KeyCode.UpArrow) && target!=null)
+        {
+            Debug.Log("Rotation pressed");
+            MatrixRotation();
+        }
+
+        if(Input.GetKeyDown(KeyCode.A) && target!=null)
+        {
+            Debug.Log("A has been pressed");
+            ScaleMesh();
+        }
+
+        if(Input.GetKeyDown(KeyCode.B))
+        {
+            Debug.Log("B has been pressed");
+        }
+    }
+
+    void MatrixRotation()
+    {
+        Debug.Log("Entered Rotation");
+        
+        float rotationTheta = 1.0f;
+
+        for(int index = 0; index < originalVertices.Length; index++)
+        {
+            rotatedVertices[index].x = originalVertices[index].x * Mathf.Cos(rotationTheta) - originalVertices[index].y * Mathf.Sin(rotationTheta);
+            rotatedVertices[index].y = originalVertices[index].y * Mathf.Sin(rotationTheta) - originalVertices[index].x * Mathf.Cos(rotationTheta);
+        }
+
+        LogVertices(rotatedVertices, "Rotated: ");
+        LogVertices(originalVertices, "Original: ");
+
+        theMesh.SetVertices(rotatedVertices);
+    }
+
+    void ScaleMesh()
+    {
+        Debug.Log("Entered scaling");
+        
+        float scalingFactor = 1.2f;
+
+        for(int index = 0; index < originalVertices.Length; index++)
+        {
+            rotatedVertices[index] = scalingFactor * originalVertices[index];
+        }
+
+        LogVertices(rotatedVertices, "Scaled: ");
+        LogVertices(originalVertices, "Original: ");
+
+        theMesh.SetVertices(rotatedVertices);
+        target.GetComponent<MeshCollider>().sharedMesh = theMesh;
+    }
+
+    void OnMouseDown()
+    {
+        Debug.Log("ROTATION: Mouse pressed down");
+
+        if(!target)
+        {
             target = this.transform;
         }
         
-        theMesh = target.GetComponent<MeshFilter>().mesh as Mesh;
+        theMesh = target.GetComponent<MeshFilter>().mesh;
      
-        originalVertices = new Vector3[ theMesh.vertices.Length];
+        originalVertices = new Vector3[theMesh.vertices.Length];
         originalVertices = theMesh.vertices;
         rotatedVertices = new Vector3[ originalVertices.Length];
 
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            Debug.Log("Rotation pressed");
-            mouseZcoord = Camera.main.WorldToScreenPoint(gameObject.transform.position).z;
-            mouseOffset = gameObject.transform.position - MouseWorldPosition();
-            RotateMesh(); 
-            Debug.Log(theMesh.name);
-        }
+        LogVertices(theMesh.vertices, "Current: ");
     }
-    
-    void RotateMesh() 
+
+    void LogVertices(Vector3[] vertices, string label) 
     {
-
-        foreach(Vector3 vertex in originalVertices){
-            Debug.Log("Original: " + vertex);
-        }
-
-        Quaternion qAngle = Quaternion.AngleAxis(rotatedAngleY, Vector3.up);
-        for (int vertex = 0; vertex < originalVertices.Length; vertex ++)
+        foreach(Vector3 vertex in vertices)
         {
-            rotatedVertices[vertex] = qAngle * originalVertices[vertex];
+            Debug.Log(label + vertex);
         }
-        theMesh.vertices = rotatedVertices;
-
-        foreach(Vector3 vertex in rotatedVertices){
-            Debug.Log("Rotated: " + vertex);
-        }
-    }
-    private Vector3 MouseWorldPosition(){
-        Vector3 mousePoint = Input.mousePosition;
-        
-        mousePoint.z = mouseZcoord;
-        
-        Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mousePoint);
-
-        return mouseWorldPosition; 
     }
 }

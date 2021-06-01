@@ -6,10 +6,10 @@ using UnityEngine;
 public class VerticesGenerator : MonoBehaviour
 {
     
-    public static int length = 3;
+    public static int length = 4;
     public static int heigth = 4;
     public static int numberOfHorizontalVertices = 4;
-    public static int numberOfVerticalVertices = 6;
+    public static int numberOfVerticalVertices = 4;
     public Vector3[] vertices {get; set;}
     public GameObject prefabDot = null;
 
@@ -22,8 +22,8 @@ public class VerticesGenerator : MonoBehaviour
 
         for(int i = 0; i<numberOfHorizontalVertices*numberOfVerticalVertices; i++)
         {
-            Debug.Log("vertice i:" + i);
-            Instantiate(prefabDot, vertices[i], Quaternion.identity);
+            //Debug.Log("vertice i:" + i);
+            //Instantiate(prefabDot, vertices[i], Quaternion.identity);
         }  
     }
 
