@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RotationOfMesh : MonoBehaviour
+public class Rotation : MonoBehaviour
 {
     public Mesh mesh;
     private Vector3[] originalVertices;
     private Vector3[] rotatedVertices;
 
-    void Update() 
+    void Update()
     {
-        if(Input.GetKey(KeyCode.R) && mesh != null)
+        if(this.name.Equals(this.GetComponentInParent<MeshGenerator>().selected))
         {
             if(Input.GetKey(KeyCode.UpArrow))
             {
@@ -23,7 +23,6 @@ public class RotationOfMesh : MonoBehaviour
                 RotateMesh(-(1*Mathf.PI)/180);
             }
         }
-        if(Input.GetKeyUp(KeyCode.R)) Clear();   
     }
 
     void RotateMesh(float rotationIntervalAndDirection)
@@ -50,18 +49,16 @@ public class RotationOfMesh : MonoBehaviour
         mesh.SetVertices(rotatedVertices);
         originalVertices = mesh.vertices;
 
-        GetComponentInParent<MeshCollider>().sharedMesh = mesh;
+        GetComponent<MeshCollider>().sharedMesh = mesh;
     }
-    
-    void OnMouseUp() {
-       
-        mesh = GetComponentInParent<MeshFilter>().mesh;
-     
+
+    void OnMouseUp()
+    {
+        mesh = GetComponent<MeshFilter>().mesh;
         originalVertices = new Vector3[mesh.vertices.Length];
         originalVertices = mesh.vertices;
         rotatedVertices = new Vector3[ originalVertices.Length];
-
-        LogVertices(mesh.vertices, "Current: ");
+        this.GetComponentInParent<MeshGenerator>().selected = this.name;
     }
 
     void Clear()

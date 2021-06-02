@@ -23,9 +23,9 @@ public class MeshGenerator : MonoBehaviour
             newGameObject.GetComponent<MeshFilter>().mesh = mesh;
             newGameObject.AddComponent<MeshRenderer>();
             newGameObject.AddComponent<MeshCollider>();
-            newGameObject.AddComponent<DragNDrop>();
-            newGameObject.AddComponent<RotationOfMesh>();
-            newGameObject.AddComponent<TranslationCoordination>();
+            newGameObject.AddComponent<Translation>();
+            newGameObject.AddComponent<Rotation>();
+            newGameObject.transform.parent = this.transform;
             idx++;
         }        
     }

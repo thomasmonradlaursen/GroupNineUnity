@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class DragNDrop : MonoBehaviour
+public class Translation : MonoBehaviour
 {
-
     private  Vector3 mouseOffset;
     private float mouseZcoord = -10;
 
@@ -27,11 +26,9 @@ public class DragNDrop : MonoBehaviour
     {
         transform.position = MouseWorldPosition() + mouseOffset;
     }
-
     void OnMouseUp() {
         CalculateVerticesAfterTranslation();
     }
-
     void CalculateVerticesAfterTranslation()
     {
         transform.position = Vector3.zero;
