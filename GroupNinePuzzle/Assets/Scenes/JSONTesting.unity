@@ -214,6 +214,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1839317120}
   - component: {fileID: 1839317121}
+  - component: {fileID: 1839317122}
   m_Layer: 0
   m_Name: JSONTester
   m_TagString: Untagged
@@ -249,3 +250,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabDot: {fileID: 8697019572017349557, guid: 219564e54a88c4ed29cc2ca6c0c44311,
     type: 3}
+--- !u!114 &1839317122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1839317119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 243be665430674cb197c2ffd174a0377, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

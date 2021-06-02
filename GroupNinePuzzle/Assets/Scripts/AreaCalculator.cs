@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class AreaCalculator : MonoBehaviour
+public class AreaCalculator
 {
     public static float calculateArea(Vector3[] vertices)
     {
@@ -34,7 +34,6 @@ public class AreaCalculator : MonoBehaviour
 
         while(i < vertices.Length)
         {
-            Debug.Log("Entered loop");
             a += vertices[i].coord.x * y - vertices[i].coord.y * x;
 			p += Math.Abs((vertices[i].coord.x) - x + (vertices[i].coord.y - y));
 			x = vertices[i].coord.x;
