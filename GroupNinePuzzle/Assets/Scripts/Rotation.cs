@@ -7,51 +7,41 @@ public class Rotation : MonoBehaviour
     public Mesh mesh;
     private Vector3[] originalVertices;
     private Vector3[] rotatedVertices;
-
     void Update()
     {
         if(this.name.Equals(this.GetComponentInParent<MeshGenerator>().selected))
         {
             if(Input.GetKey(KeyCode.UpArrow))
             {
-                Debug.Log("Rotation clockwise");
                 RotateMesh((1*Mathf.PI)/180);
             }
             if(Input.GetKey(KeyCode.DownArrow))
             {
-                Debug.Log("Rotation counter clockwise");
                 RotateMesh(-(1*Mathf.PI)/180);
+            }
+            if(Input.GetKeyUp(KeyCode.UpArrow) || Input.GetKeyUp(KeyCode.DownArrow))
+            {
+                Debug.Log("# ROTATION #");
+                Debug.Log("Vertices of " + this.name + " after rotation:");
+                LogVertices(mesh.vertices);
             }
         }
     }
-
     void RotateMesh(float rotationIntervalAndDirection)
     {
-
         Vector3 centerOfMass = CalculateCenterOfMass();
         CentralizeVertices(centerOfMass);
-
-        Debug.Log("Entered Rotation");
-        
         float rotationTheta = rotationIntervalAndDirection;
-        Debug.Log("Rotation theta: " + rotationTheta);
-
         for(int index = 0; index < originalVertices.Length; index++)
         {
             rotatedVertices[index].x = originalVertices[index].x * Mathf.Cos(rotationTheta) - originalVertices[index].y * Mathf.Sin(rotationTheta);
             rotatedVertices[index].y = originalVertices[index].x * Mathf.Sin(rotationTheta) + originalVertices[index].y * Mathf.Cos(rotationTheta);
         }
-
         RestorePositionOfVertices(centerOfMass);
-
-        LogVertices(rotatedVertices, "Rotated: ");
-
         mesh.SetVertices(rotatedVertices);
         originalVertices = mesh.vertices;
-
         GetComponent<MeshCollider>().sharedMesh = mesh;
     }
-
     void OnMouseUp()
     {
         mesh = GetComponent<MeshFilter>().mesh;
@@ -60,22 +50,6 @@ public class Rotation : MonoBehaviour
         rotatedVertices = new Vector3[ originalVertices.Length];
         this.GetComponentInParent<MeshGenerator>().selected = this.name;
     }
-
-    void Clear()
-    {
-        mesh = null;
-        originalVertices = null;
-        rotatedVertices = null;
-    }
-
-    void LogVertices(Vector3[] vertices, string label) 
-    {
-        foreach(Vector3 vertex in vertices)
-        {
-            Debug.Log(label + vertex);
-        }
-    }
-    
     Vector3 CalculateCenterOfMass()
     {
         float xCoordinateForCenter = 0.0f;
@@ -89,23 +63,27 @@ public class Rotation : MonoBehaviour
         yCoordinateForCenter /= originalVertices.Length;
         return new Vector3(xCoordinateForCenter, yCoordinateForCenter, 0.0f);
     }
-
     void CentralizeVertices(Vector3 centerOfMass)
     {
-        Debug.Log("Center of mass: " + centerOfMass);
         for(int index = 0; index < originalVertices.Length; index++)
         {
             originalVertices[index].x -= centerOfMass.x;
             originalVertices[index].y -= centerOfMass.y;
         }
     }
-
     void RestorePositionOfVertices(Vector3 centerOfMass)
     {
         for(int index = 0; index < rotatedVertices.Length; index++)
         {
             rotatedVertices[index].x += centerOfMass.x;
             rotatedVertices[index].y += centerOfMass.y;
+        }
+    }
+    void LogVertices(Vector3[] vertices) 
+    {
+        foreach(Vector3 vertex in vertices)
+        {
+            Debug.Log(vertex);
         }
     } 
 }
