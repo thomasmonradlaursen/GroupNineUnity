@@ -9,7 +9,7 @@ public class SnowflakeScript : MonoBehaviour
     JSONPuzzle puzzle;
 
     void Start() {
-        puzzle = GetComponent<JSONDeserializer>().deserializerPuzzleFromJSON("Assets/DataObjects/Classic-003-005-1331.json");
+        puzzle = GetComponent<JSONDeserializer>().DeserializerPuzzleFromJSON("Assets/DataObjects/Classic-003-005-1331.json");
         Debug.Log("Snowflakism for puzzle: " + DetermineSnowflakism());
     }
     bool DetermineSnowflakism()

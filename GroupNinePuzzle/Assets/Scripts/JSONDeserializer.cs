@@ -9,19 +9,17 @@ public class JSONDeserializer : MonoBehaviour
     public GameObject prefabDot = null;
     public void Start()
     {
-        JSONPuzzle puzzleFromJSON = deserializerPuzzleFromJSON("Assets/DataObjects/Classic-003-005-1331.json");
-        logPuzzleInformation(puzzleFromJSON);
-        instanciatePuzzle(puzzleFromJSON);
+        JSONPuzzle puzzleFromJSON = DeserializerPuzzleFromJSON("Assets/DataObjects/Classic-003-005-1331.json");
+        LogPuzzleInformation(puzzleFromJSON);
+        InstanciatePuzzle(puzzleFromJSON);
     }
-
-    public JSONPuzzle deserializerPuzzleFromJSON(String pathToPuzzle)
+    public JSONPuzzle DeserializerPuzzleFromJSON(String pathToPuzzle)
     {
         string fileContent = System.IO.File.ReadAllText(pathToPuzzle);
         JSONPuzzle puzzleFromJSON = JsonUtility.FromJson<JSONPuzzle>(fileContent);
         return puzzleFromJSON;
     }
-
-    public void instanciatePuzzle(JSONPuzzle puzzle)
+    public void InstanciatePuzzle(JSONPuzzle puzzle)
     {
         for(int i = 0; i<puzzle.nPieces; i++)
         {
@@ -34,12 +32,22 @@ public class JSONDeserializer : MonoBehaviour
             }
         }
     }
-
-    public void logPuzzleInformation(JSONPuzzle puzzle)
+    public void LogPuzzleInformation(JSONPuzzle puzzle)
     {
         Debug.Log(" - Loaded puzzle from JSON - ");
         Debug.Log("Name: " + puzzle.name);
         Debug.Log("Number of pieces: " + puzzle.nPieces);
-        Debug.Log(String.Format("Form: {0} X {1}", puzzle.puzzle.form[3].coord.x, puzzle.puzzle.form[3].coord.y));
+        Vector2 form = FindFormOfPuzzle(puzzle);
+        Debug.Log(String.Format("Form: {0} × {1}", form.x, form.y));
+    }
+    Vector2 FindFormOfPuzzle(JSONPuzzle puzzle)
+    {
+        float x = 0.0f; float y = 0.0f;
+        foreach(Form coordinateSet in puzzle.puzzle.form)
+        {
+            if(coordinateSet.coord.x > x) x = coordinateSet.coord.x;
+            if(coordinateSet.coord.y > y) y = coordinateSet.coord.y;
+        }
+        return new Vector2(x,y);
     }
 }
