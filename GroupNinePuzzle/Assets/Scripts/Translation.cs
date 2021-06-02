@@ -13,21 +13,19 @@ public class Translation : MonoBehaviour
         mouseZcoord = Camera.main.WorldToScreenPoint(gameObject.transform.position).z;
         mouseOffset = gameObject.transform.position - MouseWorldPosition();
     }
-
-    private Vector3 MouseWorldPosition()
-    {
-        Vector3 mousePoint = Input.mousePosition;
-        mousePoint.z = mouseZcoord;
-        Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mousePoint);
-        return mouseWorldPosition; 
-    }
-
     void OnMouseDrag()
     {
         transform.position = MouseWorldPosition() + mouseOffset;
     }
     void OnMouseUp() {
         CalculateVerticesAfterTranslation();
+    }
+    private Vector3 MouseWorldPosition()
+    {
+        Vector3 mousePoint = Input.mousePosition;
+        mousePoint.z = mouseZcoord;
+        Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mousePoint);
+        return mouseWorldPosition; 
     }
     void CalculateVerticesAfterTranslation()
     {
@@ -45,7 +43,6 @@ public class Translation : MonoBehaviour
         Debug.Log("Vertices of " + this.name + " after translation:");
         LogVertices(mesh.vertices);
     }
-
     void LogVertices(Vector3[] vertices) 
     {
         foreach(Vector3 vertex in vertices)

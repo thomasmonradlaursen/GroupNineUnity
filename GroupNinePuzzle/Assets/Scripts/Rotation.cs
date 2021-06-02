@@ -42,7 +42,15 @@ public class Rotation : MonoBehaviour
         originalVertices = mesh.vertices;
         GetComponent<MeshCollider>().sharedMesh = mesh;
     }
+    void OnMouseDown()
+    {
+        this.GetComponentInParent<MeshGenerator>().selected = "empty";
+    }
     void OnMouseUp()
+    {
+        UpdateMeshInfromation();
+    }
+    void UpdateMeshInfromation()
     {
         mesh = GetComponent<MeshFilter>().mesh;
         originalVertices = new Vector3[mesh.vertices.Length];

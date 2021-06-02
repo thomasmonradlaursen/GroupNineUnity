@@ -10,13 +10,14 @@ public class MeshGenerator : MonoBehaviour
     Vector3[] vertices;
     int[] triangles;
     public string selected = "empty";
-
-    // Start is called before the first frame update
     void Start()
     {
         GenerateMeshes();
-
-        var idx = 0;
+        CreatePieceObjects();       
+    }
+    void CreatePieceObjects()
+    {
+        int idx = 0;
         foreach(var mesh in meshArray){
             var newGameObject = new GameObject("Piece " + idx);
             newGameObject.AddComponent<MeshFilter>();
@@ -27,7 +28,7 @@ public class MeshGenerator : MonoBehaviour
             newGameObject.AddComponent<Rotation>();
             newGameObject.transform.parent = this.transform;
             idx++;
-        }        
+        } 
     }
 
     void GenerateMeshes() 
