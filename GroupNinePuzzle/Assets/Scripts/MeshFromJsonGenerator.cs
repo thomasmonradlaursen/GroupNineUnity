@@ -12,6 +12,9 @@ public class MeshFromJsonGenerator : MonoBehaviour
     int[] triangles;
     MiscellaneousMath mM = new MiscellaneousMath();
     public string selected = "empty";
+    public GameObject selectedObject = null;
+    public string previousSelected = "empty";
+    public GameObject previousSelectedObject = null;
     void Start()
     {
         GenerateMeshes();
@@ -33,6 +36,11 @@ public class MeshFromJsonGenerator : MonoBehaviour
             newGameObject.AddComponent<Rotation>();
             newGameObject.AddComponent<PieceInfo>();
             newGameObject.transform.parent = this.transform;
+
+            var renderer = newGameObject.GetComponent<MeshRenderer>();
+            var test = renderer.materials;
+            test[0].color = Color.blue;
+
             idx++;
         }
     }
