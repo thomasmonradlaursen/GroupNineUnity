@@ -10,7 +10,7 @@ public class MeshFromJsonGenerator : MonoBehaviour
     JSONPuzzle Puzzle;
     List<Mesh> meshArray = new List<Mesh>();
     int[] triangles;
-    AreaCalculator ac = new AreaCalculator();
+    MiscellaneousMath mM = new MiscellaneousMath();
     public string selected = "empty";
     void Start()
     {
@@ -48,15 +48,15 @@ public class MeshFromJsonGenerator : MonoBehaviour
         {
             var mesh = new Mesh();
             var vertices = new Vector3[piece.corners.Length];
-            var lengths = ac.calculateSideLengths(piece.corners);
-            var angles = ac.calculateAngles(piece.corners);
+            var lengths = mM.CalculateSideLengths(piece.corners);
+            var angles = mM.CalculateSideLengths(piece.corners);
             /*
             Debug.Log("ANGLES:");
             foreach(var angle in angles){
                 Debug.Log(piece + ": " + angle);
             }
             */
-            
+
             var idx = 0;
             foreach (var corner in piece.corners)
             {

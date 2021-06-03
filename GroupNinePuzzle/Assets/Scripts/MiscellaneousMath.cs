@@ -25,7 +25,7 @@ public class MiscellaneousMath
         return Math.Abs(a/2.0f);
     }
 
-    public float[] CalculateSideLengthsAndAngles(Corner[] corners)
+    public float[] CalculateSideLengths(Corner[] corners)
     {
         int n = corners.Length;
         float[] sides = new float[n];

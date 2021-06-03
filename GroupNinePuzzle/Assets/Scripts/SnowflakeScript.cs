@@ -6,7 +6,7 @@ using JSONPuzzleTypes;
 public class SnowflakeScript : MonoBehaviour
 
 {
-    MiscellaneousMath areaCalculator = new MiscellaneousMath();
+    MiscellaneousMath mM = new MiscellaneousMath();
     JSONPuzzle puzzle;
 
     void Start() {
@@ -25,7 +25,7 @@ public class SnowflakeScript : MonoBehaviour
         float[] areaOfPieces = new float[puzzle.pieces.Length];
         for(int pieceIndex = 0; pieceIndex < puzzle.pieces.Length; pieceIndex++)
         {
-            areaOfPieces[pieceIndex] = areaCalculator.CalculateAreaFromCoords(puzzle.pieces[pieceIndex].corners);
+            areaOfPieces[pieceIndex] = mM.CalculateAreaFromCoords(puzzle.pieces[pieceIndex].corners);
         }
         return areaOfPieces;
     }
