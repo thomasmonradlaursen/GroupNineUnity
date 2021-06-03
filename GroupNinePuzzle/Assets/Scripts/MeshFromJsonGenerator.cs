@@ -10,23 +10,19 @@ public class MeshFromJsonGenerator : MonoBehaviour
     JSONPuzzle Puzzle;
     List<Mesh> meshArray = new List<Mesh>();
     int[] triangles;
-
-
-    private Vector3 mouseOffset;
-    private float mouseZcoord = -10;
-
     public string selected = "empty";
-
-
-    // Start is called before the first frame update
     void Start()
     {
         GenerateMeshes();
+        CreatePieces();
+    }
 
+    void CreatePieces()
+    {
         var idx = 0;
         foreach (var mesh in meshArray)
         {
-            var newGameObject = new GameObject("mesh" + idx);
+            var newGameObject = new GameObject("Piece " + Puzzle.pieces[idx].piece);
             newGameObject.AddComponent<MeshFilter>();
             newGameObject.GetComponent<MeshFilter>().mesh = mesh;
             newGameObject.AddComponent<MeshRenderer>();
