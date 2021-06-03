@@ -9,7 +9,7 @@ public class Rotation : MonoBehaviour
     private Vector3[] rotatedVertices;
     void Update()
     {
-        if(this.name.Equals(this.GetComponentInParent<MeshGenerator>().selected))
+        if(this.name.Equals(this.GetComponentInParent<MeshFromJsonGenerator>().selected))
         {
             if(Input.GetKey(KeyCode.UpArrow))
             {
@@ -44,7 +44,7 @@ public class Rotation : MonoBehaviour
     }
     void OnMouseDown()
     {
-        this.GetComponentInParent<MeshGenerator>().selected = "empty";
+        this.GetComponentInParent<MeshFromJsonGenerator>().selected = "empty";
     }
     void OnMouseUp()
     {
@@ -56,7 +56,7 @@ public class Rotation : MonoBehaviour
         originalVertices = new Vector3[mesh.vertices.Length];
         originalVertices = mesh.vertices;
         rotatedVertices = new Vector3[ originalVertices.Length];
-        this.GetComponentInParent<MeshGenerator>().selected = this.name;
+        this.GetComponentInParent<MeshFromJsonGenerator>().selected = this.name;
     }
     Vector3 CalculateCenterOfMass()
     {

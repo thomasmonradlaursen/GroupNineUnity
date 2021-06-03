@@ -26,8 +26,8 @@ public class SnapIntoPlace : MonoBehaviour
         }
 
         var centerOfMass = new Vector3();
-        centerOfMass.x = sumX/piece.vertices.Length();
-        centerOfMass.y = sumY/piece.vertices.Length();
+        centerOfMass.x = sumX/piece.vertices.Length;
+        centerOfMass.y = sumY/piece.vertices.Length;
 
         return centerOfMass;
     }
@@ -36,7 +36,7 @@ public class SnapIntoPlace : MonoBehaviour
         float greatestDistance = 0;
 
         foreach(var vertex in piece.vertices){
-            var distanceFromCenterToVertex = sqrt((vertex.x - centerOfMass.x)^2 + (vertex.y -centerOfMass.y)^2);
+            var distanceFromCenterToVertex = Mathf.Sqrt(Mathf.Pow(vertex.x - centerOfMass.x, 2) + Mathf.Pow(vertex.y - centerOfMass.y, 2));
             if(distanceFromCenterToVertex > greatestDistance){
                 greatestDistance = distanceFromCenterToVertex;
             }
