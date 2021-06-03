@@ -4,28 +4,9 @@ using UnityEngine;
 using System;
 using JSONPuzzleTypes;
 
-public class AreaCalculator
+public class MiscellaneousMath
 {
-    public static float calculateArea(Vector3[] vertices)
-    {
-        float a = 0.0f;
-        float p = 0.0f;
-        float x = vertices[0].x;
-        float y = vertices[0].y;
-        int i = 0;
-
-        while(i < vertices.Length)
-        {
-            a += vertices[i].x * y - vertices[i].y * x;
-			p += Math.Abs((vertices[i].x) - x + (vertices[i].y - y));
-			x = vertices[i].x;
-			y = vertices[i].y;
-			i++;
-        }
-        return Math.Abs(a/2.0f);
-    }
-
-    public float calculateAreaFromCoords(Corner[] vertices)
+    public float CalculateAreaFromCoords(Corner[] vertices)
     {
         float a = 0.0f;
         float p = 0.0f;
@@ -44,7 +25,8 @@ public class AreaCalculator
         return Math.Abs(a/2.0f);
     }
 
-    public float[] calculateSideLengths(Corner[] corners){
+    public float[] CalculateSideLengthsAndAngles(Corner[] corners)
+    {
         int n = corners.Length;
         float[] sides = new float[n];
         int i = 0;
@@ -60,7 +42,8 @@ public class AreaCalculator
         return sides;
     }
    
-   public float[] calculateAngles(Corner[] corners){
+   public float[] CalculateAngles(Corner[] corners)
+   {
         int n = corners.Length;
         float[] angles = new float[n];
         int i = 0;
