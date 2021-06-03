@@ -7,6 +7,8 @@ public class Rotation : MonoBehaviour
     public Mesh mesh;
     private Vector3[] originalVertices;
     private Vector3[] rotatedVertices;
+    MiscellaneousMath miscellaneousMath = new MiscellaneousMath();
+    float area;
     void FixedUpdate()
     {
         if (this.name.Equals(this.GetComponentInParent<MeshFromJsonGenerator>().selected))
@@ -34,17 +36,22 @@ public class Rotation : MonoBehaviour
     }
     void RotateMesh(float rotationIntervalAndDirection)
     {
-        Vector3 centerOfMass = CalculateCenterOfMass();
-        CentralizeVertices(centerOfMass);
+        //Vector3 centroid = miscellaneousMath.CalculateCentroid(originalVertices, area);
+        Vector3 centroid = miscellaneousMath.CalculateCentroid(originalVertices, area);
+        Debug.Log("Centroid: " + centroid);
+        CentralizeVertices(centroid);
+        Debug.Log("After centralization, original: " + originalVertices[0]);
         float rotationTheta = rotationIntervalAndDirection;
         for (int index = 0; index < originalVertices.Length; index++)
         {
             rotatedVertices[index].x = originalVertices[index].x * Mathf.Cos(rotationTheta) - originalVertices[index].y * Mathf.Sin(rotationTheta);
             rotatedVertices[index].y = originalVertices[index].x * Mathf.Sin(rotationTheta) + originalVertices[index].y * Mathf.Cos(rotationTheta);
         }
-        RestorePositionOfVertices(centerOfMass);
+        RestorePositionOfVertices(centroid);
+        Debug.Log("After restoration, rotated: " + rotatedVertices[0]);
         mesh.SetVertices(rotatedVertices);
         originalVertices = mesh.vertices;
+        Debug.Log("After restoration, original: " + originalVertices[0]);
         GetComponent<MeshCollider>().sharedMesh = mesh;
     }
     void OnMouseDown()
@@ -94,62 +101,26 @@ public class Rotation : MonoBehaviour
         mesh = GetComponent<MeshFilter>().mesh;
         originalVertices = new Vector3[mesh.vertices.Length];
         originalVertices = mesh.vertices;
-        rotatedVertices = new Vector3[originalVertices.Length];
-
-
-        // // set the currently selected piece as previously selected piece
-        // var currentlySelected = this.GetComponentInParent<MeshFromJsonGenerator>().selected;
-        // var currentlySelectedObject = this.GetComponentInParent<MeshFromJsonGenerator>().selectedObject;
-
-        // if (currentlySelectedObject != null && currentlySelected != this.name)
-        // {
-        //     var renderer1 = currentlySelectedObject.GetComponent<MeshRenderer>();
-        //     var materials1 = renderer1.materials;
-        //     materials1[0].color = Color.blue;
-        //     this.GetComponentInParent<MeshFromJsonGenerator>().previousSelected = currentlySelected;
-        //     this.GetComponentInParent<MeshFromJsonGenerator>().previousSelectedObject = currentlySelectedObject;
-        // }
-
-
-        // // Set the new piece as currently selected piece 
-        // currentlySelected = this.name;
-        // currentlySelectedObject = this.gameObject;
-        // this.GetComponentInParent<MeshFromJsonGenerator>().selected = currentlySelected;
-        // this.GetComponentInParent<MeshFromJsonGenerator>().selectedObject = currentlySelectedObject;
-        // if (currentlySelectedObject != null && currentlySelected == this.name)
-        // {
-        //     var renderer2 = this.GetComponent<MeshRenderer>();
-        //     var materials2 = renderer2.materials;
-        //     materials2[0].color = Color.red;
-        // }
+        rotatedVertices = new Vector3[ originalVertices.Length];
+        this.GetComponentInParent<MeshFromJsonGenerator>().selected = this.name;
+        area = miscellaneousMath.CalculateAreaFromMesh(mesh);
+        Debug.Log("Area: " + area);
     }
-    Vector3 CalculateCenterOfMass()
-    {
-        float xCoordinateForCenter = 0.0f;
-        float yCoordinateForCenter = 0.0f;
-        foreach (Vector3 vertex in originalVertices)
-        {
-            xCoordinateForCenter += vertex.x;
-            yCoordinateForCenter += vertex.y;
-        }
-        xCoordinateForCenter /= originalVertices.Length;
-        yCoordinateForCenter /= originalVertices.Length;
-        return new Vector3(xCoordinateForCenter, yCoordinateForCenter, 0.0f);
-    }
-    void CentralizeVertices(Vector3 centerOfMass)
+    
+    void CentralizeVertices(Vector3 centroid)
     {
         for (int index = 0; index < originalVertices.Length; index++)
         {
-            originalVertices[index].x -= centerOfMass.x;
-            originalVertices[index].y -= centerOfMass.y;
+            originalVertices[index].x -= centroid.x;
+            originalVertices[index].y -= centroid.y;
         }
     }
-    void RestorePositionOfVertices(Vector3 centerOfMass)
+    void RestorePositionOfVertices(Vector3 centroid)
     {
         for (int index = 0; index < rotatedVertices.Length; index++)
         {
-            rotatedVertices[index].x += centerOfMass.x;
-            rotatedVertices[index].y += centerOfMass.y;
+            rotatedVertices[index].x += centroid.x;
+            rotatedVertices[index].y += centroid.y;
         }
     }
     void LogVertices(Vector3[] vertices)

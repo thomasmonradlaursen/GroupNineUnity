@@ -5,24 +5,22 @@ using System;
 using JSONPuzzleTypes;
 
 public class MiscellaneousMath
-{
+{   
+    //https://gamedev.stackexchange.com/questions/165643/how-to-calculate-the-surface-area-of-a-mesh
     public float CalculateAreaFromMesh(Mesh mesh)
     {
-        float a = 0.0f;
-        float p = 0.0f;
-        float x = mesh.vertices[0].x;
-        float y = mesh.vertices[0].y;
-        int i = 0;
-
-        while(i < mesh.vertices.Length)
+        int[] triangles = mesh.triangles;
+        Vector3[] vertices = mesh.vertices;
+        float area = 0.0f;
+        for (int i = 0; i < triangles.Length; i += 3)
         {
-            a += mesh.vertices[i].x * y - mesh.vertices[i].y * x;
-			p += Math.Abs((mesh.vertices[i].x) - x + (mesh.vertices[i].y - y));
-			x = mesh.vertices[i].x;
-			y = mesh.vertices[i].y;
-			i++;
+            Vector3 corner = vertices[triangles[i]];
+            Vector3 a = vertices[triangles[i + 1]] - corner;
+            Vector3 b = vertices[triangles[i + 2]] - corner;
+
+            area += Vector3.Cross(a, b).magnitude;
         }
-        return Math.Abs(a/2.0f);
+        return (float)(area/2);
     }
 
     public float[] CalculateSideLengthsFromMesh(Mesh mesh)
@@ -98,6 +96,37 @@ public class MiscellaneousMath
             i++;
         }
         return angles;
-   }
+    }
 
+    public Vector3 CalculateCentroid(Vector3[] vertices, float area)
+    {
+        float xCentroid = 0.0f;
+        float yCentroid = 0.0f;
+        for (int index = 0; index < vertices.Length - 1; index++)
+        {
+            xCentroid += SumXCoordintesForCentroid(index, vertices);
+            yCentroid += SumYCoordintesForCentroid(index, vertices);
+        }
+        xCentroid += FinalXCoordintesForCentroid(vertices.Length - 1, vertices);
+        yCentroid += FinalYCoordintesForCentroid(vertices.Length - 1, vertices);
+        xCentroid = xCentroid / (6 * area);
+        yCentroid = yCentroid / (6 * area);
+        return new Vector3(xCentroid, yCentroid, 0.0f);
+    }
+    float SumXCoordintesForCentroid(int index, Vector3[] vertices)
+    {
+        return ((vertices[index].x + vertices[index + 1].x) * (vertices[index].x * vertices[index + 1].y - vertices[index + 1].x * vertices[index].y));
+    }
+    float SumYCoordintesForCentroid(int index, Vector3[] vertices)
+    {
+        return ((vertices[index].y + vertices[index + 1].y) * (vertices[index].x * vertices[index + 1].y - vertices[index + 1].x * vertices[index].y));
+    }
+    float FinalXCoordintesForCentroid(int index, Vector3[] vertices)
+    {
+        return ((vertices[index].x + vertices[0].x) * (vertices[index].x * vertices[0].y - vertices[0].x * vertices[index].y));
+    }
+    float FinalYCoordintesForCentroid(int index, Vector3[] vertices)
+    {
+        return ((vertices[index].y + vertices[0].y) * (vertices[index].x * vertices[0].y - vertices[0].x * vertices[index].y));
+    }
 }

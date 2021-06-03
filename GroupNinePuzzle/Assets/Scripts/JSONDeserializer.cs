@@ -9,10 +9,11 @@ public class JSONDeserializer : MonoBehaviour
 {
     public JSONPuzzle Puzzle {get; set;}
     public GameObject prefabDot = null;
+    public string fileName = "Classic-003-005-1331.json";
     public void Start()
     {
-        //DeserializerPuzzleFromJSON("Assets/DataObjects/Classic-003-005-1331.json");
-        DeserializerPuzzleFromJSON("Assets/DataObjects/Puzzle-1r-2c-0995.json");
+        DeserializerPuzzleFromJSON("Assets/DataObjects/" + fileName);
+        LogPuzzleInformation();
     }
 
     public JSONPuzzle DeserializerPuzzleFromJSON(String pathToPuzzle)
@@ -21,20 +22,6 @@ public class JSONDeserializer : MonoBehaviour
         Puzzle = JsonUtility.FromJson<JSONPuzzle>(fileContent);
         LogPuzzleInformation();
         return Puzzle;
-    }
-
-    public void InstantiatePuzzle()
-    {
-        for(int i = 0; i<Puzzle.nPieces; i++)
-        {
-            for(int j = 0; j<Puzzle.pieces[i].corners.Length; j++)
-            {
-                float x = Puzzle.pieces[i].corners[j].coord.x;
-                float y = Puzzle.pieces[i].corners[j].coord.y;
-                Vector3 newCoordinates = new Vector3(x,y,0);
-                Instantiate(prefabDot, newCoordinates, Quaternion.identity);
-            }
-        }
     }
 
     public void LogPuzzleInformation()

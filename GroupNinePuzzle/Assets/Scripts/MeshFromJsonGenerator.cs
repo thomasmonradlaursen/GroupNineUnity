@@ -8,7 +8,7 @@ public class MeshFromJsonGenerator : MonoBehaviour
 
 {
     JSONPuzzle Puzzle;
-    List<Mesh> meshArray = new List<Mesh>();
+    public List<Mesh> meshArray = new List<Mesh>();
     int[] triangles;
     MiscellaneousMath mM = new MiscellaneousMath();
     public string selected = "empty";
@@ -48,8 +48,6 @@ public class MeshFromJsonGenerator : MonoBehaviour
     void GenerateMeshes()
     {
         var jsonDeserializer = GetComponent<JSONDeserializer>();
-
-        jsonDeserializer.Start();
 
         Puzzle = jsonDeserializer.Puzzle;
 
