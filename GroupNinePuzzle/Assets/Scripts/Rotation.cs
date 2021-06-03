@@ -7,7 +7,7 @@ public class Rotation : MonoBehaviour
     public Mesh mesh;
     private Vector3[] originalVertices;
     private Vector3[] rotatedVertices;
-    void Update()
+    void FixedUpdate()
     {
         if(this.name.Equals(this.GetComponentInParent<MeshFromJsonGenerator>().selected))
         {
