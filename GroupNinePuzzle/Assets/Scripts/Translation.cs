@@ -56,7 +56,7 @@ public class Translation : MonoBehaviour
             Debug.Log(vertex);
         }
     }
-        void LogAngles(float[] angles) 
+    void LogAngles(float[] angles) 
     {
         foreach(float angle in angles)
         {
