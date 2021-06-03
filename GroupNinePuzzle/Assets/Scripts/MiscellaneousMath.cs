@@ -8,6 +8,39 @@ public class MiscellaneousMath
 {
     public float CalculateAreaFromVectors(Vector3[] vertices)
     {
+        ShiftPositionOfVerticesAroundVertex(vertices, vertices[0]);
+        float area = 0.0f;
+        for(int index = 0; index < vertices.Length-1; index++)
+        {
+            area += ((vertices[index].x*vertices[index+1].y) - (vertices[index+1].x+vertices[index].y));
+        }
+        RestoreOriginalPositionOfVertices(vertices, vertices[0]);
+        return area / 2.0f;
+    }
+
+    public Vector3[] ShiftPositionOfVerticesAroundVertex(Vector3[] vertices, Vector3 displacement)
+    {
+        Vector3[] alignedVertices = new Vector3[vertices.Length];
+        for(int index = 0; index < vertices.Length; index++)
+        {
+            alignedVertices[index].x = vertices[index].x - displacement.x;
+            alignedVertices[index].y = vertices[index].y - displacement.y;
+        }
+        return alignedVertices;
+    }
+
+    public Vector3[] RestoreOriginalPositionOfVertices(Vector3[] vertices, Vector3 displacement)
+    {
+        Vector3[] restoredVertices = new Vector3[vertices.Length];
+        for(int index = 0; index < vertices.Length; index++)
+        {
+            restoredVertices[index].x = vertices[index].x + displacement.x;
+            restoredVertices[index].y = vertices[index].y + displacement.y;
+        }
+        return restoredVertices;
+    }
+    public float CalculateAreaFromVectors2(Vector3[] vertices)
+    {
         float a = 0.0f;
         float p = 0.0f;
         float x = vertices[0].x;
@@ -116,8 +149,8 @@ public class MiscellaneousMath
         float yCentroid = 0.0f;
         for (int index = 0; index < vertices.Length - 1; index++)
         {
-            xCentroid += (vertices[index].x + vertices[index + 1].x) * (vertices[index].x * vertices[index + 1].y - vertices[index + 1].x * vertices[index].y);
-            yCentroid += (vertices[index].y + vertices[index + 1].y) * (vertices[index].x * vertices[index + 1].y - vertices[index + 1].x * vertices[index].y);
+            xCentroid += ((vertices[index].x + vertices[index + 1].x) * (vertices[index].x * vertices[index + 1].y - vertices[index + 1].x * vertices[index].y));
+            yCentroid += ((vertices[index].y + vertices[index + 1].y) * (vertices[index].x * vertices[index + 1].y - vertices[index + 1].x * vertices[index].y));
         }
         xCentroid = xCentroid / (6 * area);
         yCentroid = yCentroid / (6 * area);

@@ -8,6 +8,7 @@ public class Rotation : MonoBehaviour
     private Vector3[] originalVertices;
     private Vector3[] rotatedVertices;
     MiscellaneousMath miscellaneousMath = new MiscellaneousMath();
+    float area;
     void FixedUpdate()
     {
         if(this.name.Equals(this.GetComponentInParent<MeshFromJsonGenerator>().selected))
@@ -24,16 +25,14 @@ public class Rotation : MonoBehaviour
             {
                 Debug.Log("# ROTATION #");
                 Debug.Log("Vertices of " + this.name + " after rotation:");
+                Debug.Log("Area: " + area);
                 //LogVertices(mesh.vertices);
             }
         }
     }
     void RotateMesh(float rotationIntervalAndDirection)
     {
-        float area = 0.6f;
         Vector3 centroid = miscellaneousMath.CalculateCentroid(originalVertices, area);
-        Debug.Log("Area: " + area);
-        Debug.Log("Centroid: " + centroid);
         CentralizeVertices(centroid);
         float rotationTheta = rotationIntervalAndDirection;
         for(int index = 0; index < originalVertices.Length; index++)
@@ -61,22 +60,23 @@ public class Rotation : MonoBehaviour
         originalVertices = mesh.vertices;
         rotatedVertices = new Vector3[ originalVertices.Length];
         this.GetComponentInParent<MeshFromJsonGenerator>().selected = this.name;
+        area = miscellaneousMath.CalculateAreaFromVectors2(originalVertices);
     }
     
-    void CentralizeVertices(Vector3 centerOfMass)
+    void CentralizeVertices(Vector3 centroid)
     {
         for(int index = 0; index < originalVertices.Length; index++)
         {
-            originalVertices[index].x -= centerOfMass.x;
-            originalVertices[index].y -= centerOfMass.y;
+            originalVertices[index].x -= centroid.x;
+            originalVertices[index].y -= centroid.y;
         }
     }
-    void RestorePositionOfVertices(Vector3 centerOfMass)
+    void RestorePositionOfVertices(Vector3 centroid)
     {
         for(int index = 0; index < rotatedVertices.Length; index++)
         {
-            rotatedVertices[index].x += centerOfMass.x;
-            rotatedVertices[index].y += centerOfMass.y;
+            rotatedVertices[index].x += centroid.x;
+            rotatedVertices[index].y += centroid.y;
         }
     }
     void LogVertices(Vector3[] vertices) 
