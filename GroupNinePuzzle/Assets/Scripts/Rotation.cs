@@ -21,9 +21,14 @@ public class Rotation : MonoBehaviour
             }
             if (Input.GetKeyUp(KeyCode.UpArrow) || Input.GetKeyUp(KeyCode.DownArrow))
             {
+                /*
                 Debug.Log("# ROTATION #");
                 Debug.Log("Vertices of " + this.name + " after rotation:");
                 LogVertices(mesh.vertices);
+                */
+                Debug.Log("# ANGLES #");
+                Debug.Log("Angles of " + this.name + " after rotation:");
+                LogAngles(this.GetComponent<PieceInfo>().angles);
             }
         }
     }
@@ -153,5 +158,13 @@ public class Rotation : MonoBehaviour
         {
             Debug.Log(vertex);
         }
-    }
+    } 
+
+    void LogAngles(float[] angles) 
+    {
+        foreach(float angle in angles)
+        {
+            Debug.Log(angle);
+        }
+    } 
 }

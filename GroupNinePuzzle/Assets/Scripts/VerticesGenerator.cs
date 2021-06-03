@@ -18,7 +18,7 @@ public class VerticesGenerator : MonoBehaviour
     {
         vertices = new Vector3[numberOfHorizontalVertices * numberOfVerticalVertices];
         insertVertices();
-        logVertices(); 
+        //logVertices(); 
 
         for(int i = 0; i<numberOfHorizontalVertices*numberOfVerticalVertices; i++)
         {
@@ -31,8 +31,8 @@ public class VerticesGenerator : MonoBehaviour
     {
         float xInterval = (float) length/((float) numberOfHorizontalVertices-1);
         float yInterval = (float) heigth/((float) numberOfVerticalVertices-1);
-        Debug.Log(xInterval);
-        Debug.Log(yInterval);
+        //Debug.Log(xInterval);
+        //Debug.Log(yInterval);
         Vector2 lowerBound = new Vector2(0,0);
         Vector2 upperBound = new Vector2(xInterval, 0); // y should be 0 for first row and if we start by setting upperbound to 
                                                         // yInterval then the second row wil have upperbound 2*yInterval, which
@@ -93,7 +93,7 @@ public class VerticesGenerator : MonoBehaviour
         int counter = 1;
         for(int i=0; i< numberOfHorizontalVertices*numberOfVerticalVertices; i++)
         {
-            // Debug.Log("Vertex " + counter + ": " + vertices[i].x + "    " + vertices[i].y);
+            Debug.Log("Vertex " + counter + ": " + vertices[i].x + "    " + vertices[i].y);
             counter++;
         }
     }

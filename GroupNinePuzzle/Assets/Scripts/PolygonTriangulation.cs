@@ -109,19 +109,19 @@ public class PolygonTriangulation : MonoBehaviour
         List<Vertex> earVertices = new List<Vertex>();
         
 
-        Debug.Log("no. of vertices: " + vertices.Count);
+        //Debug.Log("no. of vertices: " + vertices.Count);
         for (int i = 0; i < vertices.Count; i++)
         {
             IsVertexEar(vertices[i], vertices, earVertices);
         }
 
-        Debug.Log("no. of EarVertices: " + earVertices.Count);
+        //Debug.Log("no. of EarVertices: " + earVertices.Count);
 
         //Step 3. Triangulate!
         while (true)
         {
-            Debug.Log($"no. of earVertices left: {earVertices.Count}");
-            Debug.Log($"no. of normal vertices left: {vertices.Count}");
+            //Debug.Log($"no. of earVertices left: {earVertices.Count}");
+            //Debug.Log($"no. of normal vertices left: {vertices.Count}");
             if(earVertices.Count == 0) break;
             
             //This means we have just one triangle left
@@ -186,7 +186,7 @@ public class PolygonTriangulation : MonoBehaviour
         Vector2 b = v.GetXY();
         Vector2 c = v.nextVertex.GetXY();
 
-        Debug.Log($"a: {a.x}, {a.y}, b: {b.x}, {b.y}, c: {c.x}, {c.y}");
+        //Debug.Log($"a: {a.x}, {a.y}, b: {b.x}, {b.y}, c: {c.x}, {c.y}");
 
         if (IsTriangleOrientedClockwise(a, b, c))
         {
@@ -221,7 +221,7 @@ public class PolygonTriangulation : MonoBehaviour
         //A reflex vertex can't be an ear!
         if (v.isReflex)
         {
-            Debug.Log("Reflex");
+            //Debug.Log("Reflex");
             return;
         }
 
@@ -237,14 +237,14 @@ public class PolygonTriangulation : MonoBehaviour
             //We only need to check if a reflex vertex is inside of the triangle
             if (vertices[i].isReflex)
             {
-                Debug.Log("inner vertex reflex, index: " + i);
+                //Debug.Log("inner vertex reflex, index: " + i);
 
                 Vector2 p = vertices[i].GetXY();
 
                 //This means inside and not on the hull
                 if (IsPointInTriangle(a, b, c, p))
                 {
-                    Debug.Log("Point is in triangle: index " + i);
+                    //Debug.Log("Point is in triangle: index " + i);
                     hasPointInside = true;
 
                     break;

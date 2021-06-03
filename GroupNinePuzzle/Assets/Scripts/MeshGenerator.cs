@@ -6,6 +6,7 @@ using UnityEngine;
 public class MeshGenerator : MonoBehaviour
 
 {
+    MiscellaneousMath mM = new MiscellaneousMath();
     List<Mesh> meshArray = new List<Mesh>();
     Vector3[] vertices;
     int[] triangles;
@@ -26,6 +27,7 @@ public class MeshGenerator : MonoBehaviour
             newGameObject.AddComponent<MeshCollider>();
             newGameObject.AddComponent<Translation>();
             newGameObject.AddComponent<Rotation>();
+            newGameObject.AddComponent<PieceInfo>();
             newGameObject.transform.parent = this.transform;
             idx++;
         } 

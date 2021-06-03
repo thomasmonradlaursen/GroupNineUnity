@@ -12,13 +12,13 @@ public class JSONDeserializer : MonoBehaviour
     public void Start()
     {
         DeserializerPuzzleFromJSON("Assets/DataObjects/Classic-003-005-1331.json");
-        LogPuzzleInformation();
     }
 
     public JSONPuzzle DeserializerPuzzleFromJSON(String pathToPuzzle)
     {
         string fileContent = System.IO.File.ReadAllText(pathToPuzzle);
         Puzzle = JsonUtility.FromJson<JSONPuzzle>(fileContent);
+        LogPuzzleInformation();
         return Puzzle;
     }
 
