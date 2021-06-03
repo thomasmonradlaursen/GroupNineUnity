@@ -5,65 +5,22 @@ using System;
 using JSONPuzzleTypes;
 
 public class MiscellaneousMath
-{
-    public float CalculateAreaFromVectors(Vector3[] vertices)
+{   
+    //https://gamedev.stackexchange.com/questions/165643/how-to-calculate-the-surface-area-of-a-mesh
+    public float CalculateAreaFromMesh(Mesh mesh)
     {
-        Vector3[] verticesForArea = ShiftPositionOfVerticesAroundVertex(vertices, vertices[0]);
-        Debug.Log(verticesForArea[0] +", "+ verticesForArea[1]);
+        int[] triangles = mesh.triangles;
+        Vector3[] vertices = mesh.vertices;
         float area = 0.0f;
-        for(int index = 0; index < vertices.Length-1; index++)
+        for (int i = 0; i < triangles.Length; i += 3)
         {
-            area += ((verticesForArea[index].x*verticesForArea[index+1].y) - (verticesForArea[index+1].x+verticesForArea[index].y));
-        }
-        area += ((verticesForArea[vertices.Length-1].x*verticesForArea[0].y) - (verticesForArea[0].x+verticesForArea[vertices.Length-1].y));
-        Debug.Log("Area: " + area);
-        return area / 2.0f;
-    }
-    public Vector3[] ShiftPositionOfVerticesAroundVertex(Vector3[] vertices, Vector3 displacement)
-    {
-        Vector3[] alignedVertices = new Vector3[vertices.Length];
-        for(int index = 0; index < vertices.Length; index++)
-        {
-            alignedVertices[index].x = vertices[index].x - displacement.x;
-            alignedVertices[index].y = vertices[index].y - displacement.y;
-        }
-        return alignedVertices;
-    }
-    public float CalculateAreaFromVectors2(Vector3[] vertices)
-    {
-        float a = 0.0f;
-        float p = 0.0f;
-        float x = vertices[0].x;
-        float y = vertices[0].y;
-        int i = 0;
+            Vector3 corner = vertices[triangles[i]];
+            Vector3 a = vertices[triangles[i + 1]] - corner;
+            Vector3 b = vertices[triangles[i + 2]] - corner;
 
-        while (i < vertices.Length)
-        {
-            a += vertices[i].x * y - vertices[i].y * x;
-            p += Math.Abs((vertices[i].x) - x + (vertices[i].y - y));
-            x = vertices[i].x;
-            y = vertices[i].y;
-            i++;
+            area += Vector3.Cross(a, b).magnitude;
         }
-        return Math.Abs(a / 2.0f);
-    }
-    public float CalculateAreaFromCoords(Corner[] vertices)
-    {
-        float a = 0.0f;
-        float p = 0.0f;
-        float x = vertices[0].coord.x;
-        float y = vertices[0].coord.y;
-        int i = 0;
-
-        while (i < vertices.Length)
-        {
-            a += vertices[i].coord.x * y - vertices[i].coord.y * x;
-            p += Math.Abs((vertices[i].coord.x) - x + (vertices[i].coord.y - y));
-            x = vertices[i].coord.x;
-            y = vertices[i].coord.y;
-            i++;
-        }
-        return Math.Abs(a / 2.0f);
+        return (float)(area/2);
     }
 
     public float[] CalculateSideLengthsAndAngles(Corner[] corners)
@@ -119,19 +76,6 @@ public class MiscellaneousMath
         }
         return angles;
     }
-    public Vector3 CalculateCenterOfMass(Vector3[] vertices)
-    {
-        float xCentroid = 0.0f;
-        float yCentroid = 0.0f;
-        foreach (Vector3 vertex in vertices)
-        {
-            xCentroid += vertex.x;
-            yCentroid += vertex.y;
-        }
-        xCentroid /= vertices.Length;
-        yCentroid /= vertices.Length;
-        return new Vector3(xCentroid, yCentroid, 0.0f);
-    }
 
     public Vector3 CalculateCentroid(Vector3[] vertices, float area)
     {
@@ -142,8 +86,8 @@ public class MiscellaneousMath
             xCentroid += SumXCoordintesForCentroid(index, vertices);
             yCentroid += SumYCoordintesForCentroid(index, vertices);
         }
-        xCentroid += FinalXCoordintesForCentroid(vertices.Length-1, vertices);
-        yCentroid += FinalYCoordintesForCentroid(vertices.Length-1, vertices);
+        xCentroid += FinalXCoordintesForCentroid(vertices.Length - 1, vertices);
+        yCentroid += FinalYCoordintesForCentroid(vertices.Length - 1, vertices);
         xCentroid = xCentroid / (6 * area);
         yCentroid = yCentroid / (6 * area);
         return new Vector3(xCentroid, yCentroid, 0.0f);

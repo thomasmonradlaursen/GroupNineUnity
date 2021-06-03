@@ -23,20 +23,6 @@ public class JSONDeserializer : MonoBehaviour
         return Puzzle;
     }
 
-    public void InstantiatePuzzle()
-    {
-        for(int i = 0; i<Puzzle.nPieces; i++)
-        {
-            for(int j = 0; j<Puzzle.pieces[i].corners.Length; j++)
-            {
-                float x = Puzzle.pieces[i].corners[j].coord.x;
-                float y = Puzzle.pieces[i].corners[j].coord.y;
-                Vector3 newCoordinates = new Vector3(x,y,0);
-                Instantiate(prefabDot, newCoordinates, Quaternion.identity);
-            }
-        }
-    }
-
     public void LogPuzzleInformation()
     {
         Debug.Log(" - Loaded puzzle from JSON - ");

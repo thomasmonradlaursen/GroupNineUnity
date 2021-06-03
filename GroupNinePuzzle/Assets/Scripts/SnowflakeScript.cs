@@ -25,7 +25,7 @@ public class SnowflakeScript : MonoBehaviour
         float[] areaOfPieces = new float[puzzle.pieces.Length];
         for(int pieceIndex = 0; pieceIndex < puzzle.pieces.Length; pieceIndex++)
         {
-            areaOfPieces[pieceIndex] = areaCalculator.CalculateAreaFromCoords(puzzle.pieces[pieceIndex].corners);
+            areaOfPieces[pieceIndex] = areaCalculator.CalculateAreaFromMesh(GetComponent<MeshFromJsonGenerator>().meshArray[pieceIndex]);
         }
         return areaOfPieces;
     }

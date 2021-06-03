@@ -32,7 +32,7 @@ public class Rotation : MonoBehaviour
     void RotateMesh(float rotationIntervalAndDirection)
     {
         //Vector3 centroid = miscellaneousMath.CalculateCentroid(originalVertices, area);
-        Vector3 centroid = miscellaneousMath.CalculateCenterOfMass(originalVertices);
+        Vector3 centroid = miscellaneousMath.CalculateCentroid(originalVertices, area);
         Debug.Log("Centroid: " + centroid);
         CentralizeVertices(centroid);
         Debug.Log("After centralization, original: " + originalVertices[0]);
@@ -64,7 +64,7 @@ public class Rotation : MonoBehaviour
         originalVertices = mesh.vertices;
         rotatedVertices = new Vector3[ originalVertices.Length];
         this.GetComponentInParent<MeshFromJsonGenerator>().selected = this.name;
-        area = miscellaneousMath.CalculateAreaFromVectors2(originalVertices);
+        area = miscellaneousMath.CalculateAreaFromMesh(mesh);
         Debug.Log("Area: " + area);
     }
     
