@@ -10,17 +10,12 @@ public class JSONDeserializer : MonoBehaviour
     public JSONPuzzle Puzzle {get; set;}
     public GameObject prefabDot = null;
     public string fileName = "Classic-003-005-1331.json";
-    public void Start()
-    {
-        DeserializerPuzzleFromJSON("Assets/DataObjects/" + fileName);
-        LogPuzzleInformation();
-    }
+    public string locationOfFile = "Assets/DataObjects/";
 
     public JSONPuzzle DeserializerPuzzleFromJSON(String pathToPuzzle)
     {
         string fileContent = System.IO.File.ReadAllText(pathToPuzzle);
         Puzzle = JsonUtility.FromJson<JSONPuzzle>(fileContent);
-        LogPuzzleInformation();
         return Puzzle;
     }
 
