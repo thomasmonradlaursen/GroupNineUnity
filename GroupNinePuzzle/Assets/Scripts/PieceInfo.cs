@@ -17,7 +17,6 @@ public class PieceInfo : MonoBehaviour
         angles = mM.CalculateAnglesFromMesh(GetComponent<MeshFilter>().mesh); 
         lengths = mM.CalculateSideLengthsFromMesh(GetComponent<MeshFilter>().mesh);
         area = mM.CalculateAreaFromMesh(GetComponent<MeshFilter>().mesh);
-        centerOfMass = mM.CalculateCenterOfMass(GetComponent<MeshFilter>().mesh); 
     }
 
     // Update is called once per frame

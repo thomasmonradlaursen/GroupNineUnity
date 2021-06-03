@@ -11,7 +11,8 @@ public class JSONDeserializer : MonoBehaviour
     public GameObject prefabDot = null;
     public void Start()
     {
-        DeserializerPuzzleFromJSON("Assets/DataObjects/Classic-003-005-1331.json");
+        //DeserializerPuzzleFromJSON("Assets/DataObjects/Classic-003-005-1331.json");
+        DeserializerPuzzleFromJSON("Assets/DataObjects/Puzzle-1r-2c-0995.json");
     }
 
     public JSONPuzzle DeserializerPuzzleFromJSON(String pathToPuzzle)

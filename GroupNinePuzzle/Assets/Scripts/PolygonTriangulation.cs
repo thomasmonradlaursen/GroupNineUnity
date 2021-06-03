@@ -176,7 +176,7 @@ public class PolygonTriangulation : MonoBehaviour
 
 
     //Check if a vertex if reflex or convex, and add to appropriate list
-    private static void CheckIfReflexOrConvex(Vertex v)
+    public static void CheckIfReflexOrConvex(Vertex v)
     {
         v.isReflex = false;
         v.isConvex = false;

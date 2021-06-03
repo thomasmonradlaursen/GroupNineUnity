@@ -20,6 +20,16 @@ public class Translation : MonoBehaviour
     }
     void OnMouseUp() {
         CalculateVerticesAfterTranslation();
+        
+        Debug.Log("# ANGLES #");
+        Debug.Log("Angles of " + this.name + ": ");
+        LogAngles(this.GetComponent<PieceInfo>().angles);
+        /*
+        Debug.Log("# SIDES #");
+        Debug.Log("Lengths of " + this.name + ": ");
+        LogSides(this.GetComponent<PieceInfo>().lengths);
+        */
+        //Debug.Log(" AREA :" + this.GetComponent<PieceInfo>().area);
     }
     private Vector3 MouseWorldPosition()
     {
@@ -59,6 +69,14 @@ public class Translation : MonoBehaviour
         foreach(float angle in angles)
         {
             Debug.Log(angle);
+        }
+    }
+
+        void LogSides(float[] sides) 
+    {
+        foreach(float side in sides)
+        {
+            Debug.Log(side);
         }
     }
 }
