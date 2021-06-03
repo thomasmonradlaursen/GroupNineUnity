@@ -41,7 +41,22 @@ public class MiscellaneousMath
         sides[n-1] = Mathf.Sqrt(x1*x1 + y1*y1);
         return sides;
     }
-   
+   public float[] CalculateSideLengthsFromMesh(Mesh mesh)
+    {
+        int n = mesh.vertices.Length;
+        float[] sides = new float[n];
+        int i = 0;
+        while(i < n-1){
+            float x = mesh.vertices[i].x - mesh.vertices[i+1].x;
+            float y = mesh.vertices[i].y - mesh.vertices[i+1].y;
+            sides[i] = Mathf.Sqrt(x*x + y*y);
+            i++;
+        }
+        float x1 = mesh.vertices[n-1].x - mesh.vertices[0].x;
+        float y1 = mesh.vertices[n-1].y - mesh.vertices[0].y;
+        sides[n-1] = Mathf.Sqrt(x1*x1 + y1*y1);
+        return sides;
+    }
    public float[] CalculateAngles(Corner[] corners)
    {
         int n = corners.Length;
@@ -66,6 +81,38 @@ public class MiscellaneousMath
                 a = new Vector3(corners[i-1].coord.x, corners[i-1].coord.y, 0);
                 b = new Vector3(corners[i].coord.x, corners[i].coord.y, 0);
                 c = new Vector3(corners[0].coord.x, corners[0].coord.y, 0);
+                a = b-a;
+                b = b-c;
+                angles[i] = Vector3.Angle(a, b);
+            }
+            i++;
+        }
+        return angles;
+   }
+      public float[] CalculateAnglesFromMesh(Mesh mesh)
+   {
+        int n = mesh.vertices.Length;
+        float[] angles = new float[n];
+        int i = 0;
+        Vector3 a = new Vector3(mesh.vertices[n-1].x, mesh.vertices[n-1].y, 0);
+        Vector3 b = new Vector3(mesh.vertices[i].x, mesh.vertices[i].y, 0);
+        Vector3 c = new Vector3(mesh.vertices[i+1].x, mesh.vertices[i+1].y, 0);
+        a = b-a;
+        b = b-c;
+        angles[i] = Vector3.Angle(a, b);
+        i++;
+        while(i < n){
+            if(i < n-1){
+                a = new Vector3(mesh.vertices[i-1].x, mesh.vertices[i-1].y, 0);
+                b = new Vector3(mesh.vertices[i].x, mesh.vertices[i].y, 0);
+                c = new Vector3(mesh.vertices[i+1].x, mesh.vertices[i+1].y, 0);
+                a = b-a;
+                b = b-c;
+                angles[i] = Vector3.Angle(a, b);
+            }else {
+                a = new Vector3(mesh.vertices[i-1].x, mesh.vertices[i-1].y, 0);
+                b = new Vector3(mesh.vertices[i].x, mesh.vertices[i].y, 0);
+                c = new Vector3(mesh.vertices[0].x, mesh.vertices[0].y, 0);
                 a = b-a;
                 b = b-c;
                 angles[i] = Vector3.Angle(a, b);

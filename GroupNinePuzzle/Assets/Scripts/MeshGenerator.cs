@@ -6,6 +6,7 @@ using UnityEngine;
 public class MeshGenerator : MonoBehaviour
 
 {
+    MiscellaneousMath mM = new MiscellaneousMath();
     List<Mesh> meshArray = new List<Mesh>();
     Vector3[] vertices;
     int[] triangles;
@@ -52,6 +53,8 @@ public class MeshGenerator : MonoBehaviour
                 vertices[idx+1], // one higher horizontally
                 vertices[idx+noOfHorizontal+1], // one higher vertically and horizontally
             };
+            var angles = mM.CalculateAnglesFromMesh(mesh);
+            var lengths = mM.CalculateSideLengthsFromMesh(mesh);
             // Debug.Log(idx + "")
             mesh.triangles = new int[]{
                 0,1,2, //clockwise

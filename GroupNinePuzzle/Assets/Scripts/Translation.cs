@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class Translation : MonoBehaviour
 {
+    MiscellaneousMath mM = new MiscellaneousMath();
     private Vector3 mouseOffset;
     private float mouseZcoord = -10;
 
@@ -39,6 +40,11 @@ public class Translation : MonoBehaviour
         }
         mesh.SetVertices(translatedVertices);
         GetComponentInParent<MeshCollider>().sharedMesh = mesh;
+        var angles = mM.CalculateAnglesFromMesh(mesh);
+        Debug.Log("# ANGLES #");
+        Debug.Log("Angles of " + this.name + " after translation:");
+        LogAngles(angles);
+
         Debug.Log("# TRANSLATION #");
         Debug.Log("Vertices of " + this.name + " after translation:");
         LogVertices(mesh.vertices);
@@ -48,6 +54,13 @@ public class Translation : MonoBehaviour
         foreach(Vector3 vertex in vertices)
         {
             Debug.Log(vertex);
+        }
+    }
+        void LogAngles(float[] angles) 
+    {
+        foreach(float angle in angles)
+        {
+            Debug.Log(angle);
         }
     }
 }
