@@ -24,6 +24,37 @@ public class MiscellaneousMath
         }
         return Math.Abs(a/2.0f);
     }
+        public float CalculateAreaFromMesh(Mesh mesh)
+    {
+        float a = 0.0f;
+        float p = 0.0f;
+        float x = mesh.vertices[0].x;
+        float y = mesh.vertices[0].y;
+        int i = 0;
+
+        while(i < mesh.vertices.Length)
+        {
+            a += mesh.vertices[i].x * y - mesh.vertices[i].y * x;
+			p += Math.Abs((mesh.vertices[i].x) - x + (mesh.vertices[i].y - y));
+			x = mesh.vertices[i].x;
+			y = mesh.vertices[i].y;
+			i++;
+        }
+        return Math.Abs(a/2.0f);
+    }
+    public Vector3 CalculateCenterOfMass(Mesh mesh)
+    {
+        float xCoordinateForCenter = 0.0f;
+        float yCoordinateForCenter = 0.0f;
+        foreach(Vector3 vertex in mesh.vertices)
+        {
+            xCoordinateForCenter += vertex.x;
+            yCoordinateForCenter += vertex.y;
+        }
+        xCoordinateForCenter /= mesh.vertices.Length;
+        yCoordinateForCenter /= mesh.vertices.Length;
+        return new Vector3(xCoordinateForCenter, yCoordinateForCenter, 0.0f);
+    }
 
     public float[] CalculateSideLengths(Corner[] corners)
     {
