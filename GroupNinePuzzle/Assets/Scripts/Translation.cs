@@ -41,13 +41,11 @@ public class Translation : MonoBehaviour
         mesh.SetVertices(translatedVertices);
         GetComponentInParent<MeshCollider>().sharedMesh = mesh;
         var angles = mM.CalculateAnglesFromMesh(mesh);
-        Debug.Log("# ANGLES #");
-        Debug.Log("Angles of " + this.name + " after translation:");
-        LogAngles(angles);
-
+        /*
         Debug.Log("# TRANSLATION #");
         Debug.Log("Vertices of " + this.name + " after translation:");
         LogVertices(mesh.vertices);
+        */
     }
     void LogVertices(Vector3[] vertices) 
     {

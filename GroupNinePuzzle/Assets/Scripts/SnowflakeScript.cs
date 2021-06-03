@@ -63,7 +63,7 @@ public class SnowflakeScript : MonoBehaviour
         float[] areaOfPieces = CalculateAreasOfPieces();
         Vector2[] piecesWithIdenticalArea = FindPiecesWithIdenticalArea(areaOfPieces);
         if(piecesWithIdenticalArea.Length != 0) snowflakeAreas = false;
-        LogAreasOfPieces(areaOfPieces);
+        //LogAreasOfPieces(areaOfPieces);
         return snowflakeAreas;
     }
 }

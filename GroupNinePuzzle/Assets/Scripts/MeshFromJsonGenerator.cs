@@ -73,12 +73,14 @@ public class MeshFromJsonGenerator : MonoBehaviour
             idx = 0;
             foreach (var triangle in triangles)
             {
-                //Debug.Log("x value of vertex1 in triangle: " + triangle.vertex1.GetXY().x);
-                //Debug.Log("y value of vertex1 in triangle: " + triangle.vertex1.GetXY().y);
-                //Debug.Log("x value of vertex2 in triangle: " + triangle.vertex2.GetXY().x);
-                //Debug.Log("y value of vertex2 in triangle: " + triangle.vertex2.GetXY().y);
-                //Debug.Log("x value of vertex3 in triangle: " + triangle.vertex3.GetXY().x);
-                //Debug.Log("y value of vertex3 in triangle: " + triangle.vertex3.GetXY().y);
+                /*
+                Debug.Log("x value of vertex1 in triangle: " + triangle.vertex1.GetXY().x);
+                Debug.Log("y value of vertex1 in triangle: " + triangle.vertex1.GetXY().y);
+                Debug.Log("x value of vertex2 in triangle: " + triangle.vertex2.GetXY().x);
+                Debug.Log("y value of vertex2 in triangle: " + triangle.vertex2.GetXY().y);
+                Debug.Log("x value of vertex3 in triangle: " + triangle.vertex3.GetXY().x);
+                Debug.Log("y value of vertex3 in triangle: " + triangle.vertex3.GetXY().y);
+                */
                 trianglesAsIntArray[idx] = Array.IndexOf(vertices, triangle.vertex1.GetXY());
                 trianglesAsIntArray[idx + 1] = Array.IndexOf(vertices, triangle.vertex2.GetXY());
                 trianglesAsIntArray[idx + 2] = Array.IndexOf(vertices, triangle.vertex3.GetXY());
