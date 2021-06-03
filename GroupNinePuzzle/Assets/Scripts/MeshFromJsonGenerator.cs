@@ -7,10 +7,10 @@ using JSONPuzzleTypes;
 public class MeshFromJsonGenerator : MonoBehaviour
 
 {
-    JSONPuzzle Puzzle;
-    List<Mesh> meshArray = new List<Mesh>();
-    int[] triangles;
-    MiscellaneousMath mM = new MiscellaneousMath();
+    public JSONPuzzle Puzzle;
+    public List<Mesh> meshArray = new List<Mesh>();
+    public int[] triangles;
+    public MiscellaneousMath mM = new MiscellaneousMath();
     public string selected = "empty";
     public GameObject selectedObject = null;
     public string previousSelected = "empty";
