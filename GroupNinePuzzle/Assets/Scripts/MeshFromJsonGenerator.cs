@@ -10,6 +10,7 @@ public class MeshFromJsonGenerator : MonoBehaviour
     JSONPuzzle Puzzle;
     List<Mesh> meshArray = new List<Mesh>();
     int[] triangles;
+    AreaCalculator ac = new AreaCalculator();
     public string selected = "empty";
     void Start()
     {
@@ -19,6 +20,7 @@ public class MeshFromJsonGenerator : MonoBehaviour
 
     void CreatePieces()
     {
+        
         var idx = 0;
         foreach (var mesh in meshArray)
         {
@@ -46,7 +48,15 @@ public class MeshFromJsonGenerator : MonoBehaviour
         {
             var mesh = new Mesh();
             var vertices = new Vector3[piece.corners.Length];
-
+            var lengths = ac.calculateSideLengths(piece.corners);
+            var angles = ac.calculateAngles(piece.corners);
+            /*
+            Debug.Log("ANGLES:");
+            foreach(var angle in angles){
+                Debug.Log(piece + ": " + angle);
+            }
+            */
+            
             var idx = 0;
             foreach (var corner in piece.corners)
             {
@@ -61,7 +71,7 @@ public class MeshFromJsonGenerator : MonoBehaviour
             foreach (var vertex in vertices)
             {
                 verticesList.Add(vertex);
-                Debug.Log($"vertex: a ({vertex.x}, {vertex.y})");
+                //Debug.Log($"vertex: a ({vertex.x}, {vertex.y})");
             }
 
             var triangles = PolygonTriangulation.TriangulateConcavePolygon(verticesList);
@@ -70,28 +80,28 @@ public class MeshFromJsonGenerator : MonoBehaviour
             idx = 0;
             foreach (var triangle in triangles)
             {
-                Debug.Log("x value of vertex1 in triangle: " + triangle.vertex1.GetXY().x);
-                Debug.Log("y value of vertex1 in triangle: " + triangle.vertex1.GetXY().y);
-                Debug.Log("x value of vertex2 in triangle: " + triangle.vertex2.GetXY().x);
-                Debug.Log("y value of vertex2 in triangle: " + triangle.vertex2.GetXY().y);
-                Debug.Log("x value of vertex3 in triangle: " + triangle.vertex3.GetXY().x);
-                Debug.Log("y value of vertex3 in triangle: " + triangle.vertex3.GetXY().y);
+                //Debug.Log("x value of vertex1 in triangle: " + triangle.vertex1.GetXY().x);
+                //Debug.Log("y value of vertex1 in triangle: " + triangle.vertex1.GetXY().y);
+                //Debug.Log("x value of vertex2 in triangle: " + triangle.vertex2.GetXY().x);
+                //Debug.Log("y value of vertex2 in triangle: " + triangle.vertex2.GetXY().y);
+                //Debug.Log("x value of vertex3 in triangle: " + triangle.vertex3.GetXY().x);
+                //Debug.Log("y value of vertex3 in triangle: " + triangle.vertex3.GetXY().y);
                 trianglesAsIntArray[idx] = Array.IndexOf(vertices, triangle.vertex1.GetXY());
                 trianglesAsIntArray[idx + 1] = Array.IndexOf(vertices, triangle.vertex2.GetXY());
                 trianglesAsIntArray[idx + 2] = Array.IndexOf(vertices, triangle.vertex3.GetXY());
                 idx += 3;
             }
 
-            Debug.Log($"List of vertices:");
+            //Debug.Log($"List of vertices:");
             foreach (var vertex in vertices)
             {
-                Debug.Log($"{vertex.x}, {vertex.y}");
+                //Debug.Log($"{vertex.x}, {vertex.y}");
             }
 
             foreach (var index in trianglesAsIntArray)
             {
-                Debug.Log("index of vertex: " + index);
-                Debug.Log($"vertex at index: {vertices[index].x}, {vertices[index].y}");
+                //Debug.Log("index of vertex: " + index);
+                //Debug.Log($"vertex at index: {vertices[index].x}, {vertices[index].y}");
             }
 
             mesh.triangles = trianglesAsIntArray;

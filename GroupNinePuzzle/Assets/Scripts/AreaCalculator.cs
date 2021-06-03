@@ -44,18 +44,19 @@ public class AreaCalculator
         return Math.Abs(a/2.0f);
     }
 
-    public float[] calculateSideLengthsAndAngles(Corner[] corners){
+    public float[] calculateSideLengths(Corner[] corners){
         int n = corners.Length;
         float[] sides = new float[n];
         int i = 0;
-        while(i < n){
+        while(i < n-1){
             float x = corners[i].coord.x - corners[i+1].coord.x;
             float y = corners[i].coord.y - corners[i+1].coord.y;
             sides[i] = Mathf.Sqrt(x*x + y*y);
+            i++;
         }
-        float x1 = corners[n].coord.x - corners[0].coord.x;
-        float y1 = corners[n].coord.y - corners[0].coord.y;
-        sides[n] = Mathf.Sqrt(x1*x1 + y1*y1);
+        float x1 = corners[n-1].coord.x - corners[0].coord.x;
+        float y1 = corners[n-1].coord.y - corners[0].coord.y;
+        sides[n-1] = Mathf.Sqrt(x1*x1 + y1*y1);
         return sides;
     }
    
