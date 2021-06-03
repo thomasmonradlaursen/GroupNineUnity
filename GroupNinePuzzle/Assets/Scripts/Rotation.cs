@@ -25,15 +25,17 @@ public class Rotation : MonoBehaviour
             {
                 Debug.Log("# ROTATION #");
                 Debug.Log("Vertices of " + this.name + " after rotation:");
-                Debug.Log("Area: " + area);
                 //LogVertices(mesh.vertices);
             }
         }
     }
     void RotateMesh(float rotationIntervalAndDirection)
     {
-        Vector3 centroid = miscellaneousMath.CalculateCentroid(originalVertices, area);
+        //Vector3 centroid = miscellaneousMath.CalculateCentroid(originalVertices, area);
+        Vector3 centroid = miscellaneousMath.CalculateCenterOfMass(originalVertices);
+        Debug.Log("Centroid: " + centroid);
         CentralizeVertices(centroid);
+        Debug.Log("After centralization, original: " + originalVertices[0]);
         float rotationTheta = rotationIntervalAndDirection;
         for(int index = 0; index < originalVertices.Length; index++)
         {
@@ -41,8 +43,10 @@ public class Rotation : MonoBehaviour
             rotatedVertices[index].y = originalVertices[index].x * Mathf.Sin(rotationTheta) + originalVertices[index].y * Mathf.Cos(rotationTheta);
         }
         RestorePositionOfVertices(centroid);
+        Debug.Log("After restoration, rotated: " + rotatedVertices[0]);
         mesh.SetVertices(rotatedVertices);
         originalVertices = mesh.vertices;
+        Debug.Log("After restoration, original: " + originalVertices[0]);
         GetComponent<MeshCollider>().sharedMesh = mesh;
     }
     void OnMouseDown()
@@ -61,6 +65,7 @@ public class Rotation : MonoBehaviour
         rotatedVertices = new Vector3[ originalVertices.Length];
         this.GetComponentInParent<MeshFromJsonGenerator>().selected = this.name;
         area = miscellaneousMath.CalculateAreaFromVectors2(originalVertices);
+        Debug.Log("Area: " + area);
     }
     
     void CentralizeVertices(Vector3 centroid)

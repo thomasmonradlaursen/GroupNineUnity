@@ -9,9 +9,10 @@ public class JSONDeserializer : MonoBehaviour
 {
     public JSONPuzzle Puzzle {get; set;}
     public GameObject prefabDot = null;
+    public string fileName = "Classic-003-005-1331.json";
     public void Start()
     {
-        DeserializerPuzzleFromJSON("Assets/DataObjects/Classic-003-005-1331.json");
+        DeserializerPuzzleFromJSON("Assets/DataObjects/" + fileName);
         LogPuzzleInformation();
     }
 

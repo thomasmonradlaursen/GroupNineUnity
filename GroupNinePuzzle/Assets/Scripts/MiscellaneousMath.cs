@@ -8,16 +8,17 @@ public class MiscellaneousMath
 {
     public float CalculateAreaFromVectors(Vector3[] vertices)
     {
-        ShiftPositionOfVerticesAroundVertex(vertices, vertices[0]);
+        Vector3[] verticesForArea = ShiftPositionOfVerticesAroundVertex(vertices, vertices[0]);
+        Debug.Log(verticesForArea[0] +", "+ verticesForArea[1]);
         float area = 0.0f;
         for(int index = 0; index < vertices.Length-1; index++)
         {
-            area += ((vertices[index].x*vertices[index+1].y) - (vertices[index+1].x+vertices[index].y));
+            area += ((verticesForArea[index].x*verticesForArea[index+1].y) - (verticesForArea[index+1].x+verticesForArea[index].y));
         }
-        RestoreOriginalPositionOfVertices(vertices, vertices[0]);
+        area += ((verticesForArea[vertices.Length-1].x*verticesForArea[0].y) - (verticesForArea[0].x+verticesForArea[vertices.Length-1].y));
+        Debug.Log("Area: " + area);
         return area / 2.0f;
     }
-
     public Vector3[] ShiftPositionOfVerticesAroundVertex(Vector3[] vertices, Vector3 displacement)
     {
         Vector3[] alignedVertices = new Vector3[vertices.Length];
@@ -27,17 +28,6 @@ public class MiscellaneousMath
             alignedVertices[index].y = vertices[index].y - displacement.y;
         }
         return alignedVertices;
-    }
-
-    public Vector3[] RestoreOriginalPositionOfVertices(Vector3[] vertices, Vector3 displacement)
-    {
-        Vector3[] restoredVertices = new Vector3[vertices.Length];
-        for(int index = 0; index < vertices.Length; index++)
-        {
-            restoredVertices[index].x = vertices[index].x + displacement.x;
-            restoredVertices[index].y = vertices[index].y + displacement.y;
-        }
-        return restoredVertices;
     }
     public float CalculateAreaFromVectors2(Vector3[] vertices)
     {
@@ -149,11 +139,29 @@ public class MiscellaneousMath
         float yCentroid = 0.0f;
         for (int index = 0; index < vertices.Length - 1; index++)
         {
-            xCentroid += ((vertices[index].x + vertices[index + 1].x) * (vertices[index].x * vertices[index + 1].y - vertices[index + 1].x * vertices[index].y));
-            yCentroid += ((vertices[index].y + vertices[index + 1].y) * (vertices[index].x * vertices[index + 1].y - vertices[index + 1].x * vertices[index].y));
+            xCentroid += SumXCoordintesForCentroid(index, vertices);
+            yCentroid += SumYCoordintesForCentroid(index, vertices);
         }
+        xCentroid += FinalXCoordintesForCentroid(vertices.Length-1, vertices);
+        yCentroid += FinalYCoordintesForCentroid(vertices.Length-1, vertices);
         xCentroid = xCentroid / (6 * area);
         yCentroid = yCentroid / (6 * area);
         return new Vector3(xCentroid, yCentroid, 0.0f);
+    }
+    float SumXCoordintesForCentroid(int index, Vector3[] vertices)
+    {
+        return ((vertices[index].x + vertices[index + 1].x) * (vertices[index].x * vertices[index + 1].y - vertices[index + 1].x * vertices[index].y));
+    }
+    float SumYCoordintesForCentroid(int index, Vector3[] vertices)
+    {
+        return ((vertices[index].y + vertices[index + 1].y) * (vertices[index].x * vertices[index + 1].y - vertices[index + 1].x * vertices[index].y));
+    }
+    float FinalXCoordintesForCentroid(int index, Vector3[] vertices)
+    {
+        return ((vertices[index].x + vertices[0].x) * (vertices[index].x * vertices[0].y - vertices[0].x * vertices[index].y));
+    }
+    float FinalYCoordintesForCentroid(int index, Vector3[] vertices)
+    {
+        return ((vertices[index].y + vertices[0].y) * (vertices[index].x * vertices[0].y - vertices[0].x * vertices[index].y));
     }
 }
