@@ -27,6 +27,7 @@ public class MeshGenerator : MonoBehaviour
             newGameObject.AddComponent<MeshCollider>();
             newGameObject.AddComponent<Translation>();
             newGameObject.AddComponent<Rotation>();
+            newGameObject.AddComponent<PieceInfo>();
             newGameObject.transform.parent = this.transform;
             idx++;
         } 
@@ -53,8 +54,6 @@ public class MeshGenerator : MonoBehaviour
                 vertices[idx+1], // one higher horizontally
                 vertices[idx+noOfHorizontal+1], // one higher vertically and horizontally
             };
-            var angles = mM.CalculateAnglesFromMesh(mesh);
-            var lengths = mM.CalculateSideLengthsFromMesh(mesh);
             // Debug.Log(idx + "")
             mesh.triangles = new int[]{
                 0,1,2, //clockwise

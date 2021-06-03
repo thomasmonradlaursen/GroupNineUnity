@@ -31,6 +31,7 @@ public class MeshFromJsonGenerator : MonoBehaviour
             newGameObject.AddComponent<MeshCollider>();
             newGameObject.AddComponent<Translation>();
             newGameObject.AddComponent<Rotation>();
+            newGameObject.AddComponent<PieceInfo>();
             newGameObject.transform.parent = this.transform;
             idx++;
         }
@@ -48,15 +49,7 @@ public class MeshFromJsonGenerator : MonoBehaviour
         {
             var mesh = new Mesh();
             var vertices = new Vector3[piece.corners.Length];
-            var lengths = mM.CalculateSideLengths(piece.corners);
-            var angles = mM.CalculateSideLengths(piece.corners);
-            /*
-            Debug.Log("ANGLES:");
-            foreach(var angle in angles){
-                Debug.Log(piece + ": " + angle);
-            }
-            */
-
+           
             var idx = 0;
             foreach (var corner in piece.corners)
             {
