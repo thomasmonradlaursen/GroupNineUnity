@@ -7,6 +7,7 @@ public class Rotation : MonoBehaviour
     public Mesh mesh;
     private Vector3[] originalVertices;
     private Vector3[] rotatedVertices;
+    MiscellaneousMath miscellaneousMath = new MiscellaneousMath();
     void FixedUpdate()
     {
         if(this.name.Equals(this.GetComponentInParent<MeshFromJsonGenerator>().selected))
@@ -23,21 +24,24 @@ public class Rotation : MonoBehaviour
             {
                 Debug.Log("# ROTATION #");
                 Debug.Log("Vertices of " + this.name + " after rotation:");
-                LogVertices(mesh.vertices);
+                //LogVertices(mesh.vertices);
             }
         }
     }
     void RotateMesh(float rotationIntervalAndDirection)
     {
-        Vector3 centerOfMass = CalculateCenterOfMass();
-        CentralizeVertices(centerOfMass);
+        float area = 0.6f;
+        Vector3 centroid = miscellaneousMath.CalculateCentroid(originalVertices, area);
+        Debug.Log("Area: " + area);
+        Debug.Log("Centroid: " + centroid);
+        CentralizeVertices(centroid);
         float rotationTheta = rotationIntervalAndDirection;
         for(int index = 0; index < originalVertices.Length; index++)
         {
             rotatedVertices[index].x = originalVertices[index].x * Mathf.Cos(rotationTheta) - originalVertices[index].y * Mathf.Sin(rotationTheta);
             rotatedVertices[index].y = originalVertices[index].x * Mathf.Sin(rotationTheta) + originalVertices[index].y * Mathf.Cos(rotationTheta);
         }
-        RestorePositionOfVertices(centerOfMass);
+        RestorePositionOfVertices(centroid);
         mesh.SetVertices(rotatedVertices);
         originalVertices = mesh.vertices;
         GetComponent<MeshCollider>().sharedMesh = mesh;
@@ -58,19 +62,7 @@ public class Rotation : MonoBehaviour
         rotatedVertices = new Vector3[ originalVertices.Length];
         this.GetComponentInParent<MeshFromJsonGenerator>().selected = this.name;
     }
-    Vector3 CalculateCenterOfMass()
-    {
-        float xCoordinateForCenter = 0.0f;
-        float yCoordinateForCenter = 0.0f;
-        foreach(Vector3 vertex in originalVertices)
-        {
-            xCoordinateForCenter += vertex.x;
-            yCoordinateForCenter += vertex.y;
-        }
-        xCoordinateForCenter /= originalVertices.Length;
-        yCoordinateForCenter /= originalVertices.Length;
-        return new Vector3(xCoordinateForCenter, yCoordinateForCenter, 0.0f);
-    }
+    
     void CentralizeVertices(Vector3 centerOfMass)
     {
         for(int index = 0; index < originalVertices.Length; index++)
