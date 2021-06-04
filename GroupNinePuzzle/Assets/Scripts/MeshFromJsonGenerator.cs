@@ -7,7 +7,7 @@ using JSONPuzzleTypes;
 public class MeshFromJsonGenerator : MonoBehaviour
 
 {
-    JSONPuzzle Puzzle{get;set;}
+    public JSONPuzzle Puzzle;
     public List<Mesh> meshArray = new List<Mesh>();
     int[] triangles;
     MiscellaneousMath mM = new MiscellaneousMath();
@@ -19,6 +19,7 @@ public class MeshFromJsonGenerator : MonoBehaviour
     {
         GenerateMeshes();
         CreatePieces();
+        GetComponent<SnowflakeScript>().LogResult();
     }
 
     void CreatePieces()

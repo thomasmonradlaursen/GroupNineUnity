@@ -8,15 +8,21 @@ public class SnowflakeScript : MonoBehaviour
 {
     MiscellaneousMath mM = new MiscellaneousMath();
     JSONPuzzle puzzle;
+    string failure;
 
-    void Start() {
-        puzzle = GetComponent<JSONDeserializer>().DeserializerPuzzleFromJSON("Assets/DataObjects/Classic-003-005-1331.json");
-        Debug.Log("Snowflakism for puzzle: " + DetermineSnowflakism());
+    public void LogResult() {
+        puzzle = GetComponentInParent<MeshFromJsonGenerator>().Puzzle;
+        if(DetermineSnowflakeism()) Debug.Log("Snowflakeism for puzzle: True");
+        else
+        {
+            Debug.Log("Snowflakeism for puzzle: False");
+            DetermineReasonForFailure();
+        }
     }
-    bool DetermineSnowflakism()
+    bool DetermineSnowflakeism()
     {
         bool snowflakism = true;
-        snowflakism = DetermineSnowflakismByArea();
+        snowflakism = DetermineSnowflakeismByArea();
         return snowflakism;
     }
 
@@ -30,15 +36,7 @@ public class SnowflakeScript : MonoBehaviour
         return areaOfPieces;
     }
 
-    void LogAreasOfPieces(float[] areasOfPieces)
-    {
-        for(int index = 0; index < puzzle.pieces.Length; index++)
-        {
-            Debug.Log(string.Format("Piece {0} with area: {1}", puzzle.pieces[index].piece, areasOfPieces[index]));
-        }
-    }
-
-    Vector2[] FindPiecesWithIdenticalArea(float[] areasOfPieces)
+    List<Vector2> FindPiecesWithIdenticalArea(float[] areasOfPieces)
     {
         List<Vector2> piecesWithIdenticalArea = new List<Vector2>();
         if(areasOfPieces.Length > 1)
@@ -54,16 +52,24 @@ public class SnowflakeScript : MonoBehaviour
                 }
             }
         }
-        return piecesWithIdenticalArea.ToArray();
+        return piecesWithIdenticalArea;
     }
 
-    bool DetermineSnowflakismByArea()
+    bool DetermineSnowflakeismByArea()
     {
         bool snowflakeAreas = true;
         float[] areaOfPieces = CalculateAreasOfPieces();
-        Vector2[] piecesWithIdenticalArea = FindPiecesWithIdenticalArea(areaOfPieces);
-        if(piecesWithIdenticalArea.Length != 0) snowflakeAreas = false;
-        //LogAreasOfPieces(areaOfPieces);
+        List<Vector2> piecesWithIdenticalArea = FindPiecesWithIdenticalArea(areaOfPieces);
+        if(piecesWithIdenticalArea.Count != 0)
+        {
+            snowflakeAreas = false;
+            errorMessage = "The puzzle contains pieces with identical area";
+        }
         return snowflakeAreas;
+    }
+
+    void DetermineReasonForFailure()
+    {
+
     }
 }

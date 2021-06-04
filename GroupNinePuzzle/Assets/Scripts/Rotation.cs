@@ -8,7 +8,6 @@ public class Rotation : MonoBehaviour
     private Vector3[] originalVertices;
     private Vector3[] rotatedVertices;
     MiscellaneousMath miscellaneousMath = new MiscellaneousMath();
-    float area;
     void FixedUpdate()
     {
         if (this.name.Equals(this.GetComponentInParent<MeshFromJsonGenerator>().selected))
@@ -23,15 +22,12 @@ public class Rotation : MonoBehaviour
             }
             if (Input.GetKeyUp(KeyCode.UpArrow) || Input.GetKeyUp(KeyCode.DownArrow))
             {
-                Debug.Log("# ANGLES #");
-                Debug.Log("Angles of " + this.name + " after rotation:");
-                LogAngles(this.GetComponent<PieceInfo>().angles);
             }
         }
     }
     void RotateMesh(float rotationIntervalAndDirection)
     {
-        Vector3 centroid = miscellaneousMath.CalculateCentroid(originalVertices, area);
+        Vector3 centroid = GetComponent<PieceInfo>().centroid;
         CentralizeVertices(centroid);
         float rotationTheta = rotationIntervalAndDirection;
         for (int index = 0; index < originalVertices.Length; index++)
@@ -84,7 +80,6 @@ public class Rotation : MonoBehaviour
         originalVertices = mesh.vertices;
         rotatedVertices = new Vector3[ originalVertices.Length];
         this.GetComponentInParent<MeshFromJsonGenerator>().selected = this.name;
-        area = miscellaneousMath.CalculateAreaFromMesh(mesh);
     }
     
     void CentralizeVertices(Vector3 centroid)

@@ -21,7 +21,6 @@ public class JSONDeserializer : MonoBehaviour
 
     public void LogPuzzleInformation()
     {
-        Debug.Log(" - Loaded puzzle from JSON - ");
         Debug.Log("Name: " + Puzzle.name);
         Debug.Log("Number of pieces: " + Puzzle.nPieces);
         Vector2 form = FindFormOfPuzzle();
