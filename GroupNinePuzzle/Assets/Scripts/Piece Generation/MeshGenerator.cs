@@ -28,6 +28,7 @@ public class MeshGenerator : MonoBehaviour
             newGameObject.AddComponent<Translation>();
             newGameObject.AddComponent<Rotation>();
             newGameObject.AddComponent<PieceInfo>();
+            newGameObject.AddComponent<SnapIntoPlace>();
             newGameObject.transform.parent = this.transform;
             idx++;
         } 
