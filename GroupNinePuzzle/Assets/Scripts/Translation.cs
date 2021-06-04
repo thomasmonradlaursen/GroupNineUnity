@@ -18,18 +18,10 @@ public class Translation : MonoBehaviour
     {
         transform.position = MouseWorldPosition() + mouseOffset;
     }
-    void OnMouseUp() {
+    void OnMouseUp()
+    {
         CalculateVerticesAfterTranslation();
-        /*
-        Debug.Log("# ANGLES #");
-        Debug.Log("Angles of " + this.name + ": ");
-        LogAngles(this.GetComponent<PieceInfo>().angles);
-        
-        Debug.Log("# SIDES #");
-        Debug.Log("Lengths of " + this.name + ": ");
-        LogSides(this.GetComponent<PieceInfo>().lengths);
-        */
-        //Debug.Log(" AREA :" + this.GetComponent<PieceInfo>().area);
+        CalculateCentroidAfterTranslation();
     }
     private Vector3 MouseWorldPosition()
     {
@@ -50,12 +42,13 @@ public class Translation : MonoBehaviour
         }
         mesh.SetVertices(translatedVertices);
         GetComponentInParent<MeshCollider>().sharedMesh = mesh;
-        var angles = mM.CalculateAnglesFromMesh(mesh);
-        /*
-        Debug.Log("# TRANSLATION #");
-        Debug.Log("Vertices of " + this.name + " after translation:");
-        LogVertices(mesh.vertices);
-        */
+    }
+    void CalculateCentroidAfterTranslation()
+    {
+        Vector3 translatedCentroid = GetComponent<PieceInfo>().centroid;
+        translatedCentroid.x += (MouseWorldPosition().x + mouseOffset.x);
+        translatedCentroid.y += (MouseWorldPosition().y + mouseOffset.y);
+        GetComponent<PieceInfo>().centroid = translatedCentroid;
     }
     void LogVertices(Vector3[] vertices) 
     {

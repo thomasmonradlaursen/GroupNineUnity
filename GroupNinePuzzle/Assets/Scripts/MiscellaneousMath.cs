@@ -18,7 +18,7 @@ public class MiscellaneousMath
             Vector3 a = vertices[triangles[i + 1]] - corner;
             Vector3 b = vertices[triangles[i + 2]] - corner;
 
-            area += Vector3.Cross(a, b).magnitude;
+            area += Vector3.Cross(a,b).magnitude;
         }
         return (float)(area/2);
     }

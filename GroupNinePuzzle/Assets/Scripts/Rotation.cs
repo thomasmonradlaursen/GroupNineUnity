@@ -8,7 +8,6 @@ public class Rotation : MonoBehaviour
     private Vector3[] originalVertices;
     private Vector3[] rotatedVertices;
     MiscellaneousMath miscellaneousMath = new MiscellaneousMath();
-    float area;
     void FixedUpdate()
     {
         if (this.name.Equals(this.GetComponentInParent<MeshFromJsonGenerator>().selected))
@@ -23,24 +22,13 @@ public class Rotation : MonoBehaviour
             }
             if (Input.GetKeyUp(KeyCode.UpArrow) || Input.GetKeyUp(KeyCode.DownArrow))
             {
-                /*
-                Debug.Log("# ROTATION #");
-                Debug.Log("Vertices of " + this.name + " after rotation:");
-                LogVertices(mesh.vertices);
-                */
-                Debug.Log("# ANGLES #");
-                Debug.Log("Angles of " + this.name + " after rotation:");
-                LogAngles(this.GetComponent<PieceInfo>().angles);
             }
         }
     }
     void RotateMesh(float rotationIntervalAndDirection)
     {
-        //Vector3 centroid = miscellaneousMath.CalculateCentroid(originalVertices, area);
-        Vector3 centroid = miscellaneousMath.CalculateCentroid(originalVertices, area);
-        Debug.Log("Centroid: " + centroid);
+        Vector3 centroid = GetComponent<PieceInfo>().centroid;
         CentralizeVertices(centroid);
-        Debug.Log("After centralization, original: " + originalVertices[0]);
         float rotationTheta = rotationIntervalAndDirection;
         for (int index = 0; index < originalVertices.Length; index++)
         {
@@ -48,15 +36,12 @@ public class Rotation : MonoBehaviour
             rotatedVertices[index].y = originalVertices[index].x * Mathf.Sin(rotationTheta) + originalVertices[index].y * Mathf.Cos(rotationTheta);
         }
         RestorePositionOfVertices(centroid);
-        Debug.Log("After restoration, rotated: " + rotatedVertices[0]);
         mesh.SetVertices(rotatedVertices);
         originalVertices = mesh.vertices;
-        Debug.Log("After restoration, original: " + originalVertices[0]);
         GetComponent<MeshCollider>().sharedMesh = mesh;
     }
     void OnMouseDown()
     {
-        // this.GetComponentInParent<MeshFromJsonGenerator>().selected = "empty";
 
         // set the currently selected piece as previously selected piece
         var currentlySelected = this.GetComponentInParent<MeshFromJsonGenerator>().selected;
@@ -86,14 +71,6 @@ public class Rotation : MonoBehaviour
     }
     void OnMouseUp()
     {
-        // mesh = GetComponent<MeshFilter>().mesh;
-
-        // // var renderer = GetComponent<MeshRenderer>();
-        // // var test = renderer.materials;
-        // // test[0].color = Color.red;
-
-
-
         UpdateMeshInfromation();
     }
     void UpdateMeshInfromation()
@@ -103,8 +80,6 @@ public class Rotation : MonoBehaviour
         originalVertices = mesh.vertices;
         rotatedVertices = new Vector3[ originalVertices.Length];
         this.GetComponentInParent<MeshFromJsonGenerator>().selected = this.name;
-        area = miscellaneousMath.CalculateAreaFromMesh(mesh);
-        Debug.Log("Area: " + area);
     }
     
     void CentralizeVertices(Vector3 centroid)
