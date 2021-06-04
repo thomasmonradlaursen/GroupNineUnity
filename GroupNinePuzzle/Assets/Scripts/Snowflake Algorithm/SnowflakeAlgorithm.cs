@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using JSONPuzzleTypes;
 
-public class SnowflakeScript : MonoBehaviour
+public class SnowflakeAlgorithm : MonoBehaviour
 
 {
     MiscellaneousMath mM = new MiscellaneousMath();

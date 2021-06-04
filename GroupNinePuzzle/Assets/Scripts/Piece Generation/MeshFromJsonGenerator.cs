@@ -19,7 +19,7 @@ public class MeshFromJsonGenerator : MonoBehaviour
     {
         GenerateMeshes();
         CreatePieces();
-        GetComponent<SnowflakeScript>().LogResult();
+        GetComponent<SnowflakeAlgorithm>().LogResult();
     }
 
     void CreatePieces()
