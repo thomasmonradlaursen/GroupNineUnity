@@ -63,7 +63,7 @@ public class SnowflakeScript : MonoBehaviour
         if(piecesWithIdenticalArea.Count != 0)
         {
             snowflakeAreas = false;
-            errorMessage = "The puzzle contains pieces with identical area";
+            //errorMessage = "The puzzle contains pieces with identical area";
         }
         return snowflakeAreas;
     }
