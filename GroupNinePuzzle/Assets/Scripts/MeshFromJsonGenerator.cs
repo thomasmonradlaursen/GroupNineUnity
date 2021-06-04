@@ -32,9 +32,12 @@ public class MeshFromJsonGenerator : MonoBehaviour
             newGameObject.GetComponent<MeshFilter>().mesh = mesh;
             newGameObject.AddComponent<MeshRenderer>();
             newGameObject.AddComponent<MeshCollider>();
+            newGameObject.AddComponent<SphereCollider>();
+            newGameObject.GetComponent<SphereCollider>().radius = 1.1f;
             newGameObject.AddComponent<Translation>();
             newGameObject.AddComponent<Rotation>();
             newGameObject.AddComponent<PieceInfo>();
+            newGameObject.AddComponent<SnapIntoPlace>();
             newGameObject.transform.parent = this.transform;
 
             var renderer = newGameObject.GetComponent<MeshRenderer>();

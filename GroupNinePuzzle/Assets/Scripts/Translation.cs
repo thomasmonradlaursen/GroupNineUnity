@@ -20,11 +20,11 @@ public class Translation : MonoBehaviour
     }
     void OnMouseUp() {
         CalculateVerticesAfterTranslation();
-        
+        /*
         Debug.Log("# ANGLES #");
         Debug.Log("Angles of " + this.name + ": ");
         LogAngles(this.GetComponent<PieceInfo>().angles);
-        /*
+        
         Debug.Log("# SIDES #");
         Debug.Log("Lengths of " + this.name + ": ");
         LogSides(this.GetComponent<PieceInfo>().lengths);

@@ -5,15 +5,9 @@ using UnityEngine;
 public class SnapIntoPlace : MonoBehaviour
 {
     // Start is called before the first frame update
-    void Start()
+    void OnMouseUp()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        AutoTranslate2();
     }
 
     Vector3 FindCenterOfMassInPiece(Mesh piece){
@@ -45,6 +39,38 @@ public class SnapIntoPlace : MonoBehaviour
         return greatestDistance + 1;
     }
 
+    void AutoTranslate(Mesh piece2){
+        //piece1 is the one that was just moved, piece2 is the one piece1 moved close to
+        Mesh piece1 = GetComponentInParent<MeshFilter>().mesh;
+        float minDist = Mathf.Infinity;
+        Vector3 closestPoint = new Vector3(0,0,0);
+        foreach(Vector3 a in piece1.vertices){
+            float temp = Mathf.Sqrt((a[0]*a[0])+(a[1]*a[1]));
+            foreach(Vector3 b in piece2.vertices){
+                float testDist = Mathf.Sqrt((b[0]*b[0])+(b[1]*b[1]));
+                if(testDist < minDist){
+                    minDist = testDist;
+                    closestPoint = b;
+                }
+            }
+        }
+        //move piece
+        transform.position = closestPoint;
+    }
 
-
+    void AutoTranslate2(){
+        
+        Mesh piece1 = GetComponentInParent<MeshFilter>().mesh;
+        Vector3 location = piece1.vertices[0];
+        var collider = GetComponent<SphereCollider>();
+        
+        Debug.Log("Collider radius: "+ collider.radius);
+        if (!collider)
+        {
+            return; // nothing to do without a collider
+        }
+        Vector3 closestPoint = collider.ClosestPoint(location);
+        Debug.Log("Closest point: "+ closestPoint);
+        transform.position = closestPoint;
+    }
 }
