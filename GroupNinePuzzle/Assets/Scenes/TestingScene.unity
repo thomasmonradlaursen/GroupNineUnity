@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 247557105}
   - component: {fileID: 247557108}
   - component: {fileID: 247557106}
+  - component: {fileID: 247557109}
   m_Layer: 0
   m_Name: PuzzleController
   m_TagString: Untagged
@@ -153,6 +154,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64da8cf61f1fb4faf99a364f78c7f625, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Puzzle:
+    puzzle:
+      form: []
+    name: 
+    nPieces: 0
+    pieces: []
   meshArray: []
   selected: empty
   selectedObject: {fileID: 0}
@@ -239,6 +246,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 243be665430674cb197c2ffd174a0377, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!33 &247557109
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 247557103}
+  m_Mesh: {fileID: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

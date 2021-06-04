@@ -29,9 +29,6 @@ public class MeshGenerator : MonoBehaviour
             newGameObject.AddComponent<Rotation>();
             newGameObject.AddComponent<PieceInfo>();
             newGameObject.AddComponent<SnapIntoPlace>();
-            newGameObject.AddComponent<SphereCollider>();
-            newGameObject.GetComponent<SphereCollider>().radius = 1.1f;
-            newGameObject.GetComponent<SphereCollider>().center = newGameObject.GetComponent<PieceInfo>().centroid;
             newGameObject.transform.parent = this.transform;
             idx++;
         } 

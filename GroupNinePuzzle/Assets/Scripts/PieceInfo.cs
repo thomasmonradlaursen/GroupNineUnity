@@ -9,6 +9,13 @@ public class PieceInfo : MonoBehaviour
     public float[] lengths;
     public float area;
     public Vector3 centroid;
+    public Mesh mesh;
+    public MeshRenderer rend;
+    public MeshCollider collie;
+    public MeshFilter meshFilter;
+    public Translation translation;
+    public Rotation rotation;
+    public SnapIntoPlace snap;
 
     void Start()
     {
@@ -16,5 +23,15 @@ public class PieceInfo : MonoBehaviour
         lengths = mM.CalculateSideLengthsFromMesh(GetComponent<MeshFilter>().mesh);
         area = mM.CalculateAreaFromMesh(GetComponent<MeshFilter>().mesh);
         centroid = mM.CalculateCentroid(GetComponent<MeshFilter>().mesh.vertices, area);
+
+        meshFilter = new MeshFilter();
+        mesh = meshFilter.mesh;
+        rend = new MeshRenderer();
+        var test = rend.materials;
+        test[0].color = Color.blue;
+        collie = new MeshCollider();
+        translation = new Translation();
+        rotation = new Rotation();
+        snap = new SnapIntoPlace();
     }
 }

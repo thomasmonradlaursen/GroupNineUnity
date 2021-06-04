@@ -28,23 +28,10 @@ public class MeshFromJsonGenerator : MonoBehaviour
         var idx = 0;
         foreach (var mesh in meshArray)
         {
-            var newGameObject = new GameObject("Piece " + Puzzle.pieces[idx].piece);
-            newGameObject.AddComponent<MeshFilter>();
+            PieceInfo newGameObject = new PieceInfo();
+            newGameObject.name = "Piece " + Puzzle.pieces[idx].piece;
             newGameObject.GetComponent<MeshFilter>().mesh = mesh;
-            newGameObject.AddComponent<MeshRenderer>();
-            newGameObject.AddComponent<MeshCollider>();
-            newGameObject.AddComponent<SphereCollider>();
-            newGameObject.GetComponent<SphereCollider>().radius = 1.1f;
-            newGameObject.AddComponent<Translation>();
-            newGameObject.AddComponent<Rotation>();
-            newGameObject.AddComponent<PieceInfo>();
-            newGameObject.AddComponent<SnapIntoPlace>();
             newGameObject.transform.parent = this.transform;
-
-            var renderer = newGameObject.GetComponent<MeshRenderer>();
-            var test = renderer.materials;
-            test[0].color = Color.blue;
-
             idx++;
         }
     }
