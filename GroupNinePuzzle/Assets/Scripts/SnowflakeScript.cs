@@ -8,7 +8,7 @@ public class SnowflakeScript : MonoBehaviour
 {
     MiscellaneousMath mM = new MiscellaneousMath();
     JSONPuzzle puzzle;
-    string failure;
+    string failureMessage;
 
     public void LogResult() {
         puzzle = GetComponentInParent<MeshFromJsonGenerator>().Puzzle;
@@ -63,13 +63,24 @@ public class SnowflakeScript : MonoBehaviour
         if(piecesWithIdenticalArea.Count != 0)
         {
             snowflakeAreas = false;
-            errorMessage = "The puzzle contains pieces with identical area";
+            failureMessage = "identicalArea";
         }
         return snowflakeAreas;
     }
 
     void DetermineReasonForFailure()
     {
+        if(failureMessage.Equals("identicalArea"))
+        {
+            float[] areaOfPieces = CalculateAreasOfPieces();
+            List<Vector2> piecesWithIdenticalArea = FindPiecesWithIdenticalArea(areaOfPieces);
+            Debug.Log("Reason for failure: The puzzle contains pieces with identical area");
+            Debug.Log("The following pieces have identical area:");
+            foreach(Vector2 pair in piecesWithIdenticalArea)
+            {
+                Debug.Log(string.Format("Piece {0} and Piece {1} - Identical area: {2}",pair.x, pair.y, areaOfPieces[(int) pair.x]));
+            }
+        }
 
     }
 }

@@ -153,6 +153,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64da8cf61f1fb4faf99a364f78c7f625, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Puzzle:
+    puzzle:
+      form: []
+    name: 
+    nPieces: 0
+    pieces: []
   meshArray: []
   selected: empty
   selectedObject: {fileID: 0}
@@ -172,7 +178,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabDot: {fileID: 8697019572017349557, guid: 219564e54a88c4ed29cc2ca6c0c44311,
     type: 3}
-  fileName: WithIdenticalPieces.json
+  fileName: Classic-003-005-1331.json
   locationOfFile: Assets/DataObjects/
 --- !u!23 &247557106
 MeshRenderer:
