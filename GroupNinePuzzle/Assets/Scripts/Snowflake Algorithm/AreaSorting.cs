@@ -17,6 +17,13 @@ public class AreaSorting : MonoBehaviour
         return areaOfPieces;
     }
 
+    void FindPieces()
+    {
+        GameObject[] pieces = FindObjectsOfType<GameObject>();
+        Debug.Log("Number of pieces: " + pieces.Length);
+        Debug.Log("Name of first piece: " + pieces[0].name);
+    }
+
     List<Vector2> FindPiecesWithIdenticalArea(float[] areasOfPieces)
     {
         List<Vector2> piecesWithIdenticalArea = new List<Vector2>();

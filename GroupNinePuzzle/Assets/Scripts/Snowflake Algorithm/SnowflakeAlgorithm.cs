@@ -19,6 +19,14 @@ public class SnowflakeAlgorithm : MonoBehaviour
             DetermineReasonForFailure();
         }
     }
+
+    public void FindPieces()
+    {
+        GameObject[] pieces = FindObjectsOfType<GameObject>();
+        Debug.Log("Number of pieces: " + pieces.Length);
+        Debug.Log("Name of first piece: " + pieces[17].name);
+    }
+
     bool DetermineSnowflakeism()
     {
         bool snowflakism = true;
