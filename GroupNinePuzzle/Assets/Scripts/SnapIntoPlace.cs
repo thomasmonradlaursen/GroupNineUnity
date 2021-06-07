@@ -5,89 +5,73 @@ using UnityEngine;
 public class SnapIntoPlace : MonoBehaviour
 {
     // Start is called before the first frame update
+    private Vector3 mouseOffset;
+    private MiscellaneousMath mM;
+    private PieceInfo closestPiece;
     void OnMouseUp()
     {
-        AutoTranslate();
+        closestPiece = AutoTranslate();
+        Debug.Log("Closest piece: " + closestPiece.name);
+        //CalculateVerticesAfterTranslation(closestPoint);
+        //CalculateCentroidAfterTranslation();
     }
-
-    Vector3 FindCenterOfMassInPiece(Mesh piece){
-        float sumX = 0;
-        float sumY = 0;
-
-        foreach(var vertex in piece.vertices){
-            sumX += vertex.x;
-            sumY += vertex.y;
+    
+    void FixedUpdate(){
+        if (Input.GetKey(KeyCode.RightArrow)){
+            CalculateVerticesAfterTranslation(closestPiece.centroid);
+            GetComponent<PieceInfo>().centroid = closestPiece.GetComponent<PieceInfo>().centroid;
         }
-
-        var centerOfMass = new Vector3();
-        centerOfMass.x = sumX/piece.vertices.Length;
-        centerOfMass.y = sumY/piece.vertices.Length;
-
-        return centerOfMass;
     }
 
-    float FindAreaOfPossiblePieces(Mesh piece, Vector3 centerOfMass){
-        float greatestDistance = 0;
-
-        foreach(var vertex in piece.vertices){
-            var distanceFromCenterToVertex = Mathf.Sqrt(Mathf.Pow(vertex.x - centerOfMass.x, 2) + Mathf.Pow(vertex.y - centerOfMass.y, 2));
-            if(distanceFromCenterToVertex > greatestDistance){
-                greatestDistance = distanceFromCenterToVertex;
-            }
-        }
-
-        return greatestDistance + 1;
-    }
-
-    void AutoTranslate(){
+    PieceInfo AutoTranslate(){
         Mesh mesh = GetComponent<MeshFilter>().mesh;
         Vector3 center = GetComponent<PieceInfo>().centroid;
-        float max = FindAreaOfPossiblePieces(mesh, center);
 
         PieceInfo[] pieces = FindObjectsOfType<PieceInfo>();  //locate all pieces
         
         Vector3 closestPoint = new Vector3(Mathf.Infinity, Mathf.Infinity, 0);
+        closestPiece = GetComponent<PieceInfo>();
+
         foreach(PieceInfo piece in pieces){
             if(piece.GetComponent<MeshFilter>().mesh == mesh){continue;}
-            Debug.Log("found piece: "+ piece.name);
+            Debug.Log("Piece #"+piece.GetComponent<PieceInfo>().name+" center: "+piece.GetComponent<PieceInfo>().centroid);
             Vector3 tempCenter = piece.centroid;
-            float xt = center[0]-tempCenter[0];
-            float yt = center[1]-tempCenter[1];
-            float testDist = Mathf.Sqrt(xt*xt+yt*yt);
 
-            float xc = center[0] - closestPoint[0];
-            float yc = center[1] - closestPoint[1];
-            float currDist = Mathf.Sqrt(xc*xc+yc*yc);
+            float testDist = Vector3.Distance(center, tempCenter);
+            float currDist = Vector3.Distance(center, closestPoint);
+            
             if(testDist < currDist){
                 closestPoint = tempCenter;
-                Debug.Log("new closest point: "+ closestPoint);
+                closestPiece = piece;
             }
         }
-        //move piece, doesnt work... 
-        CalculateVerticesAfterTranslation(closestPoint);
-        CalculateCentroidAfterTranslation(closestPoint);
-        gameObject.transform.position = closestPoint;
+        Debug.Log("Center: "+ center);
+        Debug.Log("Closest point: "+closestPoint);
+        return closestPiece;
+        
     }
 
     void CalculateVerticesAfterTranslation(Vector3 closestPoint)
     {
-        transform.position = Vector3.zero;
-        Mesh mesh = GetComponentInParent<MeshFilter>().mesh;
+        //transform.position = Vector3.zero;
+        Mesh mesh = GetComponent<MeshFilter>().mesh;
         Vector3[] translatedVertices = new Vector3[mesh.vertices.Length];
         for(int index = 0; index < mesh.vertices.Length; index++)
         {
             translatedVertices[index].x = mesh.vertices[index].x + closestPoint[0];
             translatedVertices[index].y = mesh.vertices[index].y + closestPoint[1];
+            Debug.Log("moving x: " +mesh.vertices[index].x + " + " +closestPoint[0] + " = "+ translatedVertices[index].x);
+            Debug.Log("moving y: " +mesh.vertices[index].y + " + " +closestPoint[1] + " = "+ translatedVertices[index].y);
         }
         mesh.SetVertices(translatedVertices);
-        GetComponentInParent<MeshCollider>().sharedMesh = mesh;
+        GetComponent<MeshCollider>().sharedMesh = mesh;
     }
-    void CalculateCentroidAfterTranslation(Vector3 closestPoint)
+    void CalculateCentroidAfterTranslation()
     {
-        Vector3 translatedCentroid = GetComponent<PieceInfo>().centroid;
-        translatedCentroid.x += (closestPoint[0]);
-        translatedCentroid.y += (closestPoint[1]);
-        GetComponent<PieceInfo>().centroid = translatedCentroid;
+        PieceInfo piece = GetComponentInParent<PieceInfo>();
+        Mesh mesh = GetComponentInParent<MeshFilter>().mesh;
+        Vector3 transCentroid = mM.CalculateCentroid(mesh.vertices, piece.GetComponentInParent<PieceInfo>().area);
+        GetComponent<PieceInfo>().centroid = transCentroid;
     }
 
 }

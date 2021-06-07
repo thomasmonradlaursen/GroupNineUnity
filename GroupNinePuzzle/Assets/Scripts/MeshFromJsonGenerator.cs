@@ -31,7 +31,22 @@ public class MeshFromJsonGenerator : MonoBehaviour
             PieceInfo newGameObject = new PieceInfo();
             newGameObject.name = "Piece " + Puzzle.pieces[idx].piece;
             newGameObject.GetComponent<MeshFilter>().mesh = mesh;
+<<<<<<< Updated upstream:GroupNinePuzzle/Assets/Scripts/MeshFromJsonGenerator.cs
             newGameObject.transform.parent = this.transform;
+=======
+            newGameObject.AddComponent<MeshRenderer>();
+            newGameObject.AddComponent<MeshCollider>();
+            newGameObject.AddComponent<Translation>();
+            newGameObject.AddComponent<Rotation>();
+            newGameObject.AddComponent<PieceInfo>();
+            newGameObject.AddComponent<SnapIntoPlace>();
+            newGameObject.transform.parent = this.transform;
+
+            var renderer = newGameObject.GetComponent<MeshRenderer>();
+            var test = renderer.materials;
+            test[0].color = Color.blue;
+            
+>>>>>>> Stashed changes:GroupNinePuzzle/Assets/Scripts/Piece Generation/MeshFromJsonGenerator.cs
             idx++;
         }
     }

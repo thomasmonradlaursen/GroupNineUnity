@@ -30,7 +30,7 @@ public class Translation : MonoBehaviour
         Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(mousePoint);
         return mouseWorldPosition; 
     }
-    void CalculateVerticesAfterTranslation()
+    public void CalculateVerticesAfterTranslation()
     {
         transform.position = Vector3.zero;
         Mesh mesh = GetComponentInParent<MeshFilter>().mesh;
@@ -43,12 +43,19 @@ public class Translation : MonoBehaviour
         mesh.SetVertices(translatedVertices);
         GetComponentInParent<MeshCollider>().sharedMesh = mesh;
     }
-    void CalculateCentroidAfterTranslation()
+    public void CalculateCentroidAfterTranslation()
     {
+        PieceInfo piece = GetComponentInParent<PieceInfo>();
+        Mesh mesh = GetComponentInParent<MeshFilter>().mesh;
+        Vector3 transCentroid = mM.CalculateCentroid(mesh.vertices, piece.GetComponentInParent<PieceInfo>().area);
+        GetComponent<PieceInfo>().centroid = transCentroid;
+        Debug.Log("new center : "+GetComponent<PieceInfo>().centroid);
+        /*
         Vector3 translatedCentroid = GetComponent<PieceInfo>().centroid;
         translatedCentroid.x += (MouseWorldPosition().x + mouseOffset.x);
         translatedCentroid.y += (MouseWorldPosition().y + mouseOffset.y);
         GetComponent<PieceInfo>().centroid = translatedCentroid;
+        */
     }
     void LogVertices(Vector3[] vertices) 
     {

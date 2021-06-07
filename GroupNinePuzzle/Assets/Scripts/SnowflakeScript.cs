@@ -19,6 +19,17 @@ public class SnowflakeScript : MonoBehaviour
             DetermineReasonForFailure();
         }
     }
+<<<<<<< Updated upstream:GroupNinePuzzle/Assets/Scripts/SnowflakeScript.cs
+=======
+
+    public void FindPieces()
+    {
+        GameObject[] pieces = FindObjectsOfType<GameObject>();
+        Debug.Log("Number of pieces: " + pieces.Length);
+        //Debug.Log("Name of first piece: " + pieces[17].name);
+    }
+
+>>>>>>> Stashed changes:GroupNinePuzzle/Assets/Scripts/Snowflake Algorithm/SnowflakeAlgorithm.cs
     bool DetermineSnowflakeism()
     {
         bool snowflakism = true;

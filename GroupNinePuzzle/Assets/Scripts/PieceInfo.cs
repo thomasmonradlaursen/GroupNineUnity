@@ -23,6 +23,7 @@ public class PieceInfo : MonoBehaviour
         lengths = mM.CalculateSideLengthsFromMesh(GetComponent<MeshFilter>().mesh);
         area = mM.CalculateAreaFromMesh(GetComponent<MeshFilter>().mesh);
         centroid = mM.CalculateCentroid(GetComponent<MeshFilter>().mesh.vertices, area);
+<<<<<<< Updated upstream:GroupNinePuzzle/Assets/Scripts/PieceInfo.cs
 
         meshFilter = new MeshFilter();
         mesh = meshFilter.mesh;
@@ -33,5 +34,8 @@ public class PieceInfo : MonoBehaviour
         translation = new Translation();
         rotation = new Rotation();
         snap = new SnapIntoPlace();
+=======
+        
+>>>>>>> Stashed changes:GroupNinePuzzle/Assets/Scripts/Misc/PieceInfo.cs
     }
 }
