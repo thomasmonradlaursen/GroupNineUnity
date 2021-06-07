@@ -44,13 +44,13 @@ public class SnapIntoPlace : MonoBehaviour
         Vector3 center = GetComponent<PieceInfo>().centroid;
         float max = FindAreaOfPossiblePieces(mesh, center);
 
-        GameObject[] pieces = FindObjectsOfType<GameObject>();  //locate all pieces
+        PieceInfo[] pieces = FindObjectsOfType<PieceInfo>();  //locate all pieces
         
         Vector3 closestPoint = new Vector3(Mathf.Infinity, Mathf.Infinity, 0);
-        foreach(GameObject piece in pieces){
+        foreach(PieceInfo piece in pieces){
             if(piece.GetComponent<MeshFilter>().mesh == mesh){continue;}
-            Debug.Log("found piece: "+ piece.GetComponent<PieceInfo>().name);
-            Vector3 tempCenter = piece.GetComponent<PieceInfo>().centroid;
+            Debug.Log("found piece: "+ piece.name);
+            Vector3 tempCenter = piece.centroid;
             float xt = center[0]-tempCenter[0];
             float yt = center[1]-tempCenter[1];
             float testDist = Mathf.Sqrt(xt*xt+yt*yt);
