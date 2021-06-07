@@ -9,9 +9,12 @@ public class SnowflakeAlgorithm : MonoBehaviour
     MiscellaneousMath mM = new MiscellaneousMath();
     AreaSorting areaSorting = new AreaSorting();
     JSONPuzzle puzzle;
-    (bool, string) snowflakeStatus = (true, "success");
+    (bool, string) resultAndMessage = (true, "success");
     List<Vector2> piecesWithIdenticalArea;
+    List<Vector2> piecesWithIdenticalLengthsAndAngles;
     List<float> areaOfPieces;
+    List<float> lengthsOfPieces;
+    List<float> anglesOfPieces;
 
     void Start()
     {
@@ -23,7 +26,7 @@ public class SnowflakeAlgorithm : MonoBehaviour
     public void LogResult()
     {
         DetermineSnowflakeism();
-        if (snowflakeStatus.Item1)
+        if (resultAndMessage.Item1)
         {
             Debug.Log("Snowflakeism for puzzle: True");
         }
@@ -43,14 +46,23 @@ public class SnowflakeAlgorithm : MonoBehaviour
     {
         if (piecesWithIdenticalArea.Count != 0)
         {
-            snowflakeStatus.Item1 = false;
-            snowflakeStatus.Item2 = "identicalArea";
+            resultAndMessage.Item1 = false;
+            resultAndMessage.Item2 = "area";
+        }
+    }
+
+    void DetermineSnowflakeismByLengthsAndAngles()
+    {
+        if (piecesWithIdenticalLengthsAndAngles.Count != 0)
+        {
+            resultAndMessage.Item1 = false;
+            resultAndMessage.Item2 = "lengthsAndArea";
         }
     }
 
     void DetermineReasonForFailure()
     {
-        if (snowflakeStatus.Item2.Equals("identicalArea"))
+        if (resultAndMessage.Item2.Equals("area"))
         {
             Debug.Log("Reason for failure: The puzzle contains pieces with identical area");
             Debug.Log("The following pieces have identical area:");
@@ -59,6 +71,9 @@ public class SnowflakeAlgorithm : MonoBehaviour
                 Debug.Log(string.Format("Piece {0} and Piece {1} - Identical area: {2}", pair.x, pair.y, areaOfPieces[(int)pair.x]));
             }
         }
+        if(resultAndMessage.Item2.Equals("lengthsAndAngles"))
+        {
 
+        }
     }
 }
