@@ -7,20 +7,30 @@ public class LengthsAndAnglesSorting
 {
     MiscellaneousMath miscellaneousMath = new MiscellaneousMath();
 
-    public List<float> GetAreaOfPieces(List<GameObject> pieces)
+    public List<float[]> GetLengthsOfPieces(List<GameObject> pieces)
     {
-        Debug.Log("AreaSorting: FindAreaOfPieces");
-        List<float> areaOfPieces = new List<float>();
+        Debug.Log("LNASorting: FindAreaOfPieces");
+        List<float[]> lengthsOfPieces = new List<float[]>();
         for (int index = 0; index < pieces.Count; index++)
         {
-            areaOfPieces.Add(pieces[index].GetComponent<PieceInfo>().area);
+            lengthsOfPieces.Add(pieces[index].GetComponent<PieceInfo>().lengths);
         }
-        return areaOfPieces;
+        return lengthsOfPieces;
+    }
+    public List<float[]> GetAnglesOfPieces(List<GameObject> pieces)
+    {
+        Debug.Log("LNASorting: FindAreaOfPieces");
+        List<float[]> anglesOfPieces = new List<float[]>();
+        for (int index = 0; index < pieces.Count; index++)
+        {
+            anglesOfPieces.Add(pieces[index].GetComponent<PieceInfo>().angles);
+        }
+        return anglesOfPieces;
     }
 
-    public List<Vector2> FindPiecesWithIdenticalArea(List<float> areasOfPieces, JSONPuzzle puzzle)
+    public List<Vector2> FindPiecesWithIdenticalLengthsAndAngles(List<float[]> lengthsOfPieces, List<float[]> anglesOfPieces, JSONPuzzle puzzle)
     {
-        Debug.Log("AreaSorting: FindPiecesWithIdenticalArea");
+        Debug.Log("LNASorting: FindPiecesWithIdenticalArea");
         List<Vector2> piecesWithIdenticalArea = new List<Vector2>();
         if (areasOfPieces.Count > 1)
         {
