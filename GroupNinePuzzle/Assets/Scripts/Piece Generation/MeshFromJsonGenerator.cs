@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using JSONPuzzleTypes;
+using UnityEditor;
 
 public class MeshFromJsonGenerator : MonoBehaviour
 
@@ -18,36 +19,9 @@ public class MeshFromJsonGenerator : MonoBehaviour
     public GameObject pieceObject = null;
     void Start()
     {
+        Debug.Log("MeshFromJSONGenerator: Start()");
         GenerateMeshes();
-        CreatePieces();
-        GetComponent<SnowflakeAlgorithm>().LogResult();
-        GetComponent<SnowflakeAlgorithm>().FindPieces();
     }
-
-    void CreatePieces()
-    {
-        
-        var idx = 0;
-        foreach (var mesh in meshArray)
-        {
-            var newGameObject = new GameObject("Piece " + Puzzle.pieces[idx].piece);
-            newGameObject.AddComponent<MeshFilter>();
-            newGameObject.GetComponent<MeshFilter>().mesh = mesh;
-            newGameObject.AddComponent<MeshRenderer>();
-            newGameObject.AddComponent<MeshCollider>();
-            newGameObject.AddComponent<Translation>();
-            newGameObject.AddComponent<Rotation>();
-            newGameObject.AddComponent<PieceInfo>();
-            newGameObject.transform.parent = this.transform;
-
-            var renderer = newGameObject.GetComponent<MeshRenderer>();
-            var test = renderer.materials;
-            test[0].color = Color.blue;
-
-            idx++;
-        }
-    }
-
     void GenerateMeshes()
     {
         JSONDeserializer deserializer = GetComponent<JSONDeserializer>();

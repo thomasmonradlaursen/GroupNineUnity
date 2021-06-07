@@ -133,6 +133,7 @@ GameObject:
   - component: {fileID: 247557104}
   - component: {fileID: 247557105}
   - component: {fileID: 247557108}
+  - component: {fileID: 247557110}
   - component: {fileID: 247557106}
   - component: {fileID: 247557109}
   m_Layer: 0
@@ -181,7 +182,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabDot: {fileID: 8697019572017349557, guid: 219564e54a88c4ed29cc2ca6c0c44311,
     type: 3}
-  fileName: Classic-003-005-1331.json
+  fileName: WithIdenticalPieces.json
   locationOfFile: Assets/DataObjects/
 --- !u!23 &247557106
 MeshRenderer:
@@ -256,6 +257,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 247557103}
   m_Mesh: {fileID: 0}
+--- !u!114 &247557110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 247557103}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70a973e5b93f5432a88b0d8b8c1097b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pieces: []
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
