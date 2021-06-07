@@ -15,6 +15,7 @@ public class MeshFromJsonGenerator : MonoBehaviour
     public GameObject selectedObject = null;
     public string previousSelected = "empty";
     public GameObject previousSelectedObject = null;
+    public GameObject pieceObject = null;
     void Start()
     {
         GenerateMeshes();

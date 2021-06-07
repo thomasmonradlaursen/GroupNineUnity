@@ -165,6 +165,8 @@ MonoBehaviour:
   selectedObject: {fileID: 0}
   previousSelected: empty
   previousSelectedObject: {fileID: 0}
+  pieceObject: {fileID: 2111246074405301089, guid: 63eccb76a775f4dcbb354163c5290066,
+    type: 3}
 --- !u!114 &247557105
 MonoBehaviour:
   m_ObjectHideFlags: 0

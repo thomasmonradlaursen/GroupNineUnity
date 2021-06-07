@@ -9,14 +9,6 @@ public class PieceInfo : MonoBehaviour
     public float[] lengths;
     public float area;
     public Vector3 centroid;
-    public Mesh mesh;
-    public MeshRenderer rend;
-    public MeshCollider collie;
-    public MeshFilter meshFilter;
-    public Translation translation;
-    public Rotation rotation;
-    public SnapIntoPlace snap;
-
     void Start()
     {
         angles = mM.CalculateAnglesFromMesh(GetComponent<MeshFilter>().mesh); 
