@@ -32,13 +32,13 @@ public class LengthsAndAnglesSorting
     {
         Debug.Log("LNASorting: FindPiecesWithIdenticalArea");
         List<Vector2> piecesWithIdenticalArea = new List<Vector2>();
-        if (areasOfPieces.Count > 1)
+        if (lengthsOfPieces.Count > 1)
         {
-            for (int outer = 0; outer < areasOfPieces.Count; outer++)
+            for (int outer = 0; outer < lengthsOfPieces.Count; outer++)
             {
-                for (int inner = outer + 1; inner < areasOfPieces.Count; inner++)
+                for (int inner = outer + 1; inner < lengthsOfPieces.Count; inner++)
                 {
-                    if (areasOfPieces[outer] == areasOfPieces[inner])
+                    if (lengthsOfPieces[outer] == lengthsOfPieces[inner])
                     {
                         piecesWithIdenticalArea.Add(new Vector2(puzzle.pieces[outer].piece, puzzle.pieces[inner].piece));
                     }
