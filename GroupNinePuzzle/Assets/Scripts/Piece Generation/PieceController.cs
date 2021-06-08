@@ -31,7 +31,7 @@ public class PieceController : MonoBehaviour
             newPiece.AddComponent<Rotation>();
             newPiece.AddComponent<PieceInfo>();
             newPiece.GetComponent<PieceInfo>().CalculateInformation();
-            newPiece.AddComponent<SnapIntoPlace>();
+            newPiece.AddComponent<MagneticTouchAlgorithm>();
             PieceOutlineGenerator.GenerateOutline(newPiece, mesh.vertices);
             newPiece.transform.parent = this.transform;
 
