@@ -11,25 +11,47 @@ public class SnowflakeAlgorithm : MonoBehaviour
     LengthsAndAnglesSorting lengthsAndAnglesSorting = new LengthsAndAnglesSorting();
     JSONPuzzle puzzle;
     (bool, string) resultAndMessage = (true, "success");
-    List<Vector2> piecesWithIdenticalArea;
-    List<Vector2> piecesWithIdenticalLengthsAndAngles;
+    List<Vector2> piecesWithIdenticalArea;  //(pieceName1, pieceName2)
+    List<Vector2> piecesWithIdenticalLengthsAndAngles;   
     List<float> areaOfPieces;
     List<float[]> lengthsOfPieces;
     List<float[]> anglesOfPieces;
+    List<GameObject> pieces;
 
     void Start()
     {
         puzzle = GetComponentInParent<PieceController>().puzzle;
-        List<GameObject> pieces = GetComponent<PieceController>().pieces;
+        pieces = GetComponent<PieceController>().pieces;
 
         areaOfPieces = areaSorting.GetAreaOfPieces(pieces);
         lengthsOfPieces = lengthsAndAnglesSorting.GetLengthsOfPieces(pieces);
         anglesOfPieces = lengthsAndAnglesSorting.GetAnglesOfPieces(pieces);
 
+        //check areas
         piecesWithIdenticalArea = areaSorting.FindPiecesWithIdenticalArea(areaOfPieces, puzzle);
-        
-        LogResult();
+
+        //check angles
+        if(piecesWithIdenticalArea.Count != 0){
+            for(int i = 0; i < piecesWithIdenticalArea.Count; i++){
+               if(DetermineSnowflakeismByAngles(piecesWithIdenticalArea[i]) == false){
+                   piecesWithIdenticalArea.Remove(piecesWithIdenticalArea[i]);
+               }
+            }
+        }
+        //check side lengths
+        if(piecesWithIdenticalArea.Count != 0){
+            for(int i = 0; i < piecesWithIdenticalArea.Count; i++){
+                if(DetermineSnowflakeismBySides(piecesWithIdenticalArea[i]) == false){
+                   piecesWithIdenticalArea.Remove(piecesWithIdenticalArea[i]);
+               }
+            }
+        }
+        //output result of snowflakeism
+        if(piecesWithIdenticalArea.Count != 0){
+            Debug.Log("This puzzle contains identical pieces");
+        }
     }
+    /*
     public void LogResult()
     {
         DetermineSnowflakeism();
@@ -43,6 +65,7 @@ public class SnowflakeAlgorithm : MonoBehaviour
             DetermineReasonForFailure();
         }
     }
+    */
 
     void DetermineSnowflakeism()
     {
@@ -58,13 +81,98 @@ public class SnowflakeAlgorithm : MonoBehaviour
         }
     }
 
-    void DetermineSnowflakeismByLengthsAndAngles()
+    bool DetermineSnowflakeismBySides(Vector2 piecesToCompare)          //return true if identical
     {
-        if (piecesWithIdenticalLengthsAndAngles.Count != 0)
-        {
-            resultAndMessage.Item1 = false;
-            resultAndMessage.Item2 = "lengthsAndArea";
+        bool areIdentical = true;
+        float[] sidesA = lengthsOfPieces[(int) piecesToCompare[0]];
+        float[] sidesB = lengthsOfPieces[(int) piecesToCompare[1]];
+
+        bool collision = false;
+        int collisionPoint = 0;
+        
+        for(int j = 0; j<sidesB.Length; j++){
+            if(sidesA[0] == sidesB[j]){
+                collision = true;
+                collisionPoint = j;
+                break;
+            }
         }
+        
+        if(collision == true){
+            sidesB = alignArray(sidesB, collisionPoint);
+            collision = true;
+
+            for(int i = 0; i<sidesA.Length; i++){
+                for(int j = 0; j<sidesB.Length; j++){
+                    if(sidesA[i] != sidesB[j]){
+                        collision = false;
+                        //Debug.Log("Pieces "+piecesToCompare[0]+ " and "+ piecesToCompare[1]+" are different");
+                        areIdentical = false;
+                        i = sidesA.Length;
+                        break;
+                    }
+                }
+            }
+            if(collision == true){
+                Debug.Log("Pieces "+piecesToCompare[0]+ " and "+ piecesToCompare[1]+" have identical sideslengths");
+                areIdentical = true;
+            }
+        }
+        return areIdentical;
+    }
+
+    float[] alignArray(float[] arrayToAlign, int newStart){
+        float[] aligned = new float[arrayToAlign.Length];
+        for(int i = 0; i < arrayToAlign.Length; i++){
+            if(newStart >= arrayToAlign.Length){
+                newStart = 0;
+            }
+            aligned[i] = arrayToAlign[newStart];
+            newStart++;
+        }
+        return aligned;
+    }
+    bool DetermineSnowflakeismByAngles(Vector2 piecesToCompare)         //return true if identical 
+    {
+        bool areIdentical = true;
+        float[] anglesA = anglesOfPieces[(int) piecesToCompare[0]];
+        float[] anglesB = anglesOfPieces[(int) piecesToCompare[1]];
+
+        bool collision = false;
+        int collisionPoint = 0;
+        
+        for(int j = 0; j<anglesB.Length; j++){
+            if(anglesA[0] == anglesB[j]){
+                collision = true;
+                collisionPoint = j;
+                break;
+            }
+        }
+        
+        if(collision == true){
+            anglesB = alignArray(anglesB, collisionPoint);
+            collision = true;
+
+            for(int i = 0; i<anglesA.Length; i++){
+                for(int j = 0; j<anglesB.Length; j++){
+                    if(anglesA[i] != anglesB[j]){
+                        collision = false;
+                        Debug.Log("Pieces "+piecesToCompare[0]+ " and "+ piecesToCompare[1]+" have different angles:");
+                        Debug.Log("Piece "+piecesToCompare[0]+ " angle "+ i+" : " +anglesA[i]);
+                        Debug.Log("Piece "+piecesToCompare[1]+ " angle "+ j+" : " +anglesB[j]);
+                        areIdentical = false;
+                        i = anglesA.Length;
+                        break;
+                    }
+                }
+            }
+            if(collision == true){
+                Debug.Log("Pieces "+piecesToCompare[0]+ " and "+ piecesToCompare[1]+" have identical angles");
+                areIdentical = true;
+            }
+        }
+        return areIdentical;
+
     }
 
     void DetermineReasonForFailure()
@@ -84,4 +192,5 @@ public class SnowflakeAlgorithm : MonoBehaviour
             Debug.Log("The following pieces have identical lengths and angles:");
         }
     }
+
 }
