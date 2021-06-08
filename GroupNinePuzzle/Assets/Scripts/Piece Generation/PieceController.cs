@@ -31,11 +31,18 @@ public class PieceController : MonoBehaviour
             newPiece.AddComponent<Rotation>();
             newPiece.AddComponent<PieceInfo>();
             newPiece.GetComponent<PieceInfo>().CalculateInformation();
+            newPiece.AddComponent<SnapIntoPlace>();
+            PieceOutlineGenerator.GenerateOutline(newPiece, mesh.vertices);
             newPiece.transform.parent = this.transform;
 
             var renderer = newPiece.GetComponent<MeshRenderer>();
-            var test = renderer.materials;
-            test[0].color = Color.blue;
+            var materials = renderer.materials;
+            materials = new Material[]
+            {
+                new Material(Shader.Find("Sprites/Default"))
+                };
+            materials[0].color = Color.blue;
+            renderer.materials = materials;
 
             pieces.Add(newPiece);
 

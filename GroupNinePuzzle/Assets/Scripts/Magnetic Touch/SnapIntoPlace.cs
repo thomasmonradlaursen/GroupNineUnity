@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class SnapIntoPlace : MonoBehaviour
 {
-    // Start is called before the first frame update
     private Vector3 mouseOffset;
     private MiscellaneousMath mM;
     private PieceInfo closestPiece;
@@ -12,12 +11,10 @@ public class SnapIntoPlace : MonoBehaviour
     {
         closestPiece = AutoTranslate();
         Debug.Log("Closest piece: " + closestPiece.name);
-        //CalculateVerticesAfterTranslation(closestPoint);
-        //CalculateCentroidAfterTranslation();
     }
     
     void FixedUpdate(){
-        if (Input.GetKey(KeyCode.RightArrow)){
+        if (Input.GetKeyDown(KeyCode.S)){
             CalculateVerticesAfterTranslation(closestPiece.centroid);
             GetComponent<PieceInfo>().centroid = closestPiece.GetComponent<PieceInfo>().centroid;
         }
@@ -29,16 +26,16 @@ public class SnapIntoPlace : MonoBehaviour
 
         PieceInfo[] pieces = FindObjectsOfType<PieceInfo>();  //locate all pieces
         
-        Vector3 closestPoint = new Vector3(Mathf.Infinity, Mathf.Infinity, 0);
-        closestPiece = GetComponent<PieceInfo>();
+        closestPiece = pieces[0];
 
         foreach(PieceInfo piece in pieces){
+            Vector3 closestPoint;
             if(piece.GetComponent<MeshFilter>().mesh == mesh){continue;}
             Debug.Log("Piece #"+piece.GetComponent<PieceInfo>().name+" center: "+piece.GetComponent<PieceInfo>().centroid);
             Vector3 tempCenter = piece.centroid;
 
             float testDist = Vector3.Distance(center, tempCenter);
-            float currDist = Vector3.Distance(center, closestPoint);
+            float currDist = Vector3.Distance(center, closestPiece.GetComponent<PieceInfo>().centroid);
             
             if(testDist < currDist){
                 closestPoint = tempCenter;
@@ -46,7 +43,7 @@ public class SnapIntoPlace : MonoBehaviour
             }
         }
         Debug.Log("Center: "+ center);
-        Debug.Log("Closest point: "+closestPoint);
+        Debug.Log("Closest point: " + closestPiece.GetComponent<PieceInfo>().centroid);
         return closestPiece;
         
     }

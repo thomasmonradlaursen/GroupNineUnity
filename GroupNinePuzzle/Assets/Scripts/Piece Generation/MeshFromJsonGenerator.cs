@@ -10,12 +10,13 @@ public class MeshFromJsonGenerator : MonoBehaviour
 {
     public JSONPuzzle Puzzle;
     public List<Mesh> meshArray = new List<Mesh>();
-    int[] triangles;
-    MiscellaneousMath mM = new MiscellaneousMath();
+    public int[] triangles;
+    public MiscellaneousMath mM = new MiscellaneousMath();
     public string selected = "empty";
     public GameObject selectedObject = null;
     public string previousSelected = "empty";
     public GameObject previousSelectedObject = null;
+    Vector2[] newUV;
     public GameObject pieceObject = null;
     void Start()
     {
@@ -42,6 +43,7 @@ public class MeshFromJsonGenerator : MonoBehaviour
             }
 
             mesh.vertices = vertices;
+            mesh.uv = newUV;
 
             var verticesList = new List<Vector3>();
             foreach (var vertex in vertices)
