@@ -65,13 +65,13 @@ public class SnowflakeAlgorithm : MonoBehaviour
             DetermineReasonForFailure();
         }
     }
-    */
+   
 
     void DetermineSnowflakeism()
     {
         DetermineSnowflakeismByArea();
     }
-
+    */
     void DetermineSnowflakeismByArea()
     {
         if (piecesWithIdenticalArea.Count != 0)
@@ -152,20 +152,48 @@ public class SnowflakeAlgorithm : MonoBehaviour
         if(collision == true){
             anglesB = alignArray(anglesB, collisionPoint);
             collision = true;
-
-            for(int i = 0; i<anglesA.Length; i++){
-                for(int j = 0; j<anglesB.Length; j++){
-                    if(anglesA[i] != anglesB[j]){
+            int counter;
+            if(anglesA.Length <= anglesB.Length){
+                counter = anglesA.Length;
+            }else{
+                counter = anglesB.Length;
+                float[] temp = anglesA;
+                anglesA = anglesB;
+                anglesB = temp;
+            }
+            int i = 0; int j = 0;
+            while(i < counter){
+                if(anglesA[i] != anglesB[j] && (anglesA[i] != (int) 180 && anglesB[j] != (int) 180)){
                         collision = false;
                         Debug.Log("Pieces "+piecesToCompare[0]+ " and "+ piecesToCompare[1]+" have different angles:");
                         Debug.Log("Piece "+piecesToCompare[0]+ " angle "+ i+" : " +anglesA[i]);
                         Debug.Log("Piece "+piecesToCompare[1]+ " angle "+ j+" : " +anglesB[j]);
                         areIdentical = false;
-                        i = anglesA.Length;
-                        break;
+                }
+                if(anglesA[i] == (int) 180){
+                    j--;
+                }
+                if(anglesB[j] == (int) 180){
+                    i--;
+                }
+                j++;
+                i++;
+            }
+            /*
+            for(int i = 0; i<anglesA.Length; i++){
+                for(int j = 0; j<anglesB.Length; j++){
+                    if(anglesA[i] != anglesB[j] && (anglesA[i] != (int) 180 && anglesB[j] != (int) 180)){
+                        collision = false;
+                        Debug.Log("Pieces "+piecesToCompare[0]+ " and "+ piecesToCompare[1]+" have different angles:");
+                        Debug.Log("Piece "+piecesToCompare[0]+ " angle "+ i+" : " +anglesA[i]);
+                        Debug.Log("Piece "+piecesToCompare[1]+ " angle "+ j+" : " +anglesB[j]);
+                        areIdentical = false;
+                        i = anglesA.Length; //break outer loop
+                        break;              //break inner loop
                     }
                 }
             }
+            */
             if(collision == true){
                 Debug.Log("Pieces "+piecesToCompare[0]+ " and "+ piecesToCompare[1]+" have identical angles");
                 areIdentical = true;
@@ -173,6 +201,12 @@ public class SnowflakeAlgorithm : MonoBehaviour
         }
         return areIdentical;
 
+    }
+
+    void specialCase180(float suspectAngle, float[] anglesA, float[] anglesB){
+        if((int) suspectAngle == 180){
+
+        }
     }
 
     void DetermineReasonForFailure()
