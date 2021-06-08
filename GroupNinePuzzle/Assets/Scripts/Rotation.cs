@@ -5,6 +5,7 @@ using UnityEngine;
 public class Rotation : MonoBehaviour
 {
     public Mesh mesh;
+    public LineRenderer lineRenderer;
     private Vector3[] originalVertices;
     private Vector3[] rotatedVertices;
     void FixedUpdate()
@@ -44,6 +45,7 @@ public class Rotation : MonoBehaviour
         }
         RestorePositionOfVertices(centerOfMass);
         mesh.SetVertices(rotatedVertices);
+        lineRenderer.SetPositions(rotatedVertices);
         originalVertices = mesh.vertices;
         GetComponent<MeshCollider>().sharedMesh = mesh;
     }
@@ -92,6 +94,7 @@ public class Rotation : MonoBehaviour
     void UpdateMeshInfromation()
     {
         mesh = GetComponent<MeshFilter>().mesh;
+        lineRenderer = GetComponent<LineRenderer>();
         originalVertices = new Vector3[mesh.vertices.Length];
         originalVertices = mesh.vertices;
         rotatedVertices = new Vector3[originalVertices.Length];

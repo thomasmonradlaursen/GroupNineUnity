@@ -15,6 +15,8 @@ public class MeshFromJsonGenerator : MonoBehaviour
     public GameObject selectedObject = null;
     public string previousSelected = "empty";
     public GameObject previousSelectedObject = null;
+    Vector2[] newUV;
+
     void Start()
     {
         GenerateMeshes();
@@ -23,7 +25,7 @@ public class MeshFromJsonGenerator : MonoBehaviour
 
     void CreatePieces()
     {
-        
+
         var idx = 0;
         foreach (var mesh in meshArray)
         {
@@ -35,11 +37,17 @@ public class MeshFromJsonGenerator : MonoBehaviour
             newGameObject.AddComponent<Translation>();
             newGameObject.AddComponent<Rotation>();
             newGameObject.AddComponent<PieceInfo>();
+            PieceOutlineGenerator.GenerateOutline(newGameObject, mesh.vertices);
             newGameObject.transform.parent = this.transform;
 
             var renderer = newGameObject.GetComponent<MeshRenderer>();
             var test = renderer.materials;
+            test = new Material[]{
+                    new Material(Shader.Find("Sprites/Default"))
+                };
             test[0].color = Color.blue;
+            renderer.materials = test;
+
 
             idx++;
         }
@@ -57,7 +65,7 @@ public class MeshFromJsonGenerator : MonoBehaviour
         {
             var mesh = new Mesh();
             var vertices = new Vector3[piece.corners.Length];
-           
+
             var idx = 0;
             foreach (var corner in piece.corners)
             {
@@ -67,6 +75,7 @@ public class MeshFromJsonGenerator : MonoBehaviour
             }
 
             mesh.vertices = vertices;
+            mesh.uv = newUV;
 
             var verticesList = new List<Vector3>();
             foreach (var vertex in vertices)

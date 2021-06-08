@@ -14,7 +14,7 @@ public class BoardOutlineGenerator : MonoBehaviour
         lineRenderer = lineobject.AddComponent<LineRenderer>();
         lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
         lineRenderer.material.color = Color.yellow;
-        lineRenderer.widthMultiplier = 0.02f;
+        lineRenderer.widthMultiplier = 0.03f;
         lineRenderer.positionCount = 4;
         lineRenderer.loop = true;
         lineobject.transform.parent = this.transform;
