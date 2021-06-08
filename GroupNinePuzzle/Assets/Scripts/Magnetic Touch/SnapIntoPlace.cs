@@ -15,8 +15,10 @@ public class SnapIntoPlace : MonoBehaviour
     
     void FixedUpdate(){
         if (Input.GetKeyDown(KeyCode.S)){
-            CalculateVerticesAfterTranslation(closestPiece.centroid);
-            GetComponent<PieceInfo>().centroid = closestPiece.GetComponent<PieceInfo>().centroid;
+            //CalculateVerticesAfterTranslation(closestPiece.centroid);
+            //GetComponent<PieceInfo>().centroid = closestPiece.GetComponent<PieceInfo>().centroid;
+            (float, float) minMax = GetComponent<PieceInfo>().GetMaximumAndMinimumXCoordinate();
+            Debug.Log(string.Format("Piece {0}: . Minimum x-coordinate: {1}. Maximum x-coordinate: {2}.", this.name, minMax.Item1, minMax.Item2));
         }
     }
 
