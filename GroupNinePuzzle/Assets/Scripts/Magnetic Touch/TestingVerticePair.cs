@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class TestingVerticePair
 {
-    int getWrappingIndex(int index, int lengthOfArray)
+    int GetWrappingIndex(int index, int lengthOfArray)
     {
-        ((index % lengthOfArray) + lengthOfArray) % lengthOfArray;
+        return ((index % lengthOfArray) + lengthOfArray) % lengthOfArray;
     }
 
-    void checkDistancesBetweenVerticesOfTwoPieces(Vector3[] piece1, vector3[] piece2)
+    void CheckDistancesBetweenVerticesOfTwoPieces(Vector3[] piece1, Vector3[] piece2)
     {
 
         // item1 is distance from vertice i in piece1 to vertice k in piece2.
@@ -23,19 +23,19 @@ public class TestingVerticePair
         for (int i = 0; i < piece1.Length; i++)
         {
             var vertex_piece1 = piece1[i];
-            var previousVertex_piece1 = piece1[getWrappingIndex(i - 1, piece1.Length)];
-            var nextVertex_piece1 = piece1[getWrappingIndex(i + 1, piece1.Length)];
+            var previousVertex_piece1 = piece1[GetWrappingIndex(i - 1, piece1.Length)];
+            var nextVertex_piece1 = piece1[GetWrappingIndex(i + 1, piece1.Length)];
             for (int k = 0; k < piece2.Length; k++)
             {
                 var vertex_piece2 = piece2[k];
-                var previousVertex_piece2 = piece2[getWrappingIndex(k - 1, piece2.Length)];
-                var nextVertex_piece2 = piece2[getWrappingIndex(k + 1, piece2.Length)];
+                var previousVertex_piece2 = piece2[GetWrappingIndex(k - 1, piece2.Length)];
+                var nextVertex_piece2 = piece2[GetWrappingIndex(k + 1, piece2.Length)];
 
-                var distBetweenVertices = distanceBetweenVertices(vertex_piece1, vertex_piece2);
+                var distBetweenVertices = DistanceBetweenVertices(vertex_piece1, vertex_piece2);
                 if (distBetweenVertices < smallestDistance.Item1)
                 {
-                    var distPreviousVertices = distanceBetweenVertices(previousVertex_piece1, previousVertex_piece2);
-                    var distNextVertices = distanceBetweenVertices(previousVertex_piece1, previousVertex_piece2);
+                    var distPreviousVertices = DistanceBetweenVertices(previousVertex_piece1, previousVertex_piece2);
+                    var distNextVertices = DistanceBetweenVertices(previousVertex_piece1, previousVertex_piece2);
 
                     if (distPreviousVertices <= distNextVertices)
                     {
@@ -52,7 +52,7 @@ public class TestingVerticePair
         }
     }
 
-    float distanceBetweenVertices(Vector3 vertex1, Vector3 vertex2)
+    float DistanceBetweenVertices(Vector3 vertex1, Vector3 vertex2)
     {
         var xDist = vertex2.x - vertex1.x;
         var yDist = vertex2.y - vertex1.y;
