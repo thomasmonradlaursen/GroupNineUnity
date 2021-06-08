@@ -76,34 +76,5 @@ public class Translation : MonoBehaviour
         Mesh mesh = GetComponentInParent<MeshFilter>().mesh;
         Vector3 transCentroid = mM.CalculateCentroid(mesh.vertices, piece.GetComponentInParent<PieceInfo>().area);
         GetComponent<PieceInfo>().centroid = transCentroid;
-        Debug.Log("new center : "+GetComponent<PieceInfo>().centroid);
-        /*
-        Vector3 translatedCentroid = GetComponent<PieceInfo>().centroid;
-        translatedCentroid.x += (MouseWorldPosition().x + mouseOffset.x);
-        translatedCentroid.y += (MouseWorldPosition().y + mouseOffset.y);
-        GetComponent<PieceInfo>().centroid = translatedCentroid;
-        */
-    }
-    void LogVertices(Vector3[] vertices) 
-    {
-        foreach(Vector3 vertex in vertices)
-        {
-            Debug.Log(vertex);
-        }
-    }
-    void LogAngles(float[] angles) 
-    {
-        foreach(float angle in angles)
-        {
-            Debug.Log(angle);
-        }
-    }
-
-        void LogSides(float[] sides) 
-    {
-        foreach(float side in sides)
-        {
-            Debug.Log(side);
-        }
     }
 }
