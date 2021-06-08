@@ -52,6 +52,7 @@ public class SnapIntoPlace : MonoBehaviour
     {
         //transform.position = Vector3.zero;
         Mesh mesh = GetComponent<MeshFilter>().mesh;
+        LineRenderer lineRenderer = GetComponent<LineRenderer>();
         Vector3[] translatedVertices = new Vector3[mesh.vertices.Length];
         for(int index = 0; index < mesh.vertices.Length; index++)
         {
@@ -61,6 +62,7 @@ public class SnapIntoPlace : MonoBehaviour
             Debug.Log("moving y: " +mesh.vertices[index].y + " + " +closestPoint[1] + " = "+ translatedVertices[index].y);
         }
         mesh.SetVertices(translatedVertices);
+        lineRenderer.SetPositions(translatedVertices);
         GetComponent<MeshCollider>().sharedMesh = mesh;
     }
     void CalculateCentroidAfterTranslation()
