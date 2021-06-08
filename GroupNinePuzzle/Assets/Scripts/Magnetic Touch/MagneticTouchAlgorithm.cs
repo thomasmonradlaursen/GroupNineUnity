@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class MagneticTouchAlgorithm : MonoBehaviour
 {
-
     public List<GameObject> pieces;
     (GameObject, List<GameObject>) possibleSnaps = (null, new List<GameObject>());
 
@@ -39,11 +38,13 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         float maximumForSelected = boundBoxForSelectedPiece.Item2;
         float minimumForCompare;
         float maximumForCompare;
+        Debug.Log("MinimumForSelected: " + minimumForSelected + ", MaximumForSelected: " + maximumForSelected);
         foreach (GameObject piece in pieces)
         {
             (float, float) boundBoxForNext = ConstructBoundBox(piece, margin);
             minimumForCompare = boundBoxForNext.Item1;
             maximumForCompare = boundBoxForNext.Item2;
+            Debug.Log("Minimum: " + minimumForCompare + ", maximum: " + maximumForCompare);
             if (minimumForSelected < maximumForCompare && maximumForSelected > minimumForCompare)
             {
                 if (!(piece.name.Equals(GetComponentInParent<MeshFromJsonGenerator>().selected)))
