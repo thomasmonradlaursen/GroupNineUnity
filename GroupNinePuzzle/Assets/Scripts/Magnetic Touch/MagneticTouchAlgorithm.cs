@@ -6,7 +6,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
 {
 
     public List<GameObject> pieces;
-    (string, List<string>) possibleSnaps = ("empty", new List<string>());
+    (GameObject, List<GameObject>) possibleSnaps = (null, new List<GameObject>());
 
     private void Start()
     {
@@ -32,7 +32,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
 
     void FindCandidatesForSnap(GameObject selectedPiece, float margin)
     {
-        possibleSnaps.Item1 = selectedPiece.name;
+        possibleSnaps.Item1 = selectedPiece;
         possibleSnaps.Item2.Clear();
         (float, float) boundBoxForSelectedPiece = ConstructBoundBox(selectedPiece, margin);
         float minimumForSelected = boundBoxForSelectedPiece.Item1;
@@ -48,7 +48,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
             {
                 if (!(piece.name.Equals(GetComponentInParent<MeshFromJsonGenerator>().selected)))
                 {
-                    possibleSnaps.Item2.Add(piece.name);
+                    possibleSnaps.Item2.Add(piece);
                 }
             }
         }
@@ -64,18 +64,18 @@ public class MagneticTouchAlgorithm : MonoBehaviour
             {
                 if (index == possibleSnaps.Item2.Count - 1)
                 {
-                    printString = printString + possibleSnaps.Item2[index] + ". ";
+                    printString = printString + possibleSnaps.Item2[index].name + ". ";
                 }
                 else
                 {
-                    printString = printString + possibleSnaps.Item2[index] + ", ";
+                    printString = printString + possibleSnaps.Item2[index].name + ", ";
                 }
             }
-            Debug.Log(possibleSnaps.Item1 + " can possibly snap to the following pieces: " + printString);
+            Debug.Log(possibleSnaps.Item1.name + " can possibly snap to the following pieces: " + printString);
         }
         else
         {
-            Debug.Log(possibleSnaps.Item1 + " cannot snap to any other pieces at the moment.");
+            Debug.Log(possibleSnaps.Item1.name + " cannot snap to any other pieces at the moment.");
         }
     }
 }
