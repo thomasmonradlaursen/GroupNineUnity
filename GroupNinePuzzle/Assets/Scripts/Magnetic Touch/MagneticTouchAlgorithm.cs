@@ -5,7 +5,7 @@ using UnityEngine;
 public class MagneticTouchAlgorithm : MonoBehaviour
 {
     public List<GameObject> pieces;
-    (GameObject, List<GameObject>) possibleSnaps = (null, new List<GameObject>());
+    public (GameObject, List<GameObject>) possibleSnaps = (null, new List<GameObject>());
 
     private void Start()
     {
@@ -20,6 +20,30 @@ public class MagneticTouchAlgorithm : MonoBehaviour
             float margin = 0.075f;
             FindCandidatesForSnap(GetComponentInParent<MeshFromJsonGenerator>().selectedObject, margin);
             LogPossibleSnaps();
+            if (possibleSnaps.Item2.Count > 0)
+            {
+                FindClosestVertexPair();
+            }
+        }
+    }
+
+    void FindClosestVertexPair()
+    {
+        List<(GameObject, Vector3, int, float)> closestVerticesToSelectedPiece = new List<(GameObject, Vector3, int, float)>();
+        Vector3 centroidOfSelectedPiece = possibleSnaps.Item1.GetComponent<PieceInfo>().centroid;
+        closestVerticesToSelectedPiece = GetComponentInParent<FindClosestVertex>().FindClosestVertexToCentroidOfSelectedPiece(possibleSnaps, centroidOfSelectedPiece);
+        GetComponentInParent<FindClosestVertex>().LogVertexAndDistance(closestVerticesToSelectedPiece);
+        (GameObject, int, float) pieceWithClosestVertex;
+        pieceWithClosestVertex = GetComponentInParent<FindClosestVertex>().SelectPieceToSnapTo(closestVerticesToSelectedPiece);
+        Vector3 closestVertexOfMagnet = pieceWithClosestVertex.Item1.GetComponent<MeshFilter>().mesh.vertices[pieceWithClosestVertex.Item2];
+        GameObject selectedPiece = GetComponentInParent<MeshFromJsonGenerator>().selectedObject;
+        if (this.name.Equals(selectedPiece.name))
+        {
+            int closestVertexInSelectedPiece = GetComponentInParent<FindClosestVertex>().FindClosestVertexInSelectedPiece(selectedPiece, closestVertexOfMagnet);
+            Debug.LogFormat("Closest vertex in selected piece: " + selectedPiece.GetComponent<MeshFilter>().mesh.vertices[closestVertexInSelectedPiece]);
+            Vector3 displacement = GetComponentInParent<FindClosestVertex>().CalculateDisplacementForSnap(selectedPiece, pieceWithClosestVertex.Item1, closestVertexInSelectedPiece, pieceWithClosestVertex.Item2);
+            Debug.Log("Displacement: " + displacement);
+            GetComponentInParent<FindClosestVertex>().CalculateVerticesAfterSnapTranslation(selectedPiece, displacement);
         }
     }
 
