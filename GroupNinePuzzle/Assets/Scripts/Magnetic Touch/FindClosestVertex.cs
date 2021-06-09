@@ -63,7 +63,7 @@ public class FindClosestVertex : MonoBehaviour
         }
         meshForSelectedPiece.SetVertices(translatedVertices);
         lineRenderer.SetPositions(translatedVertices);
-        GetComponentInParent<MeshCollider>().sharedMesh = meshForSelectedPiece;
+        selectedPiece.GetComponent<MeshCollider>().sharedMesh = meshForSelectedPiece;
     }
     // In case a piece can snap to more than one piece at once, select the closest and snap to it.
     public (GameObject, int, float) SelectPieceToSnapTo(List<(GameObject, Vector3, int, float)> closestVerticesToSelectedPiece)
