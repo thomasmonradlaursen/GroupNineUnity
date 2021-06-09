@@ -45,27 +45,6 @@ public class SnowflakeAlgorithm : MonoBehaviour
             Debug.Log("This puzzle contains identical pieces");
         }
     }
-    /*
-    public void LogResult()
-    {
-        DetermineSnowflakeism();
-        if (resultAndMessage.Item1)
-        {
-            Debug.Log("Snowflakeism for puzzle: True");
-        }
-        else
-        {
-            Debug.Log("Snowflakeism for puzzle: False");
-            DetermineReasonForFailure();
-        }
-    }
-   
-
-    void DetermineSnowflakeism()
-    {
-        DetermineSnowflakeismByArea();
-    }
-    */
     void DetermineSnowflakeismByArea()
     {
         if (piecesWithIdenticalArea.Count != 0)
@@ -84,6 +63,7 @@ public class SnowflakeAlgorithm : MonoBehaviour
         float[] anglesA = anglesOfPieces[(int) piecesToCompare[0]];
         float[] anglesB = anglesOfPieces[(int) piecesToCompare[1]];
 
+        /*
         int n = 0;
         foreach(float side in sidesA){
             Debug.Log("A: side "+n+": "+side);
@@ -94,6 +74,8 @@ public class SnowflakeAlgorithm : MonoBehaviour
             Debug.Log("B: side "+n+": "+side);
             n++;
         }
+        */
+
         bool collision = false;
         int collisionPoint = 0;
         
@@ -173,12 +155,6 @@ public class SnowflakeAlgorithm : MonoBehaviour
             newStart++;
         }
         return aligned;
-    }
-
-    void specialCase180(float suspectAngle, float[] anglesA, float[] anglesB){
-        if((int) suspectAngle == 180){
-
-        }
     }
 
     void DetermineReasonForFailure()
