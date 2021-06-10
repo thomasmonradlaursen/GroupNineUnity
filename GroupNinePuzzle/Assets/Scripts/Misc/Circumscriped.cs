@@ -55,4 +55,10 @@ public class Circumscribed //Circumscribed circle script
         float circumradius = CalculateCircumradius(S, a, b);
         return (circumcenter, circumradius);
     }
+    public bool IsPointOnCirle(Vector3 circumcenter, float circumradius, Vector3 point)
+    {
+        bool result = true;
+        if(Vector3.Distance(point, circumcenter) > circumradius) result = false;
+        return result;
+    }
 }

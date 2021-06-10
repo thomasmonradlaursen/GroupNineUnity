@@ -18,6 +18,7 @@ public class RandomPieceGenerator : MonoBehaviour
         Instantiate(centerDot, circumcircle.Item1, Quaternion.identity);
         Debug.Log("Radius of circle: " + circumcircle.Item2);
         Debug.Log("Center of circle: " + circumcircle.Item1);
+        Debug.Log("Is point on circle: " + circumscriber.IsPointOnCirle(circumcircle.Item1, circumcircle.Item2, randomPieces[5]));
     }
     List<Vector3> GenerateRandomPointsForPieces(int numberOfPieces)
     {
