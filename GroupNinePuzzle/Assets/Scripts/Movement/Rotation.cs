@@ -26,7 +26,7 @@ public class Rotation : MonoBehaviour
             }
         }
     }
-    void RotateMesh(float rotationIntervalAndDirection)
+    public void RotateMesh(float rotationIntervalAndDirection)
     {
         Vector3 centroid = GetComponent<PieceInfo>().centroid;
         CentralizeVertices(centroid);

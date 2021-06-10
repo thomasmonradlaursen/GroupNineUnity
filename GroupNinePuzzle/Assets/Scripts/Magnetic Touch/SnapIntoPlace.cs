@@ -10,7 +10,7 @@ public class SnapIntoPlace : MonoBehaviour
     void OnMouseUp()
     {
         closestPiece = AutoTranslate();
-        Debug.Log("Closest piece: " + closestPiece.name);
+        // Debug.Log("Closest piece: " + closestPiece.name);
     }
     
     void FixedUpdate(){
@@ -18,7 +18,7 @@ public class SnapIntoPlace : MonoBehaviour
             //CalculateVerticesAfterTranslation(closestPiece.centroid);
             //GetComponent<PieceInfo>().centroid = closestPiece.GetComponent<PieceInfo>().centroid;
             (float, float) minMax = GetComponent<PieceInfo>().GetMaximumAndMinimumXCoordinate();
-            Debug.Log(string.Format("Piece {0}: . Minimum x-coordinate: {1}. Maximum x-coordinate: {2}.", this.name, minMax.Item1, minMax.Item2));
+            // Debug.Log(string.Format("Piece {0}: . Minimum x-coordinate: {1}. Maximum x-coordinate: {2}.", this.name, minMax.Item1, minMax.Item2));
         }
     }
 
@@ -33,7 +33,7 @@ public class SnapIntoPlace : MonoBehaviour
         foreach(PieceInfo piece in pieces){
             Vector3 closestPoint;
             if(piece.GetComponent<MeshFilter>().mesh == mesh){continue;}
-            Debug.Log("Piece #"+piece.GetComponent<PieceInfo>().name+" center: "+piece.GetComponent<PieceInfo>().centroid);
+            // Debug.Log("Piece #"+piece.GetComponent<PieceInfo>().name+" center: "+piece.GetComponent<PieceInfo>().centroid);
             Vector3 tempCenter = piece.centroid;
 
             float testDist = Vector3.Distance(center, tempCenter);
@@ -44,8 +44,8 @@ public class SnapIntoPlace : MonoBehaviour
                 closestPiece = piece;
             }
         }
-        Debug.Log("Center: "+ center);
-        Debug.Log("Closest point: " + closestPiece.GetComponent<PieceInfo>().centroid);
+        // Debug.Log("Center: "+ center);
+        // Debug.Log("Closest point: " + closestPiece.GetComponent<PieceInfo>().centroid);
         return closestPiece;
         
     }
@@ -60,8 +60,8 @@ public class SnapIntoPlace : MonoBehaviour
         {
             translatedVertices[index].x = mesh.vertices[index].x + closestPoint[0];
             translatedVertices[index].y = mesh.vertices[index].y + closestPoint[1];
-            Debug.Log("moving x: " +mesh.vertices[index].x + " + " +closestPoint[0] + " = "+ translatedVertices[index].x);
-            Debug.Log("moving y: " +mesh.vertices[index].y + " + " +closestPoint[1] + " = "+ translatedVertices[index].y);
+            // Debug.Log("moving x: " +mesh.vertices[index].x + " + " +closestPoint[0] + " = "+ translatedVertices[index].x);
+            // Debug.Log("moving y: " +mesh.vertices[index].y + " + " +closestPoint[1] + " = "+ translatedVertices[index].y);
         }
         mesh.SetVertices(translatedVertices);
         lineRenderer.SetPositions(translatedVertices);
