@@ -5,52 +5,59 @@ using JSONPuzzleTypes;
 
 public class AutoSolveAlgorithm : MonoBehaviour
 {
+    MiscellaneousMath mM = new MiscellaneousMath();
     public List<GameObject> pieces;
     JSONPuzzle puzzle;
-    List<GameObject> potentialPieces;
+    List<GameObject> potentialPieces = new List<GameObject>();
     List<List<GameObject>> placedPieces;
-    float theta = 90.0f;
-    float xAxisLength;
-    float yAxisLength;
-    Vector3 upperLeftCorner = new Vector3(0,0,0);
-    Vector3 upperRightCorner = new Vector3(0,0,0);
-    Vector3 lowerRightCorner = new Vector3(0,0,0);
-    Vector3 lowerLeftCorner = new Vector3(0,0,0);
+    float theta = 90.0f; int indexOfTheta;
+    float xAxisLength; float yAxisLength;
+    Vector3 upperLeftCorner; Vector3 upperRightCorner;
+    Vector3 lowerRightCorner; Vector3 lowerLeftCorner;
+    Vector3 currentPoint; GameObject selectedPiece;
     
     void Start(){
         
     }
+    void FixedUpdate()
+    {
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            Debug.Log("AutoSolve - TestingImplementation()");
+            Calculate();
+            PlacePiece();
+        }
+    }
     public void Calculate(){
-        /*
-        puzzle = GetComponentInParent<PieceController>().puzzle;
-        pieces = GetComponentInParent<PieceController>().pieces;
-        */
+        
         puzzle = GetComponentInParent<MeshFromJsonGenerator>().Puzzle;
+        pieces = GetComponentInParent<PieceController>().pieces;
 
-        findCorners();
-        Debug.Log("Upper left corner: ("+ upperLeftCorner[0]+","+upperLeftCorner[1]+")");
-        Debug.Log("Upper right corner: ("+ upperRightCorner[0]+","+upperRightCorner[1]+")");
-        Debug.Log("Lower left corner: ("+ lowerRightCorner[0]+","+lowerRightCorner[1]+")");
-        Debug.Log("Lower right corner: ("+ lowerLeftCorner[0]+","+lowerLeftCorner[1]+")");
+        FindCorners();
+        Debug.Log("lower left corner: "+ lowerLeftCorner);
+        Debug.Log("Upper left corner: "+ upperLeftCorner);
+        Debug.Log("Upper right corner: "+ upperRightCorner);
+        Debug.Log("lower right corner: "+ lowerRightCorner);
         xAxisLength = Vector3.Distance(upperLeftCorner, upperRightCorner);
         yAxisLength = Vector3.Distance(lowerLeftCorner, upperLeftCorner);
-
+        currentPoint = upperLeftCorner;
+        FindPotentialPieces();
     }
 
-    void findCorners(){
+    void FindCorners(){
         var form = puzzle.puzzle.form;
         List<Vector3> corners = new List<Vector3>();
         int n = 0;
         while(n<form.Length){
             Vector3 vector = new Vector3(form[n].coord.x, form[n].coord.y, 0);
-            Debug.Log("Corner "+n+": ("+vector[0]+","+vector[1]+")");
+            //Debug.Log("Corner "+n+": " +vector);
             corners.Add(vector);
             n++;
         }
 
         lowerLeftCorner = corners[0];
         n = 1;
-        while(n<form.Length){
+        while(n<corners.Count){
             if(corners[n].x < lowerLeftCorner.x){
                 lowerLeftCorner = corners[n];
             }
@@ -59,7 +66,6 @@ public class AutoSolveAlgorithm : MonoBehaviour
             }
             n++;
         }
-        Debug.Log("Lower left corner: ("+ lowerRightCorner[0]+","+lowerRightCorner[1]+")");
         corners.Remove(lowerLeftCorner);
 
         upperLeftCorner = corners[0];
@@ -67,12 +73,12 @@ public class AutoSolveAlgorithm : MonoBehaviour
         while(n<corners.Count){
             if(corners[n].x < lowerLeftCorner.x){
                 lowerLeftCorner = corners[n];
-            }else if(corners[n].x == lowerLeftCorner.x && corners[n].y > lowerLeftCorner.y){
+            }
+            if(corners[n].x == lowerLeftCorner.x && corners[n].y > lowerLeftCorner.y){
                 lowerLeftCorner = corners[n];
             }
             n++;
         }
-        Debug.Log("Upper left corner: ("+ upperLeftCorner[0]+","+upperLeftCorner[1]+")");
         corners.Remove(upperLeftCorner);
 
         upperRightCorner = corners[0];
@@ -80,32 +86,87 @@ public class AutoSolveAlgorithm : MonoBehaviour
         while(n<corners.Count){
             if(corners[n].x > lowerLeftCorner.x){
                 lowerLeftCorner = corners[n];
-            }else if(corners[n].x == lowerLeftCorner.x && corners[n].y > lowerLeftCorner.y){
+            }
+            if(corners[n].x == lowerLeftCorner.x && corners[n].y > lowerLeftCorner.y){
                 lowerLeftCorner = corners[n];
             }
             n++;
         }
-        Debug.Log("Upper right corner: ("+ upperRightCorner[0]+","+upperRightCorner[1]+")");
         corners.Remove(upperRightCorner);
 
         lowerRightCorner = corners[0];
-        Debug.Log("Lower right corner: ("+ lowerRightCorner[0]+","+lowerRightCorner[1]+")");
     }
-    void calculateNextAngle(){
+    void PlacePiece(){
+        UpdateIndexOfTheta();
+        selectedPiece = potentialPieces[0];
+        Vector3 displacement = selectedPiece.GetComponent<MeshFilter>().mesh.vertices[indexOfTheta]-currentPoint;
+        //Debug.Log("Vertex of theta: "+ potentialPieces[0].GetComponent<MeshFilter>().mesh.vertices[indexOfTheta]);
+        //Debug.Log("Current point: "+ currentPoint);
+        
+        Mesh meshForSelectedPiece = potentialPieces[0].GetComponent<MeshFilter>().mesh;
+        LineRenderer lineRenderer = potentialPieces[0].GetComponent<LineRenderer>();
+        Vector3[] translatedVertices = new Vector3[meshForSelectedPiece.vertices.Length];
+        for(int index = 0; index < meshForSelectedPiece.vertices.Length; index++)
+        {
+            translatedVertices[index].x = meshForSelectedPiece.vertices[index].x - displacement.x;
+            translatedVertices[index].y = meshForSelectedPiece.vertices[index].y - displacement.y;
+        }
+        meshForSelectedPiece.SetVertices(translatedVertices);
+        lineRenderer.SetPositions(translatedVertices);
+        //GetComponent<MeshCollider>().sharedMesh = meshForSelectedPiece;
+        
+        float area = mM.CalculateAreaFromMesh(GetComponent<MeshFilter>().mesh);
+        selectedPiece.GetComponent<PieceInfo>().centroid = mM.CalculateCentroid(GetComponent<MeshFilter>().mesh.vertices, area);
+        selectedPiece.GetComponent<Rotation>().originalVertices = translatedVertices;
+
+        Vector3 pointToBeAligned;
+        if(indexOfTheta != 0){
+            pointToBeAligned = meshForSelectedPiece.vertices[indexOfTheta-1];
+        }else{
+            pointToBeAligned = meshForSelectedPiece.vertices[meshForSelectedPiece.vertices.Length-1];
+        }
+        float rotationAngle = CalculateRotationAngle(pointToBeAligned);
+
+        selectedPiece.GetComponent<Rotation>().AutoRotate((rotationAngle*Mathf.PI) / 180, potentialPieces[0]);
+    }
+    float CalculateRotationAngle(Vector3 pointToBeAligned){
+        float angle = Vector3.SignedAngle(currentPoint-pointToBeAligned, currentPoint-upperRightCorner, Vector3.up);
+        //Debug.Log("*************************************************************************************");
+        //Debug.Log("rotation angle: "+angle);
+        return angle;
+    }
+    void RotatePiece(){
 
     }
-    void findPotentialPieces(){
+    void UpdateIndexOfTheta(){
+        GameObject piece = potentialPieces[0];
+        int n = 0;
+        while(n < piece.GetComponent<PieceInfo>().angles.Length){
+            if(piece.GetComponent<PieceInfo>().angles[n] == theta){
+                indexOfTheta = n;
+                break;
+            }
+            n++;
+        }
+    }
+    void CalculateNextAngle(){
+
+    }
+    void FindPotentialPieces(){
+        Debug.Log("Number of pieces: "+pieces.Count);
+        Debug.Log("Theta: "+theta);
         foreach(GameObject piece in pieces){
             float[] angles = piece.GetComponent<PieceInfo>().angles;
             foreach(float angle in angles){
-                if(angle == theta){
+                Debug.Log("Angle: "+angle);
+                if((int) angle == (int) theta){
                     potentialPieces.Add(piece);
                     break;
                 }
             }
         }
     }
-    bool isPlacedCorrectly(){
+    bool IsPlacedCorrectly(){
         bool placedCorrectly = true;
 
         return placedCorrectly;

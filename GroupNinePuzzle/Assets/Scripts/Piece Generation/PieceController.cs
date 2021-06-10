@@ -13,9 +13,6 @@ public class PieceController : MonoBehaviour
         puzzle = deserializer.DeserializerPuzzleFromJSON(deserializer.locationOfFile + deserializer.fileName);
         Debug.Log("PieceGenerator: Start()");
         CreatePieces();
-        foreach(GameObject piece in pieces){
-            piece.GetComponent<AutoSolveAlgorithm>().Calculate();
-        }
     }
     void CreatePieces()
     {
