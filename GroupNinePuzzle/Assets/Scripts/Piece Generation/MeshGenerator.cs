@@ -43,8 +43,8 @@ public class MeshGenerator : MonoBehaviour
         vertices = verticesGenerator.vertices;
         // Debug.Log("length: " + vertices.Length + Environment.NewLine);
 
-        var noOfVertical = VerticesGenerator.numberOfVerticalVertices;
-        var noOfHorizontal = VerticesGenerator.numberOfHorizontalVertices;
+        var noOfVertical = GetComponent<VerticesGenerator>().numberOfVerticalVertices;
+        var noOfHorizontal = GetComponent<VerticesGenerator>().numberOfHorizontalVertices;
 
         for(int idx = 0; idx < (noOfVertical-1)*(noOfHorizontal); idx++){ // should only be -1 instead of -2 when we have coordinates of vertices on edges in array as well
 
