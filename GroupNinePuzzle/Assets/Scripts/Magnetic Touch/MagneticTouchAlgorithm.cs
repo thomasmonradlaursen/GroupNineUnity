@@ -9,7 +9,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("MagneticTouchAlgorithm - Start()");
+        //Debug.Log("MagneticTouchAlgorithm - Start()");
         pieces = GetComponentInParent<PieceController>().pieces;
     }
     void FixedUpdate()

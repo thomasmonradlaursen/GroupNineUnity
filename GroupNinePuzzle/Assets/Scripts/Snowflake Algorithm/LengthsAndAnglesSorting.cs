@@ -9,7 +9,7 @@ public class LengthsAndAnglesSorting
 
     public List<float[]> GetLengthsOfPieces(List<GameObject> pieces)
     {
-        Debug.Log("LNASorting: FindAreaOfPieces");
+        //Debug.Log("LNASorting: FindAreaOfPieces");
         List<float[]> lengthsOfPieces = new List<float[]>();
         for (int index = 0; index < pieces.Count; index++)
         {
@@ -19,7 +19,7 @@ public class LengthsAndAnglesSorting
     }
     public List<float[]> GetAnglesOfPieces(List<GameObject> pieces)
     {
-        Debug.Log("LNASorting: FindAreaOfPieces");
+        //Debug.Log("LNASorting: FindAreaOfPieces");
         List<float[]> anglesOfPieces = new List<float[]>();
         for (int index = 0; index < pieces.Count; index++)
         {
@@ -30,7 +30,7 @@ public class LengthsAndAnglesSorting
 
     public List<Vector2> FindPiecesWithIdenticalLengthsAndAngles(List<float[]> lengthsOfPieces, List<float[]> anglesOfPieces, JSONPuzzle puzzle)
     {
-        Debug.Log("LNASorting: FindPiecesWithIdenticalArea");
+        //Debug.Log("LNASorting: FindPiecesWithIdenticalArea");
         List<Vector2> piecesWithIdenticalArea = new List<Vector2>();
         if (lengthsOfPieces.Count > 1)
         {

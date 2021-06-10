@@ -36,7 +36,7 @@ public class SnowflakeAlgorithm : MonoBehaviour
                 if(DetermineSnowflakeismByAnglesAndSides(piecesWithIdenticalArea[i]) == false){
                    piecesWithIdenticalArea.Remove(piecesWithIdenticalArea[i]);
                }else{
-                   Debug.Log("Pieces "+ piecesWithIdenticalArea[i]+" have identical sideslengths or angles");
+                   //Debug.Log("Pieces "+ piecesWithIdenticalArea[i]+" have identical sideslengths or angles");
                }
             }
         }

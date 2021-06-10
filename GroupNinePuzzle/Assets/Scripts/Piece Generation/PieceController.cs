@@ -13,7 +13,6 @@ public class PieceController : MonoBehaviour
         puzzle = deserializer.DeserializerPuzzleFromJSON(deserializer.locationOfFile + deserializer.fileName);
         Debug.Log("PieceGenerator: Start()");
         CreatePieces();
-        
     }
     void CreatePieces()
     {
@@ -32,6 +31,7 @@ public class PieceController : MonoBehaviour
             newPiece.AddComponent<PieceInfo>();
             newPiece.GetComponent<PieceInfo>().CalculateInformation();
             newPiece.AddComponent<MagneticTouchAlgorithm>();
+            newPiece.AddComponent<AutoSolveAlgorithm>();
             PieceOutlineGenerator.GenerateOutline(newPiece, mesh.vertices);
             newPiece.transform.parent = this.transform;
 
