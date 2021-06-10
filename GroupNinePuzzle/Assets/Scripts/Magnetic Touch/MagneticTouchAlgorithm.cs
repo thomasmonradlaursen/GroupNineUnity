@@ -29,15 +29,8 @@ public class MagneticTouchAlgorithm : MonoBehaviour
 
     void FindClosestVertexPair()
     {
-        // List<(GameObject, Vector3, int, float)> closestVerticesToSelectedPiece = new List<(GameObject, Vector3, int, float)>();
-        // Vector3 centroidOfSelectedPiece = possibleSnaps.Item1.GetComponent<PieceInfo>().centroid;
-        // closestVerticesToSelectedPiece = GetComponentInParent<FindClosestVertex>().FindClosestVertexToCentroidOfSelectedPiece(possibleSnaps, centroidOfSelectedPiece);
-        // GetComponentInParent<FindClosestVertex>().LogVertexAndDistance(closestVerticesToSelectedPiece);
-
         SnapInformation snapInformation;
         snapInformation = GetComponentInParent<FindClosestVertex>().FindClosestVertexToSelectedPiece(possibleSnaps);
-        // pieceWithClosestVertex = GetComponentInParent<FindClosestVertex>().SelectPieceToSnapTo(closestVerticesToSelectedPiece);
-        // Vector3 closestVertexOfMagnet = pieceWithClosestVertex.Item1.GetComponent<MeshFilter>().mesh.vertices[pieceWithClosestVertex.Item2];
         GameObject selectedPiece = GetComponentInParent<MeshFromJsonGenerator>().selectedObject;
 
         if (this.name.Equals(selectedPiece.name))
@@ -46,50 +39,56 @@ public class MagneticTouchAlgorithm : MonoBehaviour
             // Debug.Log(selectedPiece.name);
             // Debug.Log("this: " + this.name);
             // Debug.Log("this.name.Equals(selectedPiece.name");
-            // int closestVertexInSelectedPiece = GetComponentInParent<FindClosestVertex>().FindClosestVertexInSelectedPiece(selectedPiece, closestVertexOfMagnet);
-            
-            // Todo: maybe return index in SnapInformation result instead of finding it in this kinda odd way.
-            // int indexOfClosestVertexInSelectedPiece = GetComponentInParent<FindClosestVertex>().FindClosestVertexInSelectedPiece(selectedPiece, snapInformation.PrimaryVertexInPieceToSnapTo);
-            // int indexOfClosestVertexInPieceToSnapTo = GetComponentInParent<FindClosestVertex>().FindClosestVertexInSelectedPiece(snapInformation.PieceToSnapTo, snapInformation.PrimaryVertexInSelectedPiece);
+
             int indexOfClosestVertexInSelectedPiece = snapInformation.IndexOfPrimaryVertexInSelectedPiece;
             int indexOfClosestVertexInPieceToSnapTo = snapInformation.IndexOfPrimaryVertexInPieceToSnapTo;
             int indexOfNeighborVertexInSelectedPiece = snapInformation.IndexOfPreviousVertexInSelectedPiece;
             int indexOfNeighborVertexInPieceToSnapTo = snapInformation.IndexOfPreviousVertexInPieceToSnapTo;
-            // int indexOfClosestVertexInPieceToSnapTo = GetComponentInParent<FindClosestVertex>().FindIndexOfVertexInPiece(snapInformation.PieceToSnapTo, snapInformation.PrimaryVertexInPieceToSnapTo);
+
             // Debug.LogFormat("index of vertex in selected piece: " + indexOfClosestVertexInSelectedPiece);
             // Debug.LogFormat("vertex in selected piece: " + selectedPiece.GetComponent<MeshFilter>().mesh.vertices[indexOfClosestVertexInSelectedPiece]);
+
             Vector3 displacement = GetComponentInParent<FindClosestVertex>().CalculateDisplacementForSnap(selectedPiece, snapInformation.PieceToSnapTo, indexOfClosestVertexInSelectedPiece, indexOfClosestVertexInPieceToSnapTo);
             float rotation = GetComponentInParent<FindClosestVertex>().CalculateRotationForSnap(snapInformation.PrimaryVertexInSelectedPiece, snapInformation.PrimaryVertexInPieceToSnapTo, snapInformation.PreviousVertexInSelectedPiece, snapInformation.PreviousVertexInPieceToSnapTo);
-            Debug.Log("Displacement: " + displacement);
-            Debug.Log("Rotation: " + rotation);
-            GetComponentInParent<FindClosestVertex>().CalculateVerticesAfterSnapTranslation(selectedPiece, displacement);
-            GetComponentInParent<FindClosestVertex>().CalculateVerticesAfterSnapRotation(selectedPiece, rotation, snapInformation.PrimaryVertexInSelectedPiece);
+
+            // Debug.Log("Displacement: " + displacement);
+            // Debug.Log("Rotation: " + rotation);
+
+            GetComponentInParent<FindClosestVertex>().CalculateVerticesAfterSnapTranslationAndRotation(selectedPiece, displacement, rotation, snapInformation.IndexOfPrimaryVertexInSelectedPiece);
         }
     }
 
-    (float, float) ConstructBoundBox(GameObject piece, float margin)
+    ((float, float), (float, float)) ConstructBoundBox(GameObject piece, float margin)
     {
-        (float, float) minMax = piece.GetComponent<PieceInfo>().GetMaximumAndMinimumXCoordinate();
-        return (minMax.Item1 - margin, minMax.Item2 + margin);
+        (float, float) minMaxX = piece.GetComponent<PieceInfo>().GetMaximumAndMinimumXCoordinate();
+        (float, float) minMaxY = piece.GetComponent<PieceInfo>().GetMaximumAndMinimumYCoordinate();
+        return ((minMaxX.Item1 - margin, minMaxX.Item2 + margin), (minMaxY.Item1 - margin, minMaxY.Item2 + margin));
     }
 
     void FindCandidatesForSnap(GameObject selectedPiece, float margin)
     {
         possibleSnaps.Item1 = selectedPiece;
         possibleSnaps.Item2.Clear();
-        (float, float) boundBoxForSelectedPiece = ConstructBoundBox(selectedPiece, margin);
-        float minimumForSelected = boundBoxForSelectedPiece.Item1;
-        float maximumForSelected = boundBoxForSelectedPiece.Item2;
-        float minimumForCompare;
-        float maximumForCompare;
+        var boundBoxForSelectedPiece = ConstructBoundBox(selectedPiece, margin);
+        float minimumXForSelected = boundBoxForSelectedPiece.Item1.Item1;
+        float maximumXForSelected = boundBoxForSelectedPiece.Item1.Item2;
+        float minimumXForCompare;
+        float maximumXForCompare;
+        float minimumYForSelected = boundBoxForSelectedPiece.Item2.Item1;
+        float maximumYForSelected = boundBoxForSelectedPiece.Item2.Item2;
+        float minimumYForCompare;
+        float maximumYForCompare;
         // Debug.Log("MinimumForSelected: " + minimumForSelected + ", MaximumForSelected: " + maximumForSelected);
         foreach (GameObject piece in pieces)
         {
-            (float, float) boundBoxForNext = ConstructBoundBox(piece, margin);
-            minimumForCompare = boundBoxForNext.Item1;
-            maximumForCompare = boundBoxForNext.Item2;
+            var boundBoxForNext = ConstructBoundBox(piece, margin);
+            minimumXForCompare = boundBoxForNext.Item1.Item1;
+            maximumXForCompare = boundBoxForNext.Item1.Item2;
+            minimumYForCompare = boundBoxForNext.Item2.Item1;
+            maximumYForCompare = boundBoxForNext.Item2.Item2;
             // Debug.Log("Minimum: " + minimumForCompare + ", maximum: " + maximumForCompare);
-            if (minimumForSelected < maximumForCompare && maximumForSelected > minimumForCompare)
+            if (minimumXForSelected < maximumXForCompare && maximumXForSelected > minimumXForCompare
+                && minimumYForSelected < maximumYForCompare && maximumYForSelected > minimumYForCompare)
             {
                 if (!(piece.name.Equals(GetComponentInParent<MeshFromJsonGenerator>().selected)))
                 {

@@ -16,6 +16,7 @@ public class PieceInfo : MonoBehaviour
         area = mM.CalculateAreaFromMesh(GetComponent<MeshFilter>().mesh);
         centroid = mM.CalculateCentroid(GetComponent<MeshFilter>().mesh.vertices, area);
     }
+
     public (float, float) GetMaximumAndMinimumXCoordinate()
     {
         Vector3[] vertices = GetComponent<MeshFilter>().mesh.vertices;
@@ -25,6 +26,19 @@ public class PieceInfo : MonoBehaviour
         {
             if(vertex.x < minimum) minimum = vertex.x;
             if(vertex.x > maximum) maximum = vertex.x;
+        }
+        return (minimum, maximum);
+    }
+
+        public (float, float) GetMaximumAndMinimumYCoordinate()
+    {
+        Vector3[] vertices = GetComponent<MeshFilter>().mesh.vertices;
+        float maximum = vertices[0].y;
+        float minimum = vertices[0].y;
+        foreach(Vector3 vertex in vertices)
+        {
+            if(vertex.y < minimum) minimum = vertex.y;
+            if(vertex.y > maximum) maximum = vertex.y;
         }
         return (minimum, maximum);
     }
