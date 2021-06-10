@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,18 +15,15 @@ public class Rotation : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.UpArrow))
             {
-                RotateMesh((1 * Mathf.PI) / 180);
+                RotateMesh((1 * Mathf.PI) / 180);   //counter-clockwise
             }
             if (Input.GetKey(KeyCode.DownArrow))
             {
-                RotateMesh(-(1 * Mathf.PI) / 180);
-            }
-            if (Input.GetKeyUp(KeyCode.UpArrow) || Input.GetKeyUp(KeyCode.DownArrow))
-            {
+                RotateMesh(-(1 * Mathf.PI) / 180);  //clockwise
             }
         }
     }
-    void RotateMesh(float rotationIntervalAndDirection)
+    public void RotateMesh(float rotationIntervalAndDirection)
     {
         Vector3 centroid = GetComponent<PieceInfo>().centroid;
         CentralizeVertices(centroid);

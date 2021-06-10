@@ -111,8 +111,7 @@ public class AutoSolveAlgorithm : MonoBehaviour
             pointToBeAligned = meshForSelectedPiece.vertices[meshForSelectedPiece.vertices.Length-1];
         }
         float rotationAngle = CalculateRotationAngle(pointToBeAligned);
-
-
+        AutoRotate(displacement);
     }
     void AutoTranslate(GameObject selectedPiece, Vector3 displacement){
         Mesh meshForSelectedPiece = potentialPieces[0].GetComponent<MeshFilter>().mesh;
@@ -136,8 +135,18 @@ public class AutoSolveAlgorithm : MonoBehaviour
         //Debug.Log("rotation angle: "+angle);
         return angle;
     }
-    void AutoRotate(){
-
+    void AutoRotate(Vector3 displacement){
+        Mesh meshForSelectedPiece = selectedPiece.GetComponent<MeshFilter>().mesh;
+        LineRenderer lineRenderer = selectedPiece.GetComponent<LineRenderer>();
+        Vector3[] translatedVertices = new Vector3[meshForSelectedPiece.vertices.Length];
+        for(int index = 0; index < meshForSelectedPiece.vertices.Length; index++)
+        {
+            translatedVertices[index].x = meshForSelectedPiece.vertices[index].x - displacement.x;
+            translatedVertices[index].y = meshForSelectedPiece.vertices[index].y - displacement.y;
+        }
+        meshForSelectedPiece.SetVertices(translatedVertices);
+        lineRenderer.SetPositions(translatedVertices);
+        selectedPiece.GetComponent<MeshCollider>().sharedMesh = meshForSelectedPiece;
     }
     void UpdateIndexOfTheta(){
         GameObject piece = potentialPieces[0];
