@@ -21,10 +21,10 @@ public class JSONDeserializer : MonoBehaviour
 
     public void LogPuzzleInformation()
     {
-        Debug.Log("Name: " + Puzzle.name);
-        Debug.Log("Number of pieces: " + Puzzle.nPieces);
+        // Debug.Log("Name: " + Puzzle.name);
+        // Debug.Log("Number of pieces: " + Puzzle.nPieces);
         Vector2 form = FindFormOfPuzzle();
-        Debug.Log(String.Format("Form: {0} × {1}", form.x, form.y));
+        // Debug.Log(String.Format("Form: {0} × {1}", form.x, form.y));
     }
 
 Vector2 FindFormOfPuzzle()
