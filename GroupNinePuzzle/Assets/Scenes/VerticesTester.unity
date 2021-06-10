@@ -154,11 +154,10 @@ MonoBehaviour:
   boardSize: {x: 5, y: 3}
   numberOfPieces: 20
   randomPieces: []
-  prefabDot: {fileID: 8697019572017349557, guid: 219564e54a88c4ed29cc2ca6c0c44311,
+  pieceDot: {fileID: 8697019572017349557, guid: 219564e54a88c4ed29cc2ca6c0c44311,
     type: 3}
-  centerOfMassDot: {fileID: 914953944541903429, guid: 42e75d3553d967246858b22eba05fde0,
+  centerDot: {fileID: 4260579359540095505, guid: a5d0dc28609f247b4bff54b4a2c775f5,
     type: 3}
-  centerOfMass: {x: 0, y: 0, z: 0}
 --- !u!4 &1375582013
 Transform:
   m_ObjectHideFlags: 0
@@ -308,7 +307,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.6309185, g: 0.92271286, b: 0.9622642, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -349,7 +348,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2109405736}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4, y: 4, z: -10}
+  m_LocalPosition: {x: 2.5, y: 1.5, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
