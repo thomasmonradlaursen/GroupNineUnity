@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using JSONPuzzleTypes;
@@ -97,45 +97,25 @@ public class AutoSolveAlgorithm : MonoBehaviour
     }
     void PlacePiece(){
         UpdateIndexOfTheta();
-        selectedPiece = potentialPieces[0];
         Vector3 displacement = selectedPiece.GetComponent<MeshFilter>().mesh.vertices[indexOfTheta]-currentPoint;
         //Debug.Log("Vertex of theta: "+ potentialPieces[0].GetComponent<MeshFilter>().mesh.vertices[indexOfTheta]);
         //Debug.Log("Current point: "+ currentPoint);
-        Mesh meshForSelectedPiece = potentialPieces[0].GetComponent<MeshFilter>().mesh;
-        AutoTranslate(selectedPiece, displacement);
+        AutoTranslate(displacement);
         
         Vector3 pointToBeAligned;
         if(indexOfTheta != 0){
-            pointToBeAligned = meshForSelectedPiece.vertices[indexOfTheta-1];
+            pointToBeAligned = selectedPiece.GetComponent<MeshFilter>().mesh.vertices[indexOfTheta-1];
         }else{
-            pointToBeAligned = meshForSelectedPiece.vertices[meshForSelectedPiece.vertices.Length-1];
+            pointToBeAligned = selectedPiece.GetComponent<MeshFilter>().mesh.vertices[selectedPiece.GetComponent<MeshFilter>().mesh.vertices.Length-1];
         }
         float rotationAngle = CalculateRotationAngle(pointToBeAligned);
-        AutoRotate(displacement);
-    }
-    void AutoTranslate(GameObject selectedPiece, Vector3 displacement){
-        Mesh meshForSelectedPiece = potentialPieces[0].GetComponent<MeshFilter>().mesh;
-        LineRenderer lineRenderer = potentialPieces[0].GetComponent<LineRenderer>();
-        Vector3[] translatedVertices = new Vector3[meshForSelectedPiece.vertices.Length];
-        for(int index = 0; index < meshForSelectedPiece.vertices.Length; index++)
-        {
-            translatedVertices[index].x = meshForSelectedPiece.vertices[index].x - displacement.x;
-            translatedVertices[index].y = meshForSelectedPiece.vertices[index].y - displacement.y;
+        foreach(Vector3 ver in selectedPiece.GetComponent<MeshFilter>().mesh.vertices){
+            Debug.Log(ver);
         }
-        meshForSelectedPiece.SetVertices(translatedVertices);
-        lineRenderer.SetPositions(translatedVertices);
-        //GetComponent<MeshCollider>().sharedMesh = meshForSelectedPiece;
+        AutoRotate(rotationAngle);
         
-        float area = mM.CalculateAreaFromMesh(GetComponent<MeshFilter>().mesh);
-        selectedPiece.GetComponent<PieceInfo>().centroid = mM.CalculateCentroid(GetComponent<MeshFilter>().mesh.vertices, area);
     }
-    float CalculateRotationAngle(Vector3 pointToBeAligned){
-        float angle = Vector3.SignedAngle(currentPoint-pointToBeAligned, currentPoint-upperRightCorner, Vector3.up);
-        //Debug.Log("*************************************************************************************");
-        //Debug.Log("rotation angle: "+angle);
-        return angle;
-    }
-    void AutoRotate(Vector3 displacement){
+    void AutoTranslate(Vector3 displacement){
         Mesh meshForSelectedPiece = selectedPiece.GetComponent<MeshFilter>().mesh;
         LineRenderer lineRenderer = selectedPiece.GetComponent<LineRenderer>();
         Vector3[] translatedVertices = new Vector3[meshForSelectedPiece.vertices.Length];
@@ -143,11 +123,73 @@ public class AutoSolveAlgorithm : MonoBehaviour
         {
             translatedVertices[index].x = meshForSelectedPiece.vertices[index].x - displacement.x;
             translatedVertices[index].y = meshForSelectedPiece.vertices[index].y - displacement.y;
+            //Debug.Log(translatedVertices[index]);
         }
+        selectedPiece.GetComponent<MeshFilter>().mesh.SetVertices(translatedVertices);
         meshForSelectedPiece.SetVertices(translatedVertices);
         lineRenderer.SetPositions(translatedVertices);
-        selectedPiece.GetComponent<MeshCollider>().sharedMesh = meshForSelectedPiece;
+        
+        float area = mM.CalculateAreaFromMesh(meshForSelectedPiece);
+        //Debug.Log("area: " + area);
+        selectedPiece.GetComponent<PieceInfo>().centroid = mM.CalculateCentroid(translatedVertices, area);
+        //Debug.Log("centroid: "+ selectedPiece.GetComponent<PieceInfo>().centroid);
     }
+    float CalculateRotationAngle(Vector3 pointToBeAligned){
+        float angle = Vector3.SignedAngle(currentPoint-pointToBeAligned, currentPoint-upperRightCorner, Vector3.up);
+        //Debug.Log("*************************************************************************************");
+        //Debug.Log("rotation angle: "+angle);
+        return angle;
+    }
+    void AutoRotate(float rotationAngle){
+        Mesh meshForSelectedPiece = selectedPiece.GetComponent<MeshFilter>().mesh;
+        foreach(Vector3 ver in meshForSelectedPiece.vertices){
+            Debug.Log(ver);
+        }
+        LineRenderer lineRenderer = selectedPiece.GetComponent<LineRenderer>();
+        
+        Vector3[] rotatedVertices = new Vector3[meshForSelectedPiece.vertices.Length];
+        Vector3[] originalVertices = meshForSelectedPiece.vertices;
+        
+        float area = mM.CalculateAreaFromMesh(meshForSelectedPiece);
+        Vector3 centroid = mM.CalculateCentroid(meshForSelectedPiece.vertices, area);
+        Debug.Log("centroid: "+ centroid);
+        
+        originalVertices = CentralizeVertices(centroid, originalVertices);
+        for (int index = 0; index < originalVertices.Length; index++)
+        {
+            rotatedVertices[index].x = originalVertices[index].x * Mathf.Cos(rotationAngle) - originalVertices[index].y * Mathf.Sin(rotationAngle);
+            rotatedVertices[index].y = originalVertices[index].x * Mathf.Sin(rotationAngle) + originalVertices[index].y * Mathf.Cos(rotationAngle);
+        }
+        rotatedVertices = RestorePositionOfVertices(selectedPiece.GetComponent<PieceInfo>().centroid, rotatedVertices);
+        meshForSelectedPiece.SetVertices(rotatedVertices);
+        lineRenderer.SetPositions(rotatedVertices);
+        selectedPiece.GetComponent<MeshCollider>().sharedMesh = meshForSelectedPiece;
+        
+    }
+
+     Vector3[] CentralizeVertices(Vector3 centroid, Vector3[] originalVertices)
+    {
+        for (int index = 0; index < originalVertices.Length; index++)
+        {
+            // we add 100000 because we want all coordinates to be positive.
+            originalVertices[index].x = originalVertices[index].x - centroid.x;
+            originalVertices[index].y = originalVertices[index].y - centroid.y;
+        }
+        return originalVertices;
+    }
+
+    // Todo: already exists in Rotation.cs
+    Vector3[] RestorePositionOfVertices(Vector3 centroid, Vector3[] rotatedVertices)
+    {
+        for (int index = 0; index < rotatedVertices.Length; index++)
+        {
+            // we add 100000 because we want all coordinates to be positive.
+            rotatedVertices[index].x = rotatedVertices[index].x + centroid.x;
+            rotatedVertices[index].y = rotatedVertices[index].y + centroid.y;
+        }
+        return rotatedVertices;
+    }
+
     void UpdateIndexOfTheta(){
         GameObject piece = potentialPieces[0];
         int n = 0;
@@ -168,13 +210,14 @@ public class AutoSolveAlgorithm : MonoBehaviour
         foreach(GameObject piece in pieces){
             float[] angles = piece.GetComponent<PieceInfo>().angles;
             foreach(float angle in angles){
-                Debug.Log("Angle: "+angle);
+                //Debug.Log("Angle: "+angle);
                 if((int) angle == (int) theta){
                     potentialPieces.Add(piece);
                     break;
                 }
             }
         }
+        selectedPiece = potentialPieces[0];
     }
     bool IsPlacedCorrectly(){
         bool placedCorrectly = true;
