@@ -38,7 +38,7 @@ public class Circumscribed //Circumscribed circle script
         float b = DeterminantOf3DMatrix(matrixForB);
         return b;
     }
-    Vector3 CalculateCircumcenter(Vector3 S, float a)
+    public Vector3 CalculateCircumcenter(Vector3 S, float a)
     {
         return S / a;
     }
