@@ -15,7 +15,7 @@ public class DelaunayTriangulation : MonoBehaviour
         supertriangle = SetupSupertriangle(GetComponent<RandomPieceGenerator>().boardSize);
         //BowyerWatsonTriangulate(points, triangles);
     }
-    void BowyerWatsonTriangulate(List<Vector3> points, List<Mesh> triangles)
+    void BowyerWatsonTriangulate(List<Vector3> points, List<DelaunayTriangle> triangles)
     {
         foreach (Vector3 point in points)
         {
