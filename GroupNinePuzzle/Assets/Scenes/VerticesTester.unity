@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boardSize: {x: 5, y: 3}
-  numberOfPieces: 25
+  numberOfPieces: 5
   randomPieces: []
   pieceDot: {fileID: 8697019572017349557, guid: 219564e54a88c4ed29cc2ca6c0c44311,
     type: 3}
@@ -284,6 +284,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b1f80912d545432696bbf0e5d190312, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  triangles: []
+  topSupertriangle:
+    vertices: []
+    edges: []
+    circumcenter: {x: 0, y: 0, z: 0}
+    circumradius: 0
+  bottomSupertriangle:
+    vertices: []
+    edges: []
+    circumcenter: {x: 0, y: 0, z: 0}
+    circumradius: 0
 --- !u!1 &2109405736
 GameObject:
   m_ObjectHideFlags: 0
