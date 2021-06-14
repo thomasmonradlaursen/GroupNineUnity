@@ -119,7 +119,7 @@ public class DelaunayTriangulation : MonoBehaviour
     {
         DelaunayTriangle triangle = new DelaunayTriangle();
         triangle.id = triangleId;
-        triangle.vertices = new Vector3[3] { pointTwo, pointOne, pointThree };
+        triangle.vertices = new Vector3[3] {pointTwo, pointOne, pointThree };
         triangle.edges = new Edge[3] { new Edge(), new Edge(), new Edge() };
         triangle.edges[0].innerHalf = (pointOne, pointTwo);
         triangle.edges[0].outerHalf = (pointTwo, pointOne);
@@ -127,7 +127,7 @@ public class DelaunayTriangulation : MonoBehaviour
         triangle.edges[1].outerHalf = (pointThree, pointTwo);
         triangle.edges[2].innerHalf = (pointThree, pointOne);
         triangle.edges[2].outerHalf = (pointOne, pointThree);
-        (Vector3, float) centerAndRadius = circumscriber.GetCircumcenterAndCircumradius(pointOne, pointTwo, pointThree);
+        (Vector3, float) centerAndRadius = circumscriber.GetCircumcenterAndCircumradius(pointOne, pointThree, pointTwo);
         triangle.circumcenter = centerAndRadius.Item1;
         triangle.circumradius = centerAndRadius.Item2;
         triangleId++;
