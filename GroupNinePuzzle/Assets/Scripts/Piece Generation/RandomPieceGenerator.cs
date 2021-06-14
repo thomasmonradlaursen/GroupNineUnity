@@ -4,21 +4,18 @@ using UnityEngine;
 
 public class RandomPieceGenerator : MonoBehaviour
 {
-    Circumscribed circumscriber = new Circumscribed();
     public Vector2 boardSize = new Vector2(5, 3);
     public int numberOfPieces = 12;
     public List<Vector3> randomPieces;
+    public List<Vector3> corners;
     public GameObject pieceDot = null;
     public GameObject centerDot = null;
-    void Start()
+    public List<Vector3> GetPoints()
     {
         randomPieces = GenerateRandomPointsForPieces(numberOfPieces);
+        corners = SetupCorners(boardSize);
         RendererResults();
-        (Vector3, float) circumcircle = circumscriber.GetCircumcenterAndCircumradius(randomPieces[0], randomPieces[1], randomPieces[2]);
-        Instantiate(centerDot, circumcircle.Item1, Quaternion.identity);
-        Debug.Log("Radius of circle: " + circumcircle.Item2);
-        Debug.Log("Center of circle: " + circumcircle.Item1);
-        Debug.Log("Is point on circle: " + circumscriber.IsPointOnCirle(circumcircle.Item1, circumcircle.Item2, randomPieces[5]));
+        return randomPieces;
     }
     List<Vector3> GenerateRandomPointsForPieces(int numberOfPieces)
     {
@@ -29,24 +26,20 @@ public class RandomPieceGenerator : MonoBehaviour
             float randomYCoordinate = Random.Range(0.0f, (float)boardSize.y);
             randomPieces.Add(new Vector3(randomXCoordinate, randomYCoordinate, 0.0f));
         }
-        randomPieces.Add(new Vector3(0.0f, 0.0f, 0.0f));
-        randomPieces.Add(new Vector3(boardSize.x, 0.0f, 0.0f));
-        randomPieces.Add(new Vector3(boardSize.x, boardSize.y, 0.0f));
-        randomPieces.Add(new Vector3(0.0f, boardSize.y, 0.0f));
         return randomPieces;
     }
-    void DrawBorder(Vector2 boardSize)
+    List<Vector3> SetupCorners(Vector2 boardSize)
     {
         List<Vector3> corners = new List<Vector3>();
-        for(int index = randomPieces.Count-4; index < randomPieces.Count; index++)
-        {
-            corners.Add(randomPieces[index]);
-        }
-        GetComponent<LineRenderer>().SetPositions(corners.ToArray());
-    }
+        corners.Add(new Vector3(0.0f, 0.0f, 0.0f));
+        corners.Add(new Vector3(boardSize.x, 0.0f, 0.0f));
+        corners.Add(new Vector3(boardSize.x, boardSize.y, 0.0f));
+        corners.Add(new Vector3(0.0f, boardSize.y, 0.0f));
+        return corners;
+    } 
     void RendererResults()
     {
-        DrawBorder(boardSize);
+        GetComponent<LineRenderer>().SetPositions(corners.ToArray());
         foreach (Vector3 piece in randomPieces)
         {
             Instantiate(pieceDot, piece, Quaternion.identity);
