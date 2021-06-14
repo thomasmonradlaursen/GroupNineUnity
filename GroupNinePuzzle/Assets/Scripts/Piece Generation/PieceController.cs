@@ -7,11 +7,12 @@ public class PieceController : MonoBehaviour
 {
     public List<GameObject> pieces;
     public JSONPuzzle puzzle;
+    //public AutoSolveCleverVersion autoSolver;
     void Start()
     {
+        Debug.Log("PieceGenerator: Start()");
         JSONDeserializer deserializer = GetComponent<JSONDeserializer>();
         puzzle = deserializer.DeserializerPuzzleFromJSON(deserializer.locationOfFile + deserializer.fileName);
-        Debug.Log("PieceGenerator: Start()");
         CreatePieces();
     }
     void CreatePieces()
@@ -31,7 +32,7 @@ public class PieceController : MonoBehaviour
             newPiece.AddComponent<PieceInfo>();
             newPiece.GetComponent<PieceInfo>().CalculateInformation();
             newPiece.AddComponent<MagneticTouchAlgorithm>();
-            newPiece.AddComponent<AutoSolveAlgorithm>();
+            //newPiece.AddComponent<AutoSolveAlgorithm>();
             PieceOutlineGenerator.GenerateOutline(newPiece, mesh.vertices);
             newPiece.transform.parent = this.transform;
 

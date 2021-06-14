@@ -27,7 +27,7 @@ public class JSONDeserializer : MonoBehaviour
         // Debug.Log(String.Format("Form: {0} × {1}", form.x, form.y));
     }
 
-Vector2 FindFormOfPuzzle()
+    Vector2 FindFormOfPuzzle()
     {
         float x = 0.0f; float y = 0.0f;
         foreach(Form coordinateSet in Puzzle.puzzle.form)
