@@ -4,15 +4,12 @@ using UnityEngine;
 using JSONPuzzleTypes;
 
 public class SnowflakeAlgorithm : MonoBehaviour
-
 {
-    MiscellaneousMath miscellaneousMath = new MiscellaneousMath();
     AreaSorting areaSorting = new AreaSorting();
     LengthsAndAnglesSorting lengthsAndAnglesSorting = new LengthsAndAnglesSorting();
     JSONPuzzle puzzle;
     (bool, string) resultAndMessage = (true, "success");
-    List<Vector2> piecesWithIdenticalArea;  //(pieceName1, pieceName2)
-    List<Vector2> piecesWithIdenticalLengthsAndAngles;   
+    List<Vector2> piecesWithIdenticalArea;  //(pieceName1, pieceName2) 
     List<float> areaOfPieces;
     List<float[]> lengthsOfPieces;
     List<float[]> anglesOfPieces;
@@ -20,6 +17,7 @@ public class SnowflakeAlgorithm : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("SnowflakeAlgorithm Start()");
         puzzle = GetComponentInParent<PieceController>().puzzle;
         pieces = GetComponent<PieceController>().pieces;
 
