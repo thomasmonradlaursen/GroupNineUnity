@@ -10,7 +10,8 @@ public class DelaunayTriangulation : MonoBehaviour
     public List<DelaunayTriangle> triangles = new List<DelaunayTriangle>();
     public DelaunayTriangle topSupertriangle;
     public DelaunayTriangle bottomSupertriangle;
-    void Start()
+    public int triangleId = 1;
+    public List<DelaunayTriangle> RunDelaunayTriangulation()
     {
         points = GetComponent<RandomPieceGenerator>().GetPoints();
         (DelaunayTriangle, DelaunayTriangle) supertriangles = SetupSupertriangles(GetComponent<RandomPieceGenerator>().boardSize);
@@ -19,6 +20,7 @@ public class DelaunayTriangulation : MonoBehaviour
         triangles.Add(topSupertriangle);
         triangles.Add(bottomSupertriangle);
         BowyerWatsonTriangulate(points, triangles);
+        return triangles;
     }
     void BowyerWatsonTriangulate(List<Vector3> points, List<DelaunayTriangle> triangles)
     {
@@ -28,7 +30,7 @@ public class DelaunayTriangulation : MonoBehaviour
         {
             Debug.Log("Number of triangles at round " + numberOfLoops + ": " + triangles.Count);
             List<DelaunayTriangle> badTriangles = new List<DelaunayTriangle>();
-            foreach (DelaunayTriangle triangle in badTriangles)
+            foreach (DelaunayTriangle triangle in triangles)
             {
                 if (Vector3.Distance(point, triangle.circumcenter) <= triangle.circumradius)
                 {
@@ -37,26 +39,46 @@ public class DelaunayTriangulation : MonoBehaviour
             }
             List<Edge> polygon = new List<Edge>();
             Debug.Log("Remove bad triangles " + numberOfLoops);
+            Debug.LogFormat("Number of triangles: {0}", triangles.Count);
+            bool isEdgeUnique = true;
             foreach (DelaunayTriangle outerTriangle in badTriangles)
             {
+                Debug.Log("Outer triangle");
                 foreach (Edge outerEdge in outerTriangle.edges)
                 {
-                    bool isEdgeUnique = true;
+                    isEdgeUnique = true;
+                    Debug.Log("Outer edge");
                     foreach (DelaunayTriangle innerTriangle in badTriangles)
                     {
+                        Debug.Log("Inner triangle");
                         foreach (Edge innerEdge in innerTriangle.edges)
                         {
+                            Debug.Log("Inner edge");
                             {
-                                if(innerEdge.Equals(outerEdge) || innerTriangle.Equals(outerTriangle))
+                                if (innerTriangle.id != outerTriangle.id)
                                 {
-                                    Debug.Log("Found common edge" +  numberOfLoops);
-                                    isEdgeUnique = false;
+                                    if (innerEdge.innerHalf.Equals(outerEdge.innerHalf))
+                                    {
+                                        Debug.LogFormat("Inner inner-edge: {0}, Outer inner-edge: {1}", innerEdge.innerHalf, outerEdge.innerHalf);
+                                        isEdgeUnique = false;
+                                    }
+                                    else if (innerEdge.outerHalf.Equals(outerEdge.innerHalf))
+                                    {
+                                        Debug.LogFormat("Inner outer-edge: {0}, Outer inner-edge: {1}", innerEdge.outerHalf, outerEdge.innerHalf);
+                                        isEdgeUnique = false;
+                                    }
+                                    else if (innerEdge.outerHalf.Equals(outerEdge.outerHalf))
+                                    {
+                                        Debug.LogFormat("Inner outer-edge: {0}, Outer outer-edge: {1}", innerEdge.outerHalf, outerEdge.outerHalf);
+                                        isEdgeUnique = false;
+                                    }
                                 }
                             }
                         }
                     }
-                    if(isEdgeUnique)
+                    if (isEdgeUnique)
                     {
+                        Debug.Log("Found unique edge: " + outerEdge.innerHalf);
                         polygon.Add(outerEdge);
                     }
                 }
@@ -76,7 +98,7 @@ public class DelaunayTriangulation : MonoBehaviour
             {
                 Debug.Log("Triangle added at round" + numberOfLoops);
                 DelaunayTriangle newTriangle = new DelaunayTriangle();
-                newTriangle = CreateTriangle(point, edge.coordinates.Item1, edge.coordinates.Item2);
+                newTriangle = CreateTriangle(point, edge.innerHalf.Item1, edge.innerHalf.Item2);
                 triangles.Add(newTriangle);
             }
             numberOfLoops++;
@@ -96,17 +118,19 @@ public class DelaunayTriangulation : MonoBehaviour
     DelaunayTriangle CreateTriangle(Vector3 pointOne, Vector3 pointTwo, Vector3 pointThree)
     {
         DelaunayTriangle triangle = new DelaunayTriangle();
-        triangle.vertices = new Vector3[3] { pointOne, pointTwo, pointThree };
+        triangle.id = triangleId;
+        triangle.vertices = new Vector3[3] { pointTwo, pointOne, pointThree };
         triangle.edges = new Edge[3] { new Edge(), new Edge(), new Edge() };
-        triangle.edges[0].coordinates = (pointOne, pointTwo);
-        triangle.edges[1].coordinates = (pointTwo, pointThree);
-        triangle.edges[2].coordinates = (pointThree, pointOne);
-        triangle.edges[0].length = Vector3.Distance(pointOne, pointTwo);
-        triangle.edges[1].length = Vector3.Distance(pointTwo, pointThree);
-        triangle.edges[2].length = Vector3.Distance(pointThree, pointOne);
+        triangle.edges[0].innerHalf = (pointOne, pointTwo);
+        triangle.edges[0].outerHalf = (pointTwo, pointOne);
+        triangle.edges[1].innerHalf = (pointTwo, pointThree);
+        triangle.edges[1].outerHalf = (pointThree, pointTwo);
+        triangle.edges[2].innerHalf = (pointThree, pointOne);
+        triangle.edges[2].outerHalf = (pointOne, pointThree);
         (Vector3, float) centerAndRadius = circumscriber.GetCircumcenterAndCircumradius(pointOne, pointTwo, pointThree);
         triangle.circumcenter = centerAndRadius.Item1;
         triangle.circumradius = centerAndRadius.Item2;
+        triangleId++;
         return triangle;
     }
 }

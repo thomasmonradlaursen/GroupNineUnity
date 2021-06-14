@@ -14,7 +14,7 @@ public class RandomPieceGenerator : MonoBehaviour
     {
         randomPieces = GenerateRandomPointsForPieces(numberOfPieces);
         corners = SetupCorners(boardSize);
-        RendererResults();
+        //RendererResults();
         return randomPieces;
     }
     List<Vector3> GenerateRandomPointsForPieces(int numberOfPieces)
@@ -22,8 +22,8 @@ public class RandomPieceGenerator : MonoBehaviour
         List<Vector3> randomPieces = new List<Vector3>();
         for (int pieceNumber = 0; pieceNumber < numberOfPieces; pieceNumber++)
         {
-            float randomXCoordinate = Random.Range(0.0f, (float)boardSize.x);
-            float randomYCoordinate = Random.Range(0.0f, (float)boardSize.y);
+            float randomXCoordinate = Random.Range(((float)boardSize.x) / 10.0f, (float)boardSize.x - ((float)boardSize.x) / 10.0f);
+            float randomYCoordinate = Random.Range(((float)boardSize.y) / 10.0f, (float)boardSize.y - ((float)boardSize.y) / 10.0f);
             randomPieces.Add(new Vector3(randomXCoordinate, randomYCoordinate, 0.0f));
         }
         return randomPieces;
@@ -36,7 +36,7 @@ public class RandomPieceGenerator : MonoBehaviour
         corners.Add(new Vector3(boardSize.x, boardSize.y, 0.0f));
         corners.Add(new Vector3(0.0f, boardSize.y, 0.0f));
         return corners;
-    } 
+    }
     void RendererResults()
     {
         GetComponent<LineRenderer>().SetPositions(corners.ToArray());
@@ -45,5 +45,5 @@ public class RandomPieceGenerator : MonoBehaviour
             Instantiate(pieceDot, piece, Quaternion.identity);
         }
     }
-    
+
 }

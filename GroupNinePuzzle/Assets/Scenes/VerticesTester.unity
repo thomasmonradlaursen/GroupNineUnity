@@ -130,6 +130,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1375582013}
+  - component: {fileID: 1375582016}
   - component: {fileID: 1375582012}
   - component: {fileID: 1375582014}
   - component: {fileID: 1375582015}
@@ -153,8 +154,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boardSize: {x: 5, y: 3}
-  numberOfPieces: 5
+  numberOfPieces: 1
   randomPieces: []
+  corners: []
   pieceDot: {fileID: 8697019572017349557, guid: 219564e54a88c4ed29cc2ca6c0c44311,
     type: 3}
   centerDot: {fileID: 4260579359540095505, guid: a5d0dc28609f247b4bff54b4a2c775f5,
@@ -284,17 +286,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b1f80912d545432696bbf0e5d190312, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  points: []
   triangles: []
   topSupertriangle:
+    id: 0
     vertices: []
     edges: []
     circumcenter: {x: 0, y: 0, z: 0}
     circumradius: 0
   bottomSupertriangle:
+    id: 0
     vertices: []
     edges: []
     circumcenter: {x: 0, y: 0, z: 0}
     circumradius: 0
+  triangleId: 1
+--- !u!114 &1375582016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1375582011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8c392cd975114e8f8c452ed830f68df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  randomPuzzle:
+    puzzle:
+      form: []
+    name: 
+    nPieces: 0
+    pieces: []
 --- !u!1 &2109405736
 GameObject:
   m_ObjectHideFlags: 0
