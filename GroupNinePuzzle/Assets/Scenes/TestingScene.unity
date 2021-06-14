@@ -213,8 +213,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c6e4ca77eba4dcb8c3c622bf0b96d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boardSize: {x: 5, y: 3}
-  numberOfPieces: 6
+  boardSize: {x: 7, y: 7}
+  numberOfPieces: 16
   randomPieces: []
   corners: []
   pieceDot: {fileID: 8697019572017349557, guid: 219564e54a88c4ed29cc2ca6c0c44311,
@@ -368,7 +368,6 @@ MonoBehaviour:
   previousSelectedObject: {fileID: 0}
   pieceObject: {fileID: 2111246074405301089, guid: 63eccb76a775f4dcbb354163c5290066,
     type: 3}
-  puzzleFromRandom: 0
 --- !u!114 &247557105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -479,6 +478,7 @@ MonoBehaviour:
     name: 
     nPieces: 0
     pieces: []
+  puzzleFromRandom: 1
 --- !u!114 &247557111
 MonoBehaviour:
   m_ObjectHideFlags: 0

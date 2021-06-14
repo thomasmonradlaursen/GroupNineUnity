@@ -7,16 +7,26 @@ public class PieceController : MonoBehaviour
 {
     public List<GameObject> pieces;
     public JSONPuzzle puzzle;
+    public bool puzzleFromRandom = false;
     //public AutoSolveCleverVersion autoSolver;
     void Start()
     {
         Debug.Log("PieceGenerator: Start()");
-        JSONDeserializer deserializer = GetComponent<JSONDeserializer>();
-        puzzle = deserializer.DeserializerPuzzleFromJSON(deserializer.locationOfFile + deserializer.fileName);
+        if (puzzleFromRandom)
+        {
+            puzzle = GetComponentInChildren<CreateJSONFromRandom>().CreatePuzzle();
+            Debug.Log("Puzzle from random: " + puzzle.name);
+        }
+        else
+        {
+            JSONDeserializer deserializer = GetComponent<JSONDeserializer>();
+            puzzle = deserializer.DeserializerPuzzleFromJSON(deserializer.locationOfFile + deserializer.fileName);
+        }
         CreatePieces();
     }
     void CreatePieces()
     {
+        GetComponent<MeshFromJsonGenerator>().GenerateMeshes();
         List<Mesh> meshes = GetComponent<MeshFromJsonGenerator>().meshArray;
 
         int idx = 0;

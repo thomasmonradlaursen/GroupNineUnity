@@ -18,25 +18,11 @@ public class MeshFromJsonGenerator : MonoBehaviour
     public GameObject previousSelectedObject = null;
     Vector2[] newUV;
     public GameObject pieceObject = null;
-    public bool puzzleFromRandom = false;
-    void Start()
+   
+    public void GenerateMeshes()
     {
-        Debug.Log("MeshFromJSONGenerator: Start()");
-        GenerateMeshes();
-    }
-    void GenerateMeshes()
-    {
-        JSONDeserializer deserializer = GetComponent<JSONDeserializer>();
-        if(puzzleFromRandom)
-        {
-            Puzzle = GetComponentInChildren<CreateJSONFromRandom>().CreatePuzzle();
-            Debug.Log("Puzzle from random: " + Puzzle.name);
-        }
-        else
-        {
-            Puzzle = deserializer.DeserializerPuzzleFromJSON(deserializer.locationOfFile + deserializer.fileName);
-            deserializer.LogPuzzleInformation();
-        }
+        Debug.Log("MeshFromJSONGenerator: GenerateMeshes()");
+        Puzzle = GetComponent<PieceController>().puzzle;
         
         foreach (var piece in Puzzle.pieces)
         {
