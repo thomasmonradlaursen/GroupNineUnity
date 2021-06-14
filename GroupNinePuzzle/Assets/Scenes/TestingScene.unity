@@ -214,7 +214,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boardSize: {x: 3, y: 3}
-  numberOfPieces: 12
+  numberOfDots: 5
+  numberOfPieces: 8
   randomPieces: []
   corners:
   - {x: 0, y: 0, z: 0}
@@ -479,7 +480,7 @@ MonoBehaviour:
     name: 
     nPieces: 0
     pieces: []
-  puzzleFromRandom: 1
+  puzzleFromRandom: 0
 --- !u!114 &247557111
 MonoBehaviour:
   m_ObjectHideFlags: 0
