@@ -17,7 +17,8 @@ public class AutoSolveAlgorithm : MonoBehaviour
     Vector3 currentPoint; GameObject activePiece; int currentRow = 0;
     
     public void Start(){
-        Debug.Log("AutoSolveAlgori");
+        Debug.Log("AutoSolveAlgorithm");
+        Calculate();
     }
     void FixedUpdate()
     {
@@ -27,7 +28,24 @@ public class AutoSolveAlgorithm : MonoBehaviour
             AutoSolve();
         }
     }
+     void AutoSolve(){
+        //Calculate();
+        FindPotentialPieces();
+        UpdateIndexOfTheta(0);
+        PlacePiece();
+        /*
+        if(OverLapsBoard() == false){
+            placedPieces[currentRow].Add(activePiece);
+            pieces.Remove(activePiece);
+            Debug.Log("Piece fits in first try");
+        }else{
+            RotateToFit();
+        }
+        */
+
+    }
     public void Calculate(){
+        Debug.Log("Calculating puzzle");
         puzzle = GetComponentInParent<MeshFromJsonGenerator>().Puzzle;
         pieces = GetComponentInParent<PieceController>().pieces;
 
@@ -45,7 +63,7 @@ public class AutoSolveAlgorithm : MonoBehaviour
         int n = 0;
         while(n<form.Length){
             Vector3 vector = new Vector3(form[n].coord.x, form[n].coord.y, 0);
-            //Debug.Log("Corner "+n+": " +vector);
+            Debug.Log("Corner "+n+": " +vector);
             corners.Add(vector);
             n++;
         }
@@ -53,7 +71,6 @@ public class AutoSolveAlgorithm : MonoBehaviour
         lowerLeftCorner = corners[0];
         n = 1;
         while(n<corners.Count){
-
             if(corners[n].x < lowerLeftCorner.x){
                 lowerLeftCorner = corners[n];
             }
@@ -79,7 +96,7 @@ public class AutoSolveAlgorithm : MonoBehaviour
 
         upperRightCorner = corners[0];
         n = 1;
-        while(n<corners.Count){
+        while(n<=corners.Count){
             if(corners[n].x > upperRightCorner.x){
                 upperRightCorner = corners[n];
             }
@@ -92,22 +109,7 @@ public class AutoSolveAlgorithm : MonoBehaviour
 
         lowerRightCorner = corners[0];
     }
-    void AutoSolve(){
-        Calculate();
-        FindPotentialPieces();
-        UpdateIndexOfTheta(0);
-        PlacePiece();
-        /*
-        if(OverLapsBoard() == false){
-            placedPieces[currentRow].Add(activePiece);
-            pieces.Remove(activePiece);
-            Debug.Log("Piece fits in first try");
-        }else{
-            RotateToFit();
-        }
-        */
-
-    }
+   
     void RotateToFit(){
         if(NumberOfThetaAnglesInPiece().Count > 1){
             int n = 1;
