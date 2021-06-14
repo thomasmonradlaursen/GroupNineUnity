@@ -20,6 +20,9 @@ public class DelaunayTriangulation : MonoBehaviour
         triangles.Add(topSupertriangle);
         triangles.Add(bottomSupertriangle);
         BowyerWatsonTriangulate(points, triangles);
+        //triangles = PieceAligner.CenterTriangles(triangles);
+        //triangles = PieceAligner.RandomizeInitialPlacement(triangles, GetComponent<RandomPieceGenerator>().boardSize);
+        //triangles = PieceAligner.RandomizeInitialOrientation(triangles);
         return triangles;
     }
     void BowyerWatsonTriangulate(List<Vector3> points, List<DelaunayTriangle> triangles)

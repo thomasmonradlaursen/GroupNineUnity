@@ -213,7 +213,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c6e4ca77eba4dcb8c3c622bf0b96d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boardSize: {x: 5, y: 5}
+  boardSize: {x: 3, y: 3}
   numberOfPieces: 12
   randomPieces: []
   corners:

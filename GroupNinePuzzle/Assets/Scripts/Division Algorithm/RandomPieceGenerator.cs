@@ -5,14 +5,16 @@ using UnityEngine;
 public class RandomPieceGenerator : MonoBehaviour
 {
     public Vector2 boardSize = new Vector2(5, 3);
-    public int numberOfPieces = 12;
+    public int numberOfDots = 5;
+    public int numberOfPieces = 0;
     public List<Vector3> randomPieces;
     public List<Vector3> corners;
     public GameObject pieceDot = null;
     public GameObject centerDot = null;
     public List<Vector3> GetPoints()
     {
-        randomPieces = GenerateRandomPointsForPieces(numberOfPieces);
+        numberOfDots = (numberOfPieces / 2) - 1;
+        randomPieces = GenerateRandomPointsForPieces(numberOfDots);
         corners = SetupCorners(boardSize);
         //RendererResults();
         return randomPieces;
