@@ -22,8 +22,8 @@ public class RandomPieceGenerator : MonoBehaviour
         List<Vector3> randomPieces = new List<Vector3>();
         for (int pieceNumber = 0; pieceNumber < numberOfPieces; pieceNumber++)
         {
-            float randomXCoordinate = Random.Range(((float)boardSize.x) / 10.0f, (float)boardSize.x - ((float)boardSize.x) / 10.0f);
-            float randomYCoordinate = Random.Range(((float)boardSize.y) / 10.0f, (float)boardSize.y - ((float)boardSize.y) / 10.0f);
+            float randomXCoordinate = Random.Range(((float)boardSize.x) / 50.0f, (float)boardSize.x - ((float)boardSize.x) / 50.0f);
+            float randomYCoordinate = Random.Range(((float)boardSize.y) / 50.0f, (float)boardSize.y - ((float)boardSize.y) / 50.0f);
             randomPieces.Add(new Vector3(randomXCoordinate, randomYCoordinate, 0.0f));
         }
         return randomPieces;
