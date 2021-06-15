@@ -205,7 +205,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boardSize: {x: 5, y: 3}
-  numberOfPieces: 13
+  numberOfPieces: 15
   points: []
   corners: []
   triangles: []

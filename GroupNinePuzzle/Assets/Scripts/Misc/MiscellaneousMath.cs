@@ -97,7 +97,6 @@ public class MiscellaneousMath
         }
         return angles;
     }
-
     public Vector3 CalculateCentroid(Vector3[] vertices, float area)
     {
         float xCentroid = 0.0f;

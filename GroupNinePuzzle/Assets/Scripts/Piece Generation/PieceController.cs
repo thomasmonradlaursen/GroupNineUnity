@@ -46,6 +46,12 @@ public class PieceController : MonoBehaviour
             PieceOutlineGenerator.GenerateOutline(newPiece, mesh.vertices);
             newPiece.transform.parent = this.transform;
 
+            if(puzzleFromRandom)
+            {
+                for(int index = 0; index < newPiece.GetComponent<PieceInfo>().angles.Length; index++)
+                newPiece.GetComponent<PieceInfo>().angles[index] = 360 - newPiece.GetComponent<PieceInfo>().angles[index];
+            }
+
             var renderer = newPiece.GetComponent<MeshRenderer>();
             var materials = renderer.materials;
             materials = new Material[]
