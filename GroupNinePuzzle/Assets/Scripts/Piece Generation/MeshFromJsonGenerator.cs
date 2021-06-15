@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using JSONPuzzleTypes;
 using UnityEditor;
+using DivisionTriangles;
 
 public class MeshFromJsonGenerator : MonoBehaviour
 
@@ -46,8 +47,8 @@ public class MeshFromJsonGenerator : MonoBehaviour
                 verticesList.Add(vertex);
                 //Debug.Log($"vertex: a ({vertex.x}, {vertex.y})");
             }
-
-            var triangles = PolygonTriangulation.TriangulateConcavePolygon(verticesList);
+               var triangles = PolygonTriangulation.TriangulateConcavePolygon(verticesList);
+            
 
             var trianglesAsIntArray = new int[triangles.Count * 3];
             idx = 0;
@@ -83,5 +84,15 @@ public class MeshFromJsonGenerator : MonoBehaviour
 
             meshArray.Add(mesh);
         }
+    }
+    public void MeshesFromRandom()
+    {
+        foreach(DivisionTriangle triangle in GetComponentInChildren<DivisionModel>().triangles)
+        {
+            Mesh mesh = new Mesh();
+            mesh.vertices = triangle.vertices;
+            mesh.triangles = new int[3]{0,2,1};
+            meshArray.Add(mesh);
+        } 
     }
 }

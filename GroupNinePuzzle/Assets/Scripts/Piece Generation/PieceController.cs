@@ -26,7 +26,14 @@ public class PieceController : MonoBehaviour
     }
     void CreatePieces()
     {
-        GetComponent<MeshFromJsonGenerator>().GenerateMeshes();
+        if(puzzleFromRandom)
+        {
+            GetComponent<MeshFromJsonGenerator>().MeshesFromRandom();
+        }
+        else
+        {
+            GetComponent<MeshFromJsonGenerator>().GenerateMeshes();
+        }
         List<Mesh> meshes = GetComponent<MeshFromJsonGenerator>().meshArray;
 
         int idx = 0;
@@ -41,16 +48,11 @@ public class PieceController : MonoBehaviour
             newPiece.AddComponent<Rotation>();
             newPiece.AddComponent<PieceInfo>();
             newPiece.GetComponent<PieceInfo>().CalculateInformation();
+            newPiece.GetComponent<PieceInfo>().vertices = mesh.vertices;
             newPiece.AddComponent<MagneticTouchAlgorithm>();
             //newPiece.AddComponent<AutoSolveAlgorithm>();
             PieceOutlineGenerator.GenerateOutline(newPiece, mesh.vertices);
             newPiece.transform.parent = this.transform;
-
-            if(puzzleFromRandom)
-            {
-                for(int index = 0; index < newPiece.GetComponent<PieceInfo>().angles.Length; index++)
-                newPiece.GetComponent<PieceInfo>().angles[index] = 360 - newPiece.GetComponent<PieceInfo>().angles[index];
-            }
 
             var renderer = newPiece.GetComponent<MeshRenderer>();
             var materials = renderer.materials;

@@ -9,6 +9,7 @@ public class PieceInfo : MonoBehaviour
     public float[] lengths;
     public float area;
     public Vector3 centroid;
+    public Vector3[] vertices;
     public void CalculateInformation()
     {
         angles = mM.CalculateAnglesFromMesh(GetComponent<MeshFilter>().mesh); 

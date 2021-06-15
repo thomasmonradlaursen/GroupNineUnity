@@ -86,8 +86,8 @@ public class Triangulation : MonoBehaviour
             float midpointX = (triangles[index].vertices[0].x + triangles[index].vertices[1].x) / 2;
             float midPointY = (triangles[index].vertices[0].y + triangles[index].vertices[1].y) / 2;
             Vector3 midPoint = new Vector3(midpointX, midPointY, 0.0f);
-            triangles.Add(CreateTriangle(triangles[index].vertices[0],triangles[index].vertices[2], midPoint));
-            triangles.Add(CreateTriangle(triangles[index].vertices[1], midPoint, triangles[index].vertices[2]));
+            triangles.Add(CreateTriangle(triangles[index].vertices[0], midPoint, triangles[index].vertices[2]));
+            triangles.Add(CreateTriangle(triangles[index].vertices[1], triangles[index].vertices[2], midPoint));
             triangles.RemoveAt(index);
     }
     (DivisionTriangle, DivisionTriangle) CreateSupertriangles(List<Vector3> corners)
@@ -101,7 +101,7 @@ public class Triangulation : MonoBehaviour
         Circumscribed circumscriber = new Circumscribed();
         DivisionTriangle triangle = new DivisionTriangle();
         triangle.id = GetComponent<DivisionModel>().triangleId;
-        triangle.vertices = new Vector3[3] { pointTwo, pointOne, pointThree };
+        triangle.vertices = new Vector3[3] { pointOne, pointTwo, pointThree };
         triangle.edges = new Edge[3] { new Edge(), new Edge(), new Edge() };
         triangle.edges[0].innerHalf = (pointOne, pointTwo);
         triangle.edges[0].outerHalf = (pointTwo, pointOne);
@@ -109,7 +109,7 @@ public class Triangulation : MonoBehaviour
         triangle.edges[1].outerHalf = (pointThree, pointTwo);
         triangle.edges[2].innerHalf = (pointThree, pointOne);
         triangle.edges[2].outerHalf = (pointOne, pointThree);
-        (Vector3, float) centerAndRadius = circumscriber.GetCircumcenterAndCircumradius(pointOne, pointThree, pointTwo);
+        (Vector3, float) centerAndRadius = circumscriber.GetCircumcenterAndCircumradius(pointOne, pointTwo, pointThree);
         triangle.circumcenter = centerAndRadius.Item1;
         triangle.circumradius = centerAndRadius.Item2;
         GetComponent<DivisionModel>().triangleId += 1;
