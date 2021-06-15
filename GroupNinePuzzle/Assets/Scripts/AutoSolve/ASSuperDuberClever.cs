@@ -3,19 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using JSONPuzzleTypes;
 
-public class AutoSolveCleverVersion : MonoBehaviour
+public class Triple{
+    public int row;
+    public int column;
+    public GameObject piece;
+    public Triple(int row, int column, GameObject piece){
+        this.row = row;
+        this.column = column;
+        this.piece = piece;
+    }
+}
+public class ASSUperDuberClever : MonoBehaviour
 {
     MiscellaneousMath mM = new MiscellaneousMath();
-    public List<GameObject> pieces;
-    JSONPuzzle puzzle;
+    JSONPuzzle puzzle; public List<GameObject> pieces;
     List<GameObject> potentialPieces = new List<GameObject>();
-    List<List<GameObject>> placedPieces = new List<List<GameObject>>();
-    List<(int,int,GameObject)> testedPieces = new List<(int,int,GameObject)>();
-    float theta = 90.0f; int indexOfTheta;
-    float xAxisLength; float yAxisLength;
-    Vector3 upperLeftCorner; Vector3 upperRightCorner;
-    Vector3 lowerRightCorner; Vector3 lowerLeftCorner;
-    Vector3 currentPoint; Vector3 nextPoint; GameObject activePiece; int currentRow;
+    List<Triple> placedPieces = new List<Triple>();
+    List<Triple> testedPieces = new List<Triple>();
+    float theta; int indexOfTheta;
+    Vector3 upperLeftCorner; Vector3 upperRightCorner; Vector3 lowerRightCorner; Vector3 lowerLeftCorner;
+    Vector3 currentPoint; Vector3 nextPoint; GameObject activePiece; int currentRow; int currentColumn;
     
     void FixedUpdate()
     {
@@ -28,8 +35,6 @@ public class AutoSolveCleverVersion : MonoBehaviour
      void AutoSolve(){
         puzzle = GetComponentInParent<PieceController>().puzzle;
         pieces = GetComponent<PieceController>().pieces;
-        //Debug.Log("AUTOSOLVER started");
-
         FindCorners();
         /*
         Debug.Log("lower left corner: "+ lowerLeftCorner);
@@ -37,100 +42,25 @@ public class AutoSolveCleverVersion : MonoBehaviour
         Debug.Log("Upper right corner: "+ upperRightCorner);
         Debug.Log("lower right corner: "+ lowerRightCorner);
         */
-        List<GameObject> rowList = new List<GameObject>();
         currentPoint = upperLeftCorner;
         nextPoint = upperRightCorner;
-        currentRow = 0; theta = 90.0f;
+        currentRow = 0; currentColumn = 0; theta = 90.0f;
+        int numberOfPieces = pieces.Count;
+        int n = 0;
+        while(n < 1){
+            FindPotentialPieces();
+            if(potentialPieces.Count == 0){
 
-        int numberOfPieces = puzzle.pieces.Length;
-        int n = 0; int place = 0;
-        while(n < numberOfPieces){
-            if((double)currentPoint.x == (double)upperRightCorner.x){   //check for row change
-                placedPieces.Add(rowList);
-                currentRow++;
-                place = 0;
-                Debug.Log("currentRow: "+currentRow);
-                findNextPoint();
-                CalculateNextAngle(true);
-                //Debug.Log("currentPoint updated to be: "+currentPoint);
-                //Debug.Log("nextPoint updated to be: "+nextPoint);
-                //Debug.Log("Theta updated to be: "+theta);
-                rowList = new List<GameObject>();
             }
-            List<GameObject> temp = potentialPieces;
-            FindPotentialPieces(place);
-            if(potentialPieces.Count == 0){         
-                potentialPieces = temp;          
-                potentialPieces.Remove(activePiece);
-                if(potentialPieces.Count > 0){
-                    activePiece = potentialPieces[0];
-                }else{
-                    Debug.Log("Backtracking!");
-                    rowList = Backtrack(rowList, place);
-                    place = rowList.Count-1;
-                    FindPotentialPieces(place);
-                }
-            }
-            UpdateIndexOfTheta(0);
-            PlacePiece();
-
-            bool overlap = OverLapsBoard();
-            List<Vector3> cornersToCheck = NumberOfThetaAnglesInPiece();
-            int thetaIndex = 1;
-            while(overlap == true && cornersToCheck.Count > thetaIndex){
-                UpdateIndexOfTheta(thetaIndex);
-                PlacePiece();
-                overlap = OverLapsBoard();
-                thetaIndex++;
-            }
-            if(overlap == false){
-                rowList.Add(activePiece);
-                testedPieces.Add((currentRow, place, activePiece));
-                Debug.Log("placed piece "+ activePiece.GetComponent<PieceInfo>().name+" at ("+currentRow+", "+place+")");
-                place++;
-                pieces.Remove(activePiece);
-                updateCurrentPoint();
-                //Debug.Log("currentPoint updated to: "+currentPoint);
-                CalculateNextAngle(false);
-                //Debug.Log("theta updated to: "+theta);
-                
-            }else{
-                potentialPieces.Remove(activePiece);
-                if(potentialPieces.Count > 0){
-                    activePiece = potentialPieces[0];
-                }else{  //backtrack
-                    Debug.Log("Backtracking at line 102!");
-                    rowList = Backtrack(rowList, place);
-                    place = rowList.Count-1;
-                    FindPotentialPieces(place);
-                }
-            }
+            activePiece = potentialPieces[0];
             n++;
         }
+
     }
-    List<GameObject> Backtrack(List<GameObject> rowList, int place){   //we reach this point when potentialPieces is empty and nothing fits
-        if(place > 0){
-            GameObject toBeRemoved = rowList[place-1];  
-            rowList.Remove(toBeRemoved);
-            testedPieces.Add((currentRow, place, toBeRemoved));
-            pieces.Add(toBeRemoved);
-            if(rowList.Count > 0){
-                activePiece = rowList[rowList.Count-1];     //piece causing trouble is in middle of a row
-            }else{
-                currentRow--;
-                rowList = placedPieces[currentRow];
-                activePiece = rowList[rowList.Count-1];     //piece causing trouble is at start of new row
-            }
-        }else{
-            currentRow--;                                   //piece causing trouble is at the end of a row
-            rowList = placedPieces[currentRow];
-            GameObject toBeRemoved = rowList[place-1];  
-            rowList.Remove(toBeRemoved);
-            pieces.Add(toBeRemoved);
-            testedPieces.Add((currentRow, place, toBeRemoved));
-            activePiece = rowList[rowList.Count-1];
+    void Backtrack(int place){   //we reach this point when potentialPieces is empty and nothing fits
+        if(currentRow > 0){
+            
         }
-        return rowList;
     }
     void FindCorners(){
         var form = puzzle.puzzle.form;
@@ -274,25 +204,6 @@ public class AutoSolveCleverVersion : MonoBehaviour
         lineRenderer.SetPositions(rotatedVertices);
         activePiece.GetComponent<MeshCollider>().sharedMesh = activePiece.GetComponent<MeshFilter>().mesh;     
     }
-    Vector3[] CentralizeVertices(Vector3 centroid, Vector3[] originalVertices)
-    {
-        for (int index = 0; index < originalVertices.Length; index++)
-        {
-            originalVertices[index].x = originalVertices[index].x - centroid.x;
-            originalVertices[index].y = originalVertices[index].y - centroid.y;
-        }
-        return originalVertices;
-    }
-    // Todo: already exists in Rotation.cs
-    Vector3[] RestorePositionOfVertices(Vector3 centroid, Vector3[] rotatedVertices)
-    {
-        for (int index = 0; index < rotatedVertices.Length; index++)
-        {
-            rotatedVertices[index].x = rotatedVertices[index].x + centroid.x;
-            rotatedVertices[index].y = rotatedVertices[index].y + centroid.y;
-        }
-        return rotatedVertices;
-    }
     void UpdateIndexOfTheta(int n){
         while(n < activePiece.GetComponent<PieceInfo>().angles.Length){
             if(activePiece.GetComponent<PieceInfo>().angles[n] == theta){
@@ -322,27 +233,27 @@ public class AutoSolveCleverVersion : MonoBehaviour
             theta = Vector3.SignedAngle(currentPoint-nextPoint, currentPoint - lowerLeftCorner, Vector3.up);
         }
     }
-
-    void FindPotentialPieces(int place){
+    void FindPotentialPieces(){
         Debug.Log("Number of pieces: "+pieces.Count);
-        potentialPieces = new List<GameObject>();
-        //Debug.Log("Theta: "+theta);
-        foreach(GameObject piece in pieces){
-            if(testedPieces.Contains((currentRow, place, piece))){ 
-                continue; 
-            }
-            float[] angles = piece.GetComponent<PieceInfo>().angles;
+        potentialPieces = new List<GameObject>();       //reset potPieces 
+        foreach(GameObject testPiece in pieces){
+            float[] angles = testPiece.GetComponent<PieceInfo>().angles;
             foreach(float angle in angles){
-                //Debug.Log("Angle: "+angle);
-                if((int) angle == (int) theta){
-                    potentialPieces.Add(piece);
+                if((double) angle == (double) theta){
+                    potentialPieces.Add(testPiece);
                     break;
                 }
             }
         }
-        if(potentialPieces.Count != 0){
-            activePiece = potentialPieces[0];
+        //remove previously tested pieces
+        foreach(GameObject potPiece in potentialPieces){
+            foreach(Triple trip in testedPieces){
+                if(trip.piece == potPiece){
+                    potentialPieces.Remove(potPiece);
+                }
+            }
         }
+
     }
     List<Vector3> NumberOfThetaAnglesInPiece(){
         List<Vector3> thetaAngleVertices = new List<Vector3>();
@@ -362,16 +273,16 @@ public class AutoSolveCleverVersion : MonoBehaviour
         float smallestY = vertices[0].y; float biggestY = vertices[0].y;
 
         foreach(Vector3 vertex in vertices){
-            if(vertex.x < smallestX){
+            if((double)vertex.x < (double)smallestX){
                 smallestX = vertex.x;
             }
-            if(vertex.x > biggestX){
+            if((double)vertex.x > (double)biggestX){
                 biggestX = vertex.x;
             }
-            if(vertex.y < smallestY){
+            if((double)vertex.y < (double)smallestY){
                 smallestY = vertex.y;
             }
-            if(vertex.y > biggestY){
+            if((double)vertex.y > (double)biggestY){
                 biggestY = vertex.y;
             }
         }
@@ -402,35 +313,60 @@ public class AutoSolveCleverVersion : MonoBehaviour
             n++;
         }
         currentPoint = temp;
-
     }
     void findNextPoint(){
-        //find lower left corner in piece0
-        List<GameObject> inner = placedPieces[currentRow-1];
-        //Debug.Log("inner accessible");
-        //Debug.Log("length of inner: "+ inner.Count);
-        Vector3[] vertices = inner[0].GetComponent<MeshFilter>().mesh.vertices;
-        Vector3 llc = vertices[0];
-        int index = 0;
-        int n = 0;
-        while(n < vertices.Length){
-            if(llc.x > vertices[n].x){
-                llc = vertices[n];
-                index = n;
-            }
-            if(llc.x >= vertices[n].x && llc.y > vertices[n].y){
-                llc = vertices[n];
-                index = n;
-            }
-            n++;
-        }
-        currentPoint = vertices[index];
-        if(index < vertices.Length-1){
-            nextPoint = vertices[index+1];
+        if(currentRow == 0){
+            nextPoint = upperRightCorner;
         }else{
-            nextPoint = vertices[0];
+            GameObject pieceAbove = new GameObject();
+            for(int i = 0; i < placedPieces.Count; i++){
+                if(placedPieces[i].row == currentRow-1 && placedPieces[i].column == 0){
+                    pieceAbove = placedPieces[i].piece;
+                    break;
+                }
+            }
+            Vector3[] vertices = pieceAbove.GetComponent<MeshFilter>().mesh.vertices;
+            Vector3 llc = vertices[0];
+            int index = 0;
+            int n = 0;
+            while(n < vertices.Length){
+                if((double) llc.x > (double) vertices[n].x){
+                    llc = vertices[n];
+                    index = n;
+                }
+                if((double) llc.x >= (double) vertices[n].x && (double) llc.y > (double) vertices[n].y){
+                    llc = vertices[n];
+                    index = n;
+                }
+                n++;
+            }
+            currentPoint = vertices[index];
+            if(index < vertices.Length-1){
+                nextPoint = vertices[index+1];
+            }else{
+                nextPoint = vertices[0];
+            }
         }
-        
     }
+     Vector3[] CentralizeVertices(Vector3 centroid, Vector3[] originalVertices)
+    {
+        for (int index = 0; index < originalVertices.Length; index++)
+        {
+            originalVertices[index].x = originalVertices[index].x - centroid.x;
+            originalVertices[index].y = originalVertices[index].y - centroid.y;
+        }
+        return originalVertices;
+    }
+    // Todo: already exists in Rotation.cs
+    Vector3[] RestorePositionOfVertices(Vector3 centroid, Vector3[] rotatedVertices)
+    {
+        for (int index = 0; index < rotatedVertices.Length; index++)
+        {
+            rotatedVertices[index].x = rotatedVertices[index].x + centroid.x;
+            rotatedVertices[index].y = rotatedVertices[index].y + centroid.y;
+        }
+        return rotatedVertices;
+    }
+
 }
 
