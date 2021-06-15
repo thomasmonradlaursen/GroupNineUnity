@@ -14,7 +14,7 @@ public class PieceController : MonoBehaviour
         Debug.Log("PieceGenerator: Start()");
         if (puzzleFromRandom)
         {
-            puzzle = GetComponentInChildren<CreateJSONFromRandom>().CreatePuzzle();
+            puzzle = GetComponentInChildren<DivisionModel>().puzzle;
             Debug.Log("Puzzle from random: " + puzzle.name);
         }
         else

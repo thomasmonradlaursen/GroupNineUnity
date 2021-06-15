@@ -28,7 +28,7 @@ public class AutoSolveAlgorithm : MonoBehaviour
         }
     }
     public void Calculate(){
-        puzzle = GetComponentInParent<MeshFromJsonGenerator>().Puzzle;
+        puzzle = GetComponentInParent<MeshFromJsonGenerator>().puzzle;
         pieces = GetComponentInParent<PieceController>().pieces;
 
         FindCorners();

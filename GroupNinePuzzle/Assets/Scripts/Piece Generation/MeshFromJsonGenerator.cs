@@ -8,7 +8,7 @@ using UnityEditor;
 public class MeshFromJsonGenerator : MonoBehaviour
 
 {
-    public JSONPuzzle Puzzle;
+    public JSONPuzzle puzzle;
     public List<Mesh> meshArray = new List<Mesh>();
     public int[] triangles;
     public MiscellaneousMath mM = new MiscellaneousMath();
@@ -22,9 +22,9 @@ public class MeshFromJsonGenerator : MonoBehaviour
     public void GenerateMeshes()
     {
         Debug.Log("MeshFromJSONGenerator: GenerateMeshes()");
-        Puzzle = GetComponent<PieceController>().puzzle;
+        puzzle = GetComponent<PieceController>().puzzle;
         
-        foreach (var piece in Puzzle.pieces)
+        foreach (var piece in puzzle.pieces)
         {
             var mesh = new Mesh();
             var vertices = new Vector3[piece.corners.Length];

@@ -133,9 +133,10 @@ GameObject:
   - component: {fileID: 240236916}
   - component: {fileID: 240236915}
   - component: {fileID: 240236914}
+  - component: {fileID: 240236918}
   - component: {fileID: 240236917}
   m_Layer: 0
-  m_Name: RandomPuzzleGenerator
+  m_Name: RandomPuzzle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -167,20 +168,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b1f80912d545432696bbf0e5d190312, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  points: []
-  triangles: []
-  topSupertriangle:
-    id: 0
-    vertices: []
-    edges: []
-    circumcenter: {x: 0, y: 0, z: 0}
-    circumradius: 0
-  bottomSupertriangle:
-    id: 0
-    vertices: []
-    edges: []
-    circumcenter: {x: 0, y: 0, z: 0}
-    circumradius: 0
   triangleId: 1
 --- !u!114 &240236915
 MonoBehaviour:
@@ -194,13 +181,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8c392cd975114e8f8c452ed830f68df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  randomPuzzle:
-    puzzle:
-      form: []
-    name: 
-    nPieces: 0
-    pieces: []
-  triangles: []
 --- !u!114 &240236916
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -213,113 +193,42 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3c6e4ca77eba4dcb8c3c622bf0b96d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boardSize: {x: 3, y: 3}
-  numberOfDots: 5
-  numberOfPieces: 8
-  randomPieces: []
-  corners:
-  - {x: 0, y: 0, z: 0}
-  pieceDot: {fileID: 8697019572017349557, guid: 219564e54a88c4ed29cc2ca6c0c44311,
-    type: 3}
-  centerDot: {fileID: 4260579359540095505, guid: a5d0dc28609f247b4bff54b4a2c775f5,
-    type: 3}
---- !u!120 &240236917
-LineRenderer:
+--- !u!114 &240236917
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 240236912}
   m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_MotionVectors: 0
-  m_LightProbeUsage: 0
-  m_ReflectionProbeUsage: 0
-  m_RayTracingMode: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 0}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Positions:
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 1}
-  m_Parameters:
-    serializedVersion: 3
-    widthMultiplier: 1
-    widthCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    colorGradient:
-      serializedVersion: 2
-      key0: {r: 1, g: 1, b: 1, a: 1}
-      key1: {r: 1, g: 1, b: 1, a: 1}
-      key2: {r: 0, g: 0, b: 0, a: 0}
-      key3: {r: 0, g: 0, b: 0, a: 0}
-      key4: {r: 0, g: 0, b: 0, a: 0}
-      key5: {r: 0, g: 0, b: 0, a: 0}
-      key6: {r: 0, g: 0, b: 0, a: 0}
-      key7: {r: 0, g: 0, b: 0, a: 0}
-      ctime0: 0
-      ctime1: 65535
-      ctime2: 0
-      ctime3: 0
-      ctime4: 0
-      ctime5: 0
-      ctime6: 0
-      ctime7: 0
-      atime0: 0
-      atime1: 65535
-      atime2: 0
-      atime3: 0
-      atime4: 0
-      atime5: 0
-      atime6: 0
-      atime7: 0
-      m_Mode: 0
-      m_NumColorKeys: 2
-      m_NumAlphaKeys: 2
-    numCornerVertices: 0
-    numCapVertices: 0
-    alignment: 0
-    textureMode: 0
-    shadowBias: 0.5
-    generateLightingData: 0
-  m_UseWorldSpace: 1
-  m_Loop: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a3f9ad7c339949e68fea3549306df98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boardSize: {x: 5, y: 3}
+  numberOfPieces: 0
+  points: []
+  corners: []
+  triangles: []
+  nameOfPuzzle: RandomlyGeneratedPuzzle
+  puzzle:
+    puzzle:
+      form: []
+    name: 
+    nPieces: 0
+    pieces: []
+--- !u!114 &240236918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 240236912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d050c828650544f4db9d63b8ab2a9e30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &247557103
 GameObject:
   m_ObjectHideFlags: 0
@@ -356,7 +265,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64da8cf61f1fb4faf99a364f78c7f625, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Puzzle:
+  puzzle:
     puzzle:
       form: []
     name: 
@@ -480,7 +389,7 @@ MonoBehaviour:
     name: 
     nPieces: 0
     pieces: []
-  puzzleFromRandom: 0
+  puzzleFromRandom: 1
 --- !u!114 &247557111
 MonoBehaviour:
   m_ObjectHideFlags: 0

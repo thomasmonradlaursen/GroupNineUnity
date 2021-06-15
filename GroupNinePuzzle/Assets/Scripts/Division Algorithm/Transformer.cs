@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DTriangle;
 
-public static class PieceAligner
+public static class Transformer
 {
     public static List<DelaunayTriangle> CenterTriangles(List<DelaunayTriangle> triangles)
     {
