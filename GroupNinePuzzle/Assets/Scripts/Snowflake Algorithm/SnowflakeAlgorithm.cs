@@ -79,7 +79,7 @@ public class SnowflakeAlgorithm : MonoBehaviour
         bool collision = false;
         int collisionPoint = 0;
         
-        for(int j = 0; j<anglesB.Length; j++){
+        for(int j = 0; j<anglesB.Length; j++){      //aligning arrays, start
             if(anglesA[0] == anglesB[j]){
                 collision = true;
                 collisionPoint = j;
@@ -103,6 +103,7 @@ public class SnowflakeAlgorithm : MonoBehaviour
                 anglesB = tempAngle;
                 sidesB = tempSide;
             }
+
             float carryA = 0; float carryB = 0;
             int i = 0; int j = 0;
             while(i < counter && areIdentical == true){
@@ -131,8 +132,7 @@ public class SnowflakeAlgorithm : MonoBehaviour
                 carryB += sidesB[j];
                 j++;
                 i++;
-            }
-
+            } 
             if(j < anglesB.Length && areIdentical == true){     //if we're not through the second angle array when the first is empty
                 while(j<anglesB.Length){    //we need to check if the remaining angles are all 180. 
                     if(anglesB[j] != 180){
@@ -141,6 +141,8 @@ public class SnowflakeAlgorithm : MonoBehaviour
                     j++;
                 }
             }
+        } else{
+            areIdentical = false;
         }
         return areIdentical;
     }
