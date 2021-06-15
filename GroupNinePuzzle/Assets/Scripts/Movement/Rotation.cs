@@ -19,7 +19,11 @@ public class Rotation : MonoBehaviour
             }
             if (Input.GetKey(KeyCode.DownArrow))
             {
-                RotateMesh(-(1 * Mathf.PI) / 180);  //clockwise
+                RotateMesh(-(1 * Mathf.PI) / 180); //Clockwise
+            }
+            if (Input.GetKeyUp(KeyCode.UpArrow) || Input.GetKeyUp(KeyCode.DownArrow))
+            {
+                this.GetComponent<PieceInfo>().RemoveConnectionsToOtherPieces();
             }
         }
     }
@@ -78,10 +82,10 @@ public class Rotation : MonoBehaviour
         lineRenderer = GetComponent<LineRenderer>();
         originalVertices = new Vector3[mesh.vertices.Length];
         originalVertices = mesh.vertices;
-        rotatedVertices = new Vector3[ originalVertices.Length];
+        rotatedVertices = new Vector3[originalVertices.Length];
         this.GetComponentInParent<MeshFromJsonGenerator>().selected = this.name;
     }
-    
+
     void CentralizeVertices(Vector3 centroid)
     {
         for (int index = 0; index < originalVertices.Length; index++)
@@ -104,13 +108,13 @@ public class Rotation : MonoBehaviour
         {
             Debug.Log(vertex);
         }
-    } 
+    }
 
-    void LogAngles(float[] angles) 
+    void LogAngles(float[] angles)
     {
-        foreach(float angle in angles)
+        foreach (float angle in angles)
         {
             Debug.Log(angle);
         }
-    } 
+    }
 }

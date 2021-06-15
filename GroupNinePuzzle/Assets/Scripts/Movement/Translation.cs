@@ -8,6 +8,7 @@ public class Translation : MonoBehaviour
     MiscellaneousMath mM = new MiscellaneousMath();
     private Vector3 mouseOffset;
     private float mouseZcoord = -10;
+    private bool pieceHasBeenMoved = false;
 
     void OnMouseDown()
     {
@@ -38,15 +39,22 @@ public class Translation : MonoBehaviour
             var materials2 = renderer2.materials;
             materials2[0].color = Color.red;
         }
+
+        pieceHasBeenMoved = false;
     }
     void OnMouseDrag()
     {
         transform.position = MouseWorldPosition() + mouseOffset;
+        pieceHasBeenMoved = true;
     }
     void OnMouseUp()
     {
         CalculateVerticesAfterTranslation();
         CalculateCentroidAfterTranslation();
+        if(pieceHasBeenMoved){
+            this.GetComponent<PieceInfo>().RemoveConnectionsToOtherPieces();
+        }
+        pieceHasBeenMoved = false;
     }
     private Vector3 MouseWorldPosition()
     {

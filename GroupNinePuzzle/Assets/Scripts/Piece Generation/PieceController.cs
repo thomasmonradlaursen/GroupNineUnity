@@ -6,6 +6,8 @@ using JSONPuzzleTypes;
 public class PieceController : MonoBehaviour
 {
     public List<GameObject> pieces;
+    public Dictionary<string, List<string>> connectedPieces;
+
     public JSONPuzzle puzzle;
     public bool puzzleFromRandom = false;
     void Start()
@@ -27,6 +29,8 @@ public class PieceController : MonoBehaviour
     {
         GetComponent<MeshFromJsonGenerator>().GenerateMeshes();
         List<Mesh> meshes = GetComponent<MeshFromJsonGenerator>().meshArray;
+
+        connectedPieces = new Dictionary<string, List<string>>();
 
         int idx = 0;
         foreach (Mesh mesh in meshes)
@@ -54,6 +58,8 @@ public class PieceController : MonoBehaviour
             renderer.materials = materials;
 
             pieces.Add(newPiece);
+
+            connectedPieces.Add(newPiece.name, new List<string>());
 
             idx++;
         }

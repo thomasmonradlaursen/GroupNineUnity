@@ -12,7 +12,7 @@ public class PieceInfo : MonoBehaviour
     public Vector3 centroid;
     public void CalculateInformation()
     {
-        angles = mM.CalculateAnglesFromMesh(GetComponent<MeshFilter>().mesh); 
+        angles = mM.CalculateAnglesFromMesh(GetComponent<MeshFilter>().mesh);
         lengths = mM.CalculateSideLengthsFromMesh(GetComponent<MeshFilter>().mesh);
         area = mM.CalculateAreaFromMesh(GetComponent<MeshFilter>().mesh);
         centroid = mM.CalculateCentroid(GetComponent<MeshFilter>().mesh.vertices, area);
@@ -23,16 +23,40 @@ public class PieceInfo : MonoBehaviour
             n++;
         }
     }
+
     public (float, float) GetMaximumAndMinimumXCoordinate()
     {
         Vector3[] vertices = GetComponent<MeshFilter>().mesh.vertices;
         float maximum = vertices[0].x;
         float minimum = vertices[0].x;
-        foreach(Vector3 vertex in vertices)
+        foreach (Vector3 vertex in vertices)
         {
-            if(vertex.x < minimum) minimum = vertex.x;
-            if(vertex.x > maximum) maximum = vertex.x;
+            if (vertex.x < minimum) minimum = vertex.x;
+            if (vertex.x > maximum) maximum = vertex.x;
         }
         return (minimum, maximum);
+    }
+
+    public (float, float) GetMaximumAndMinimumYCoordinate()
+    {
+        Vector3[] vertices = GetComponent<MeshFilter>().mesh.vertices;
+        float maximum = vertices[0].y;
+        float minimum = vertices[0].y;
+        foreach (Vector3 vertex in vertices)
+        {
+            if (vertex.y < minimum) minimum = vertex.y;
+            if (vertex.y > maximum) maximum = vertex.y;
+        }
+        return (minimum, maximum);
+    }
+
+    public void RemoveConnectionsToOtherPieces()
+    {
+        // Remove existing connections
+        foreach (var pieceName in GetComponentInParent<PieceController>().connectedPieces[this.name])
+        {
+            GetComponentInParent<PieceController>().connectedPieces[pieceName].Remove(this.name);
+        }
+        GetComponentInParent<PieceController>().connectedPieces[this.name].Clear();
     }
 }
