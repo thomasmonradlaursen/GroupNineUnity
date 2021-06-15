@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System;
-using System.Text;
+using UnityEngine.Serialization;
 
 namespace JSONPuzzleTypes
 {
@@ -11,6 +11,7 @@ namespace JSONPuzzleTypes
     {
         public Puzzle puzzle;
         public string name;
+        [FormerlySerializedAs("no. of pieces")]
         public int nPieces;
         public Piece[] pieces;
     }
