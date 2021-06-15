@@ -36,36 +36,42 @@ public class AutoSolveCleverVersion : MonoBehaviour
         nextPoint = upperRightCorner;
         currentRow = 0; currentColumn = 0; theta = 90.0f; indexOfTheta = 0;
         int numberOfPieces = pieces.Count;
-        int n = 0;
 
-        while(n < 1){
-            FindPotentialPieces();
-            if(potentialPieces.Count == 0){
-                Backtrack();
-            }else{
-                activePiece = potentialPieces[0];
-                List<Pair> thetaAngles = ThetaAnglesInPiece();
-                bool overlap = true; int i = 0;
-                while(overlap == true && thetaAngles.Count > 0){
-                    indexOfTheta = thetaAngles[0].index;
-                    PlacePiece();
-                    overlap = OverLapsBoard();
-                    activePiece.GetComponent<PieceInfo>().aSTestedAngles[i] = true;
-                }
-
-
-                if(OverLapsBoard() == false){
-                    activePiece.GetComponent<PieceInfo>().aSTestedAngles[indexOfTheta] = true;
-                    placedPieces.Add(new Triple(currentRow, currentColumn, activePiece));
-                    pieces.Remove(activePiece);
-                    currentColumn++;
-                }else{
-                    
-                }
+        FindPotentialPieces();
+        while(potentialPieces.Count > 0)
+        {
+            activePiece = potentialPieces[0];
+            List<Pair> thetaAngles = ThetaAnglesInPiece();
+            bool overlap = true; int i = 0;
+            while(overlap == true && thetaAngles.Count > 0){
+                indexOfTheta = thetaAngles[i].index;
+                thetaAngles.Remove(thetaAngles[i]);
+                PlacePiece();
+                activePiece.GetComponent<PieceInfo>().aSTestedAngles[i] = true;
+                overlap = OverLapsBoard();
+                i++;
             }
-            n++;
-        }
+            if(overlap == true && thetaAngles.Count == 0)
+            {
+                int temp = activePiece.GetComponent<MeshFilter>().mesh.vertices.Length;
+                for(int j = 0; j < activePiece.GetComponent<PieceInfo>().aSTestedAngles.Length; j++)
+                {
+                    activePiece.GetComponent<PieceInfo>().aSTestedAngles[j] = false;
+                }
+                continue;
+            }
 
+            if(OverLapsBoard() == false)
+            {
+                activePiece.GetComponent<PieceInfo>().aSTestedAngles[indexOfTheta] = true;
+                placedPieces.Add(new Triple(currentRow, currentColumn, activePiece));
+                pieces.Remove(activePiece);
+                currentColumn++;
+            }else
+            {
+                    
+            }
+        } 
     }
     void Backtrack(){   //we reach this point when potentialPieces is empty and nothing fits
         if(currentRow > 0){
