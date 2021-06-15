@@ -16,7 +16,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.S))
         {
-            Debug.Log("MagneticTouchAlgorithm - TestingImplementation()");
+            // Debug.Log("MagneticTouchAlgorithm - TestingImplementation()");
             float margin = 0.075f;
             FindCandidatesForSnap(GetComponentInParent<MeshFromJsonGenerator>().selectedObject, margin);
             LogPossibleSnaps();
@@ -50,10 +50,18 @@ public class MagneticTouchAlgorithm : MonoBehaviour
 
             Vector3 displacement = GetComponentInParent<FindClosestVertex>().CalculateDisplacementForSnap(selectedPiece, snapInformation.PieceToSnapTo, indexOfClosestVertexInSelectedPiece, indexOfClosestVertexInPieceToSnapTo);
             float rotation = GetComponentInParent<FindClosestVertex>().CalculateRotationForSnap(snapInformation.PrimaryVertexInSelectedPiece, snapInformation.PrimaryVertexInPieceToSnapTo, snapInformation.PreviousVertexInSelectedPiece, snapInformation.PreviousVertexInPieceToSnapTo);
+            
+            // Angle is too big.
+            // Either the rotation is not as intenden or the player should try harder to place the pieces accurately
+            if(rotation > 0.35 || rotation < -0.35){
+                Debug.Log("Angle is too big.");
+                return;
+            }
 
             // Debug.Log("Displacement: " + displacement);
             // Debug.Log("Rotation: " + rotation);
             Vector3[] originalVertices = selectedPiece.GetComponent<MeshFilter>().mesh.vertices;
+
 
             GetComponentInParent<FindClosestVertex>().CalculateVerticesAfterSnapTranslationAndRotation(selectedPiece, displacement, rotation, snapInformation.IndexOfPrimaryVertexInSelectedPiece);
 
@@ -64,12 +72,20 @@ public class MagneticTouchAlgorithm : MonoBehaviour
             }
             else
             {
+                // Establish new connections
                 foreach (var pieceName in GetComponentInParent<PieceController>().connectedPieces[snapInformation.PieceToSnapTo.name])
                 {
                     GetComponentInParent<PieceController>().connectedPieces[selectedPiece.name].Add(pieceName);
-                    GetComponentInParent<PieceController>().connectedPieces[pieceName].Add(selectedPiece.name);
+
+                    if (!GetComponentInParent<PieceController>().connectedPieces[pieceName].Contains(selectedPiece.name))
+                    {
+                        GetComponentInParent<PieceController>().connectedPieces[pieceName].Add(selectedPiece.name);
+                    }
                 }
-                GetComponentInParent<PieceController>().connectedPieces[snapInformation.PieceToSnapTo.name].Add(selectedPiece.name);
+                 if (!GetComponentInParent<PieceController>().connectedPieces[snapInformation.PieceToSnapTo.name].Contains(selectedPiece.name))
+                    {
+                        GetComponentInParent<PieceController>().connectedPieces[snapInformation.PieceToSnapTo.name].Add(selectedPiece.name);
+                    }
                 GetComponentInParent<PieceController>().connectedPieces[selectedPiece.name].Add(snapInformation.PieceToSnapTo.name);
             }
 
@@ -246,13 +262,13 @@ public class MagneticTouchAlgorithm : MonoBehaviour
                         );
                 if (linesIntersect)
                 {
-                    Debug.Log("===== Intersection =====");
-                    Debug.Log("");
-                    Debug.Log(verticesPiece1[idx1]);
-                    Debug.Log(verticesPiece1[GetWrappingIndex(idx1 + 1, verticesPiece1.Length)]);
-                    Debug.Log(verticesPiece2[idx2]);
-                    Debug.Log(verticesPiece2[GetWrappingIndex(idx2 + 1, verticesPiece2.Length)]);
-                
+                    // Debug.Log("===== Intersection =====");
+                    // Debug.Log("");
+                    // Debug.Log(verticesPiece1[idx1]);
+                    // Debug.Log(verticesPiece1[GetWrappingIndex(idx1 + 1, verticesPiece1.Length)]);
+                    // Debug.Log(verticesPiece2[idx2]);
+                    // Debug.Log(verticesPiece2[GetWrappingIndex(idx2 + 1, verticesPiece2.Length)]);
+
                     return true;
                 }
                 idx2++;
@@ -270,22 +286,36 @@ public class MagneticTouchAlgorithm : MonoBehaviour
             return false;
         }
 
-        var intersectionX = RoundTo3Decimals((line2.Item2 - line1.Item2) / (line1.Item1 - line2.Item1));
+        var intersectionX = (line2.Item2 - line1.Item2) / (line1.Item1 - line2.Item1);
+
+
+
         // var intersectionY = line1.Item1 * intersectionX + line1.Item2;
 
         // if the x-value of the intersection point is in both line segments, the two line segments intersect.
-        if (((RoundTo3Decimals(point1Line1.x) < intersectionX && intersectionX < RoundTo3Decimals(point2Line1.x))
-            || (RoundTo3Decimals(point1Line1.x) > intersectionX && intersectionX > RoundTo3Decimals(point2Line1.x)))
-            && ((RoundTo3Decimals(point1Line2.x) < intersectionX && intersectionX < RoundTo3Decimals(point2Line2.x))
-            || (RoundTo3Decimals(point1Line2.x) > intersectionX && intersectionX > RoundTo3Decimals(point2Line2.x))))
+        if (((RoundTo3Decimals(point1Line1.x) < intersectionX - 0.01 && intersectionX + 0.01 < RoundTo3Decimals(point2Line1.x))
+            || (RoundTo3Decimals(point1Line1.x) > intersectionX + 0.01 && intersectionX - 0.01 > RoundTo3Decimals(point2Line1.x)))
+            && ((RoundTo3Decimals(point1Line2.x) < intersectionX - 0.01 && intersectionX + 0.01 < RoundTo3Decimals(point2Line2.x))
+            || (RoundTo3Decimals(point1Line2.x) > intersectionX + 0.01 && intersectionX - 0.01 > RoundTo3Decimals(point2Line2.x))))
         {
+            Debug.Log("===== Intersection =====");
+            Debug.Log("Top: " + (line2.Item2 - line1.Item2));
+            Debug.Log("Bottom: " + (line1.Item1 - line2.Item1));
+            Debug.Log("");
+            Debug.Log("intersectionX: " + intersectionX);
+            Debug.Log("intersectionX rounded: " + RoundTo3Decimals(intersectionX));
+            Debug.Log("line1 point1: " + RoundTo3Decimals(point1Line1.x));
+            Debug.Log("line1 point2: " + RoundTo3Decimals(point2Line1.x));
+            Debug.Log("line2 point1: " + RoundTo3Decimals(point1Line2.x));
+            Debug.Log("line2 point2: " + RoundTo3Decimals(point2Line2.x));
             return true;
         }
 
         return false;
     }
 
-    float RoundTo3Decimals(float toRound){
+    float RoundTo3Decimals(float toRound)
+    {
         return Mathf.Round(toRound * 100f) / 100f;
     }
 
