@@ -20,7 +20,7 @@ public class BoardOutlineGenerator : MonoBehaviour
 
     void Update()
     {
-        var jsonPuzzle = GetComponent<MeshFromJsonGenerator>().puzzle;
+        var jsonPuzzle = GetComponent<PieceController>().puzzle;
         var shape = jsonPuzzle.puzzle.form;
 
         var points = new Vector3[4];

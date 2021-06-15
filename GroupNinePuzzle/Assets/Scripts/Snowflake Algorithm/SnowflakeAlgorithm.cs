@@ -34,7 +34,7 @@ public class SnowflakeAlgorithm : MonoBehaviour
                 if(DetermineSnowflakeismByAnglesAndSides(piecesWithIdenticalArea[i]) == false){
                    piecesWithIdenticalArea.Remove(piecesWithIdenticalArea[i]);
                }else{
-                   //Debug.Log("Pieces "+ piecesWithIdenticalArea[i]+" have identical sideslengths or angles");
+                   Debug.Log("Pieces "+ piecesWithIdenticalArea[i]+" have identical sideslengths or angles");
                }
             }
         }
@@ -61,7 +61,7 @@ public class SnowflakeAlgorithm : MonoBehaviour
         float[] anglesA = anglesOfPieces[(int) piecesToCompare[0]];
         float[] anglesB = anglesOfPieces[(int) piecesToCompare[1]];
 
-        /*
+        
         int n = 0;
         foreach(float side in sidesA){
             Debug.Log("A: side "+n+": "+side);
@@ -72,7 +72,7 @@ public class SnowflakeAlgorithm : MonoBehaviour
             Debug.Log("B: side "+n+": "+side);
             n++;
         }
-        */
+        
 
         bool collision = false;
         int collisionPoint = 0;
