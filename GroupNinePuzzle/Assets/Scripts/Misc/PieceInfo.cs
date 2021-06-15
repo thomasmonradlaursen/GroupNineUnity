@@ -6,7 +6,7 @@ public class PieceInfo : MonoBehaviour
 {
     MiscellaneousMath mM = new MiscellaneousMath();
     public float[] angles;
-    public bool[] aSTestedAngles;
+    public List<Pair> thetaAngles;
     public float[] lengths;
     public float area;
     public Vector3 centroid;
@@ -17,12 +17,6 @@ public class PieceInfo : MonoBehaviour
         lengths = mM.CalculateSideLengthsFromMesh(GetComponent<MeshFilter>().mesh);
         area = mM.CalculateAreaFromMesh(GetComponent<MeshFilter>().mesh);
         centroid = mM.CalculateCentroid(GetComponent<MeshFilter>().mesh.vertices, area);
-        aSTestedAngles = new bool[angles.Length];
-        int n = 0;
-        while(n<angles.Length){
-            aSTestedAngles[n] = false;
-            n++;
-        }
     }
 
     public (float, float) GetMaximumAndMinimumXCoordinate()

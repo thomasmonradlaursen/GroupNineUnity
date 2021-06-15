@@ -37,43 +37,62 @@ public class AutoSolveCleverVersion : MonoBehaviour
         currentRow = 0; currentColumn = 0; theta = 90.0f; indexOfTheta = 0;
         int numberOfPieces = pieces.Count;
 
-        FindPotentialPieces();
-        while(potentialPieces.Count > 0)
-        {
-            activePiece = potentialPieces[0];
-            List<Pair> thetaAngles = ThetaAnglesInPiece();
-            bool overlap = true; int i = 0;
-            while(overlap == true && thetaAngles.Count > 0){
-                indexOfTheta = thetaAngles[i].index;
-                thetaAngles.Remove(thetaAngles[i]);
+        while(placedPieces.Count < numberOfPieces){     //not done with this loop (but basics ok)
+            bool changedRows = CheckForRowChange();
+            FindPotentialPieces();
+            Debug.Log("Found "+potentialPieces.Count+" potential pieces.");
+            SetActivePiece();
+            PlacePiece();
+        
+            while(OverLapsBoard() == true && activePiece.GetComponent<PieceInfo>().thetaAngles.Count > 0){
+                Pair temp = activePiece.GetComponent<PieceInfo>().thetaAngles[0];
+                activePiece.GetComponent<PieceInfo>().thetaAngles.Remove(temp);
+                indexOfTheta = activePiece.GetComponent<PieceInfo>().thetaAngles[0].index;
                 PlacePiece();
-                activePiece.GetComponent<PieceInfo>().aSTestedAngles[i] = true;
-                overlap = OverLapsBoard();
-                i++;
             }
-            if(overlap == true && thetaAngles.Count == 0)
-            {
-                int temp = activePiece.GetComponent<MeshFilter>().mesh.vertices.Length;
-                for(int j = 0; j < activePiece.GetComponent<PieceInfo>().aSTestedAngles.Length; j++)
-                {
-                    activePiece.GetComponent<PieceInfo>().aSTestedAngles[j] = false;
-                }
-                continue;
-            }
-
-            if(OverLapsBoard() == false)
-            {
-                activePiece.GetComponent<PieceInfo>().aSTestedAngles[indexOfTheta] = true;
+            if(OverLapsBoard() == false){
+                testedPieces.Add(new Triple(currentRow, currentColumn, activePiece));
                 placedPieces.Add(new Triple(currentRow, currentColumn, activePiece));
                 pieces.Remove(activePiece);
+                potentialPieces.Remove(activePiece);
+                updateCurrentPoint();
+                CalculateNextAngle(changedRows);
                 currentColumn++;
-            }else
-            {
-                    
+            } else {
+                testedPieces.Add(new Triple(currentRow, currentColumn, activePiece));
+                potentialPieces.Remove(activePiece);
+                if(potentialPieces.Count == 0){
+                    Backtrack();
+                } else {
+                    //try next potential piece 
+                }
             }
-        } 
+        }
+    }
+    bool CheckForRowChange(){
+        if((double)currentPoint.x == (double)upperRightCorner.x){   //check for row change
+                currentRow++;
+                currentColumn++;
+                //Debug.Log("currentRow: "+currentRow);
+                findNextPoint();
+                CalculateNextAngle(true);
+                //Debug.Log("currentPoint updated to be: "+currentPoint);
+                //Debug.Log("nextPoint updated to be: "+nextPoint);
+                //Debug.Log("Theta updated to be: "+theta);
+            return true;
+        } else {
+            return false;
+        }
+    }
+    void SetActivePiece(){
+        activePiece = potentialPieces[0];
+        activePiece.GetComponent<PieceInfo>().thetaAngles = ThetaAnglesInPiece();
+        Pair temp = activePiece.GetComponent<PieceInfo>().thetaAngles[0];
+        indexOfTheta = activePiece.GetComponent<PieceInfo>().thetaAngles[0].index;
+        activePiece.GetComponent<PieceInfo>().thetaAngles.Remove(temp);
     }
     void Backtrack(){   //we reach this point when potentialPieces is empty and nothing fits
+        Debug.Log("backtracking!");
         if(currentRow > 0){
             if(currentColumn == 0){
                 int temp = placedPieces.Count-1;
@@ -256,17 +275,17 @@ public class AutoSolveCleverVersion : MonoBehaviour
         foreach(GameObject testPiece in pieces){
             float[] angles = testPiece.GetComponent<PieceInfo>().angles;
             foreach(float angle in angles){
-                if((double) angle == (double) theta){
+                if(angle == theta){
                     potentialPieces.Add(testPiece);
                     break;
                 }
             }
         }
         //remove previously tested pieces
-        foreach(GameObject potPiece in potentialPieces){
-            foreach(Triple trip in testedPieces){
-                if(trip.piece == potPiece){
-                    potentialPieces.Remove(potPiece);
+        for(int i = 0; i < testedPieces.Count; i++){
+            for(int j = 0; j < potentialPieces.Count; j++){
+                if(potentialPieces[j] == testedPieces[i].piece){
+                    potentialPieces.Remove(potentialPieces[j]);
                 }
             }
         }
@@ -336,7 +355,7 @@ public class AutoSolveCleverVersion : MonoBehaviour
         }else{
             GameObject pieceAbove = new GameObject();
             for(int i = 0; i < placedPieces.Count; i++){
-                if(placedPieces[i].row == currentRow-1 && placedPieces[i].column == 0){
+                if(placedPieces[i].row == currentRow-1 && placedPieces[i].column == currentColumn){     //bug here! probably
                     pieceAbove = placedPieces[i].piece;
                     break;
                 }
@@ -387,7 +406,7 @@ public class AutoSolveCleverVersion : MonoBehaviour
 }
 
 
-public class Triple : MonoBehaviour{
+public class Triple {
     public int row;
     public int column;
     public GameObject piece;
@@ -398,7 +417,7 @@ public class Triple : MonoBehaviour{
     }
 }
 
-public class Pair : MonoBehaviour{
+public class Pair {
     public int index;
     public Vector3 vertex;
     public Pair(int index, Vector3 vertex){
