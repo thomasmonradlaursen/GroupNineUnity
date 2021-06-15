@@ -17,7 +17,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.S))
         {
             // Debug.Log("MagneticTouchAlgorithm - TestingImplementation()");
-            float margin = 0.075f;
+            float margin = 0.1f;
             FindCandidatesForSnap(GetComponentInParent<MeshFromJsonGenerator>().selectedObject, margin);
             LogPossibleSnaps();
             if (possibleSnaps.Item2.Count > 0)

@@ -204,8 +204,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a3f9ad7c339949e68fea3549306df98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boardSize: {x: 5, y: 3}
-  numberOfPieces: 23
+  boardSize: {x: 5, y: 5}
+  numberOfPieces: 2
   points: []
   corners: []
   triangles: []
