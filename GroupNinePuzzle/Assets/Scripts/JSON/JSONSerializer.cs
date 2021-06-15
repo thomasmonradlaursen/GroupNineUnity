@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using JSONPuzzleTypes;
-using DTriangle;
+using DivisionTriangles;
 
 public class JSONSerializer : MonoBehaviour
 {
@@ -31,7 +31,7 @@ public class JSONSerializer : MonoBehaviour
     {
         puzzle.name = name;
     }
-    void SetPieces(JSONPuzzle puzzle, List<DelaunayTriangle> triangles)
+    void SetPieces(JSONPuzzle puzzle, List<DivisionTriangle> triangles)
     {
         puzzle.nPieces = triangles.Count;
         puzzle.pieces = new Piece[triangles.Count];

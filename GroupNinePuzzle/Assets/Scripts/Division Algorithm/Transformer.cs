@@ -1,11 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using DTriangle;
+using DivisionTriangles;
 
 public static class Transformer
 {
-    public static List<DelaunayTriangle> CenterTriangles(List<DelaunayTriangle> triangles)
+    public static List<DivisionTriangle> CenterTriangles(List<DivisionTriangle> triangles)
     {
         for (int triangleIndex = 0; triangleIndex < triangles.Count; triangleIndex++)
         {
@@ -19,7 +19,7 @@ public static class Transformer
         }
         return triangles;
     }
-    public static List<DelaunayTriangle> RandomizeInitialPlacement(List<DelaunayTriangle> triangles, Vector2 boardSize)
+    public static List<DivisionTriangle> RandomizeInitialPlacement(List<DivisionTriangle> triangles, Vector2 boardSize)
     {
         for (int triangleIndex = 0; triangleIndex < triangles.Count; triangleIndex++)
         {
@@ -33,7 +33,7 @@ public static class Transformer
         }
         return triangles;
     }
-    public static List<DelaunayTriangle> RandomizeInitialOrientation(List<DelaunayTriangle> triangles)
+    public static List<DivisionTriangle> RandomizeInitialOrientation(List<DivisionTriangle> triangles)
     {
         for (int triangleIndex = 0; triangleIndex < triangles.Count; triangleIndex++)
         {
