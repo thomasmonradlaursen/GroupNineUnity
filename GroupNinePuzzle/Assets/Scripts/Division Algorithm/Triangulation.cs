@@ -78,6 +78,9 @@ public class Triangulation : MonoBehaviour
         {
             DividePiece(triangles);
         }
+        Transformer.CenterTriangles(triangles);
+        Transformer.RandomizeInitialPlacement(triangles, GetComponent<DivisionModel>().boardSize);
+        Transformer.RandomizeInitialOrientation(triangles);
         return triangles;
     }
     void DividePiece(List<DivisionTriangle> triangles)

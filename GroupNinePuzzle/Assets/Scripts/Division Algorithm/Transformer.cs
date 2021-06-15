@@ -40,8 +40,10 @@ public static class Transformer
             float rotationTheta = Random.Range(0.0f, 360.0f);
             for (int vertexIndex = 0; vertexIndex < triangles[triangleIndex].vertices.Length; vertexIndex++)
             {
-                triangles[triangleIndex].vertices[vertexIndex].x = triangles[triangleIndex].vertices[vertexIndex].x * Mathf.Cos(rotationTheta) - triangles[triangleIndex].vertices[vertexIndex].y * Mathf.Sin(rotationTheta);
-                triangles[triangleIndex].vertices[vertexIndex].y = triangles[triangleIndex].vertices[vertexIndex].x * Mathf.Sin(rotationTheta) + triangles[triangleIndex].vertices[vertexIndex].y * Mathf.Cos(rotationTheta);
+                float rotatedX = triangles[triangleIndex].vertices[vertexIndex].x * Mathf.Cos(rotationTheta) - triangles[triangleIndex].vertices[vertexIndex].y * Mathf.Sin(rotationTheta);
+                float rotatedY = triangles[triangleIndex].vertices[vertexIndex].x * Mathf.Sin(rotationTheta) + triangles[triangleIndex].vertices[vertexIndex].y * Mathf.Cos(rotationTheta);
+                triangles[triangleIndex].vertices[vertexIndex].x = rotatedX;
+                triangles[triangleIndex].vertices[vertexIndex].y = rotatedY;
             }
         }
         return triangles;
