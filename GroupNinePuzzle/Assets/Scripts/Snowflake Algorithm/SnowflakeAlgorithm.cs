@@ -139,6 +139,9 @@ public class SnowflakeAlgorithm : MonoBehaviour
                     j++;
                 }
             }
+        } else
+        {
+            areIdentical = false;
         }
         return areIdentical;
     }
