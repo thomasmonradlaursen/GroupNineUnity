@@ -9,7 +9,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
     private Vector3 upperLeftCorner;
     private Vector3 lowerRightCorner;
     private Vector3 upperRightCorner;
-    private float margin = 0.075f;
+    private float margin = 0.175f;
 
     public (GameObject, List<GameObject>) possibleSnaps = (null, new List<GameObject>());
 
@@ -396,6 +396,13 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         var cornerToSnapTo = findVertexToSnapToCornerResult.Item3;
         var neighboringCorners = findVertexToSnapToCornerResult.Item4;
 
+
+        if(distanceFromVertexToCorner > margin*3){
+            Debug.Log("Too far away from corner");
+            Debug.Log("Distance: " + distanceFromVertexToCorner);
+            return;
+        }
+
         var vertexToSnapToCorner = pieceVertices[indexOfVertexToSnapToCorner];
         var borderEdge1 = (cornerToSnapTo, neighboringCorners.Item1);
         var borderEdge2 = (cornerToSnapTo, neighboringCorners.Item2);
@@ -413,14 +420,19 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         Vector3 displacement = vertexToSnapToCorner - cornerToSnapTo;
         float rotation = GetComponentInParent<FindClosestVertex>().CalculateRotationForSnap(vertexToSnapToCorner, cornerToSnapTo, vertexToMoveToBorder, otherCornerOfEdgeToSnapTo);
 
+        // Angle is too big.
+        // Either the rotation is not as intended or the player should try harder to place the pieces accurately
+        if (rotation > 0.35 || rotation < -0.35)
+        {
+            Debug.Log("Angle is too big.");
+            return;
+        }
+
+        if(AnyIntersectionsBetweenLines(pieceVertices, cornerVertices)){
+            Debug.Log("Piece overlaps with border.");
+        }
+
         GetComponentInParent<FindClosestVertex>().CalculateVerticesAfterSnapTranslationAndRotation(selectedPiece, displacement, rotation, indexOfVertexToSnapToCorner);
-        // // Angle is too big.
-        // // Either the rotation is not as intended or the player should try harder to place the pieces accurately
-        // if (rotation > 0.35 || rotation < -0.35)
-        // {
-        //     Debug.Log("Angle is too big.");
-        //     return;
-        // }
     }
 
     public (float, int, Vector3, (Vector3, Vector3)) FindVertexToSnapToCorner(Vector3[] pieceVertices)
