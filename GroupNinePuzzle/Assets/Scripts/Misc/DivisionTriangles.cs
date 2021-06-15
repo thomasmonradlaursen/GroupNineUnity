@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-namespace DTriangle
+namespace DivisionTriangles
 {
     [Serializable]
-    public class DelaunayTriangle
+    public class DivisionTriangle
     {
         public int id;
         public Vector3[] vertices;

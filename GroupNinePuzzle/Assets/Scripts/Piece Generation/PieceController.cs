@@ -15,7 +15,7 @@ public class PieceController : MonoBehaviour
         Debug.Log("PieceGenerator: Start()");
         if (puzzleFromRandom)
         {
-            puzzle = GetComponentInChildren<CreateJSONFromRandom>().CreatePuzzle();
+            puzzle = GetComponentInChildren<DivisionModel>().puzzle;
             Debug.Log("Puzzle from random: " + puzzle.name);
         }
         else
@@ -27,7 +27,14 @@ public class PieceController : MonoBehaviour
     }
     void CreatePieces()
     {
-        GetComponent<MeshFromJsonGenerator>().GenerateMeshes();
+        if(puzzleFromRandom)
+        {
+            GetComponent<MeshFromJsonGenerator>().MeshesFromRandom();
+        }
+        else
+        {
+            GetComponent<MeshFromJsonGenerator>().GenerateMeshes();
+        }
         List<Mesh> meshes = GetComponent<MeshFromJsonGenerator>().meshArray;
 
         connectedPieces = new Dictionary<string, List<string>>();
@@ -44,6 +51,7 @@ public class PieceController : MonoBehaviour
             newPiece.AddComponent<Rotation>();
             newPiece.AddComponent<PieceInfo>();
             newPiece.GetComponent<PieceInfo>().CalculateInformation();
+            newPiece.GetComponent<PieceInfo>().vertices = mesh.vertices;
             newPiece.AddComponent<MagneticTouchAlgorithm>();
             PieceOutlineGenerator.GenerateOutline(newPiece, mesh.vertices);
             newPiece.transform.parent = this.transform;
