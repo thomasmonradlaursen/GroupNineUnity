@@ -8,7 +8,7 @@ public class PointGenerator : MonoBehaviour
     {
         int numberOfDots = CalculateDotsFromPieces(GetComponent<DivisionModel>().numberOfPieces);
         List<Vector3> randomPoints = new List<Vector3>();
-        for (int pieceNumber = 0; pieceNumber < numberOfPieces; pieceNumber++)
+        for (int dotNumber = 0; dotNumber < numberOfDots; dotNumber++)
         {
             float randomXCoordinate = Random.Range(((float)boardSize.x) / 50.0f, (float)boardSize.x - ((float)boardSize.x) / 50.0f);
             float randomYCoordinate = Random.Range(((float)boardSize.y) / 50.0f, (float)boardSize.y - ((float)boardSize.y) / 50.0f);

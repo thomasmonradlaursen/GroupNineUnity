@@ -5,9 +5,8 @@ using DTriangle;
 
 public class Triangulation : MonoBehaviour
 {
-    public int triangleId = 1;
     public List<DelaunayTriangle> BowyerWatsonTriangulate(List<Vector3> points)
-    { 
+    {
         List<DelaunayTriangle> triangles = new List<DelaunayTriangle>();
         (DelaunayTriangle, DelaunayTriangle) supertriangles = CreateSupertriangles(GetComponent<DivisionModel>().corners);
         triangles.Add(supertriangles.Item1);
@@ -75,19 +74,33 @@ public class Triangulation : MonoBehaviour
                 triangles.Add(newTriangle);
             }
         }
+        if (GetComponent<DivisionModel>().numberOfPieces % 2 != 0)
+        {
+            DividePiece(triangles);
+        }
         return triangles;
+    }
+    void DividePiece(List<DelaunayTriangle> triangles)
+    {
+            int index = Random.Range(0, triangles.Count);
+            float midpointX = (triangles[index].vertices[0].x + triangles[index].vertices[1].x) / 2;
+            float midPointY = (triangles[index].vertices[0].y + triangles[index].vertices[1].y) / 2;
+            Vector3 midPoint = new Vector3(midpointX, midPointY, 0.0f);
+            triangles.Add(CreateTriangle(triangles[index].vertices[0],triangles[index].vertices[2], midPoint));
+            triangles.Add(CreateTriangle(triangles[index].vertices[1], midPoint, triangles[index].vertices[2]));
+            triangles.RemoveAt(index);
     }
     (DelaunayTriangle, DelaunayTriangle) CreateSupertriangles(List<Vector3> corners)
     {
-        DelaunayTriangle topTriangle = CreateTriangle(corners[0], corners[3], corners[2]);
-        DelaunayTriangle bottomTriangle = CreateTriangle(corners[0], corners[1], corners[3]);
+        DelaunayTriangle topTriangle = CreateTriangle(corners[0], corners[2], corners[3]);
+        DelaunayTriangle bottomTriangle = CreateTriangle(corners[0], corners[1], corners[2]);
         return (topTriangle, bottomTriangle);
     }
     DelaunayTriangle CreateTriangle(Vector3 pointOne, Vector3 pointTwo, Vector3 pointThree)
     {
         Circumscribed circumscriber = new Circumscribed();
         DelaunayTriangle triangle = new DelaunayTriangle();
-        triangle.id = triangleId;
+        triangle.id = GetComponent<DivisionModel>().triangleId;
         triangle.vertices = new Vector3[3] { pointTwo, pointOne, pointThree };
         triangle.edges = new Edge[3] { new Edge(), new Edge(), new Edge() };
         triangle.edges[0].innerHalf = (pointOne, pointTwo);
@@ -99,7 +112,7 @@ public class Triangulation : MonoBehaviour
         (Vector3, float) centerAndRadius = circumscriber.GetCircumcenterAndCircumradius(pointOne, pointThree, pointTwo);
         triangle.circumcenter = centerAndRadius.Item1;
         triangle.circumradius = centerAndRadius.Item2;
-        triangleId++;
+        GetComponent<DivisionModel>().triangleId += 1;
         return triangle;
     }
 }

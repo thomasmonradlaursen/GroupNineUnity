@@ -10,6 +10,7 @@ public class DivisionModel : MonoBehaviour
     public List<Vector3> points = new List<Vector3>();
     public List<Vector3> corners = new List<Vector3>();
     public List<DelaunayTriangle> triangles = new List<DelaunayTriangle>();
+    public int triangleId = 1;
     public string nameOfPuzzle = "RandomlyGeneratedPuzzle";
     public JSONPuzzle puzzle = new JSONPuzzle();
 }
