@@ -37,5 +37,9 @@ public class JSONDeserializer : MonoBehaviour
         }
         return new Vector2(x,y);
     }
+    public void SelectGame(string inputName)
+    {
+        fileName = inputName;
+    }
 }
 
