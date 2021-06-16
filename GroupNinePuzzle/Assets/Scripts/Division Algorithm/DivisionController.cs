@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DivisionTriangles;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class DivisionController : MonoBehaviour
 {

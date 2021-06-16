@@ -72,4 +72,8 @@ public class PieceController : MonoBehaviour
             idx++;
         }
     }
+    public void SetPuzzleToRandom()
+    {
+        puzzleFromRandom = true;
+    }
 }
