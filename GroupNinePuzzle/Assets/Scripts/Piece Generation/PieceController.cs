@@ -72,8 +72,12 @@ public class PieceController : MonoBehaviour
             idx++;
         }
     }
-    public void SetPuzzleToRandom()
+    public void EnableRandomlyGeneratedPuzzled()
     {
         puzzleFromRandom = true;
+    }
+    public void DisableRandomlyGeneratedPuzzled()
+    {
+        puzzleFromRandom = false;
     }
 }
