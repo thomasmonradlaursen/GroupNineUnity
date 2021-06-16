@@ -5,6 +5,12 @@ using UnityEngine;
 public class MagneticTouchAlgorithm : MonoBehaviour
 {
     public List<GameObject> pieces;
+    private Vector3 lowerLeftCorner;
+    private Vector3 upperLeftCorner;
+    private Vector3 lowerRightCorner;
+    private Vector3 upperRightCorner;
+    private float margin = 0.175f;
+
     public (GameObject, List<GameObject>) possibleSnaps = (null, new List<GameObject>());
 
     private void Start()
@@ -17,13 +23,17 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.S))
         {
             // Debug.Log("MagneticTouchAlgorithm - TestingImplementation()");
-            float margin = 0.1f;
-            FindCandidatesForSnap(GetComponentInParent<MeshFromJsonGenerator>().selectedObject, margin);
+            FindCandidatesForSnap(GetComponentInParent<MeshFromJsonGenerator>().selectedObject);
             LogPossibleSnaps();
             if (possibleSnaps.Item2.Count > 0)
             {
                 FindClosestVertexPair();
             }
+        }
+        else if (Input.GetKeyDown(KeyCode.K))
+        {
+            FindCorners();
+            SnapToCorner(GetComponentInParent<MeshFromJsonGenerator>().selectedObject);
         }
     }
 
@@ -50,10 +60,11 @@ public class MagneticTouchAlgorithm : MonoBehaviour
 
             Vector3 displacement = GetComponentInParent<FindClosestVertex>().CalculateDisplacementForSnap(selectedPiece, snapInformation.PieceToSnapTo, indexOfClosestVertexInSelectedPiece, indexOfClosestVertexInPieceToSnapTo);
             float rotation = GetComponentInParent<FindClosestVertex>().CalculateRotationForSnap(snapInformation.PrimaryVertexInSelectedPiece, snapInformation.PrimaryVertexInPieceToSnapTo, snapInformation.PreviousVertexInSelectedPiece, snapInformation.PreviousVertexInPieceToSnapTo);
-            
+
             // Angle is too big.
             // Either the rotation is not as intenden or the player should try harder to place the pieces accurately
-            if(rotation > 0.35 || rotation < -0.35){
+            if (rotation > 0.35 || rotation < -0.35)
+            {
                 Debug.Log("Angle is too big.");
                 return;
             }
@@ -82,10 +93,10 @@ public class MagneticTouchAlgorithm : MonoBehaviour
                         GetComponentInParent<PieceController>().connectedPieces[pieceName].Add(selectedPiece.name);
                     }
                 }
-                 if (!GetComponentInParent<PieceController>().connectedPieces[snapInformation.PieceToSnapTo.name].Contains(selectedPiece.name))
-                    {
-                        GetComponentInParent<PieceController>().connectedPieces[snapInformation.PieceToSnapTo.name].Add(selectedPiece.name);
-                    }
+                if (!GetComponentInParent<PieceController>().connectedPieces[snapInformation.PieceToSnapTo.name].Contains(selectedPiece.name))
+                {
+                    GetComponentInParent<PieceController>().connectedPieces[snapInformation.PieceToSnapTo.name].Add(selectedPiece.name);
+                }
                 GetComponentInParent<PieceController>().connectedPieces[selectedPiece.name].Add(snapInformation.PieceToSnapTo.name);
             }
 
@@ -116,18 +127,18 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         piece.GetComponent<MeshCollider>().sharedMesh = meshForPiece;
     }
 
-    ((float, float), (float, float)) ConstructBoundBox(GameObject piece, float margin)
+    ((float, float), (float, float)) ConstructBoundBox(GameObject piece)
     {
         (float, float) minMaxX = piece.GetComponent<PieceInfo>().GetMaximumAndMinimumXCoordinate();
         (float, float) minMaxY = piece.GetComponent<PieceInfo>().GetMaximumAndMinimumYCoordinate();
         return ((minMaxX.Item1 - margin, minMaxX.Item2 + margin), (minMaxY.Item1 - margin, minMaxY.Item2 + margin));
     }
 
-    void FindCandidatesForSnap(GameObject selectedPiece, float margin)
+    void FindCandidatesForSnap(GameObject selectedPiece)
     {
         possibleSnaps.Item1 = selectedPiece;
         possibleSnaps.Item2.Clear();
-        var boundBoxForSelectedPiece = ConstructBoundBox(selectedPiece, margin);
+        var boundBoxForSelectedPiece = ConstructBoundBox(selectedPiece);
         float minimumXForSelected = boundBoxForSelectedPiece.Item1.Item1;
         float maximumXForSelected = boundBoxForSelectedPiece.Item1.Item2;
         float minimumXForCompare;
@@ -139,7 +150,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         // Debug.Log("MinimumForSelected: " + minimumForSelected + ", MaximumForSelected: " + maximumForSelected);
         foreach (GameObject piece in pieces)
         {
-            var boundBoxForNext = ConstructBoundBox(piece, margin);
+            var boundBoxForNext = ConstructBoundBox(piece);
             minimumXForCompare = boundBoxForNext.Item1.Item1;
             maximumXForCompare = boundBoxForNext.Item1.Item2;
             minimumYForCompare = boundBoxForNext.Item2.Item1;
@@ -328,6 +339,200 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         (float, float) lineConstants = (lineSlope, lineIntersectionWithYAxis);
 
         return lineConstants;
+    }
+
+    void FindCorners()
+    {
+        var form = GetComponentInParent<PieceController>().puzzle.puzzle.form;
+
+        var corners = new List<Vector3>();
+
+        foreach (var item in form)
+        {
+            Vector3 vector = new Vector3(item.coord.x, item.coord.y, 0);
+            corners.Add(vector);
+        }
+
+        float minX = corners[0].x;
+        float maxX = corners[0].x;
+        float minY = corners[0].y;
+        float maxY = corners[0].y;
+
+        foreach (var corner in corners)
+        {
+            if (corner.x < minX)
+            {
+                minX = corner.x;
+            }
+            if (corner.x > maxX)
+            {
+                maxX = corner.x;
+            }
+            if (corner.y < minY)
+            {
+                minY = corner.y;
+            }
+            if (corner.y > maxY)
+            {
+                maxY = corner.y;
+            }
+        }
+
+        lowerLeftCorner = new Vector3(minX, minY, 0);
+        upperLeftCorner = new Vector3(minX, maxY, 0);
+        lowerRightCorner = new Vector3(maxX, minY, 0);
+        upperRightCorner = new Vector3(maxX, maxY, 0);
+    }
+
+
+    public void SnapToCorner(GameObject selectedPiece)
+    {
+        var cornerVertices = new Vector3[] { lowerLeftCorner, upperLeftCorner, lowerRightCorner, upperRightCorner };
+        var pieceVertices = selectedPiece.GetComponent<MeshFilter>().mesh.vertices;
+
+        var findVertexToSnapToCornerResult = FindVertexToSnapToCorner(pieceVertices);
+        var distanceFromVertexToCorner = findVertexToSnapToCornerResult.Item1;
+        var indexOfVertexToSnapToCorner = findVertexToSnapToCornerResult.Item2;
+        var cornerToSnapTo = findVertexToSnapToCornerResult.Item3;
+        var neighboringCorners = findVertexToSnapToCornerResult.Item4;
+
+
+        if(distanceFromVertexToCorner > margin*3){
+            Debug.Log("Too far away from corner");
+            Debug.Log("Distance: " + distanceFromVertexToCorner);
+            return;
+        }
+
+        var vertexToSnapToCorner = pieceVertices[indexOfVertexToSnapToCorner];
+        var borderEdge1 = (cornerToSnapTo, neighboringCorners.Item1);
+        var borderEdge2 = (cornerToSnapTo, neighboringCorners.Item2);
+
+        // ??? Is it a problem if vertex closest to the border is on the "wrong" side of the border?
+        var smallestDistanceToBorderResult = SmallestDistanceToBorder(pieceVertices, vertexToSnapToCorner, borderEdge1, borderEdge2);
+
+        var distanceFromVertexToBorder = smallestDistanceToBorderResult.Item1;
+        var indexOfVertexWithShortestDistanceToBorder = smallestDistanceToBorderResult.Item2;
+        var edgeInBorder = smallestDistanceToBorderResult.Item3;
+
+        var vertexToMoveToBorder = pieceVertices[indexOfVertexWithShortestDistanceToBorder];
+        var otherCornerOfEdgeToSnapTo = edgeInBorder.Item2;
+
+        Vector3 displacement = vertexToSnapToCorner - cornerToSnapTo;
+        float rotation = GetComponentInParent<FindClosestVertex>().CalculateRotationForSnap(vertexToSnapToCorner, cornerToSnapTo, vertexToMoveToBorder, otherCornerOfEdgeToSnapTo);
+
+        // Angle is too big.
+        // Either the rotation is not as intended or the player should try harder to place the pieces accurately
+        if (rotation > 0.35 || rotation < -0.35)
+        {
+            Debug.Log("Angle is too big.");
+            return;
+        }
+
+        if(AnyIntersectionsBetweenLines(pieceVertices, cornerVertices)){
+            Debug.Log("Piece overlaps with border.");
+        }
+
+        GetComponentInParent<FindClosestVertex>().CalculateVerticesAfterSnapTranslationAndRotation(selectedPiece, displacement, rotation, indexOfVertexToSnapToCorner);
+    }
+
+    public (float, int, Vector3, (Vector3, Vector3)) FindVertexToSnapToCorner(Vector3[] pieceVertices)
+    {
+        float shortestDistance = 100000f;
+        int indexOfVertex = -1;
+        Vector3 cornerToSnapTo = new Vector3();
+        (Vector3, Vector3) neighboringCorners = (new Vector3(), new Vector3());
+
+        int idx = 0;
+        foreach (var vertex in pieceVertices)
+        {
+
+            var distanceToLowerLeftCorner = Vector3.Distance(vertex, lowerLeftCorner);
+            var distanceToUpperLeftCorner = Vector3.Distance(vertex, upperLeftCorner);
+            var distanceToLowerRightCorner = Vector3.Distance(vertex, lowerRightCorner);
+            var distanceToUpperRightCorner = Vector3.Distance(vertex, upperRightCorner);
+
+            if (distanceToLowerLeftCorner < shortestDistance)
+            {
+                shortestDistance = distanceToLowerLeftCorner;
+                indexOfVertex = idx;
+                cornerToSnapTo = lowerLeftCorner;
+                neighboringCorners = (upperLeftCorner, lowerRightCorner);
+            }
+            if (distanceToUpperLeftCorner < shortestDistance)
+            {
+                shortestDistance = distanceToUpperLeftCorner;
+                indexOfVertex = idx;
+                cornerToSnapTo = upperLeftCorner;
+                neighboringCorners = (lowerLeftCorner, upperRightCorner);
+            }
+            if (distanceToLowerRightCorner < shortestDistance)
+            {
+                shortestDistance = distanceToLowerRightCorner;
+                indexOfVertex = idx;
+                cornerToSnapTo = lowerRightCorner;
+                neighboringCorners = (lowerLeftCorner, upperRightCorner);
+            }
+            if (distanceToUpperRightCorner < shortestDistance)
+            {
+                shortestDistance = distanceToUpperRightCorner;
+                indexOfVertex = idx;
+                cornerToSnapTo = upperRightCorner;
+                neighboringCorners = (upperLeftCorner, lowerRightCorner);
+            }
+
+            idx++;
+        }
+
+        return (shortestDistance, indexOfVertex, cornerToSnapTo, neighboringCorners);
+    }
+
+    public (float, int, (Vector3, Vector3)) SmallestDistanceToBorder(Vector3[] pieceVertices, Vector3 vertexToSnapToCorner, (Vector3, Vector3) borderEdge1, (Vector3, Vector3) borderEdge2)
+    {
+        float shortestDistance = 100000f;
+        int indexOfVertex = -1;
+        (Vector3, Vector3) edge = (new Vector3(), new Vector3());
+
+        int idx = 0;
+        foreach (var vertex in pieceVertices)
+        {
+
+            if (vertex == vertexToSnapToCorner)
+            {
+                idx++;
+                continue;
+            }
+
+            var distanceToEdge1 = CalculateDistanceFromPointToLine(vertex, borderEdge1);
+            var distanceToEdge2 = CalculateDistanceFromPointToLine(vertex, borderEdge2);
+
+            if (distanceToEdge1 < shortestDistance)
+            {
+                shortestDistance = distanceToEdge1;
+                indexOfVertex = idx;
+                edge = borderEdge1;
+            }
+            if (distanceToEdge2 < shortestDistance)
+            {
+                shortestDistance = distanceToEdge2;
+                indexOfVertex = idx;
+                edge = borderEdge2;
+            }
+            idx++;
+        }
+
+        return (shortestDistance, indexOfVertex, edge);
+    }
+
+    private float CalculateDistanceFromPointToLine(Vector3 point, (Vector3, Vector3) edge)
+    {
+        var edgePoint1 = edge.Item1;
+        var edgePoint2 = edge.Item2;
+
+        var numerator = Mathf.Abs((edgePoint2.x - edgePoint1.x) * (edgePoint1.y - point.y) - (edgePoint1.x - point.x) * (edgePoint2.y - edgePoint1.y));
+        var denominator = Mathf.Sqrt(Mathf.Pow((edgePoint2.x - edgePoint1.x), 2) + Mathf.Pow((edgePoint2.y - edgePoint1.y), 2));
+
+        var distance = numerator / denominator;
+        return distance;
     }
 
     public int GetWrappingIndex(int index, int lengthOfArray)
