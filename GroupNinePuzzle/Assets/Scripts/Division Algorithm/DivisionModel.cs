@@ -13,9 +13,4 @@ public class DivisionModel : MonoBehaviour
     public int triangleId = 1;
     public string nameOfPuzzle = "RandomlyGeneratedPuzzle";
     public JSONPuzzle puzzle = new JSONPuzzle();
-
-    public void SetNumberOfPieces(string inputNumberOfPieces)
-    {
-        numberOfPieces = int.Parse(inputNumberOfPieces);
-    }
 }

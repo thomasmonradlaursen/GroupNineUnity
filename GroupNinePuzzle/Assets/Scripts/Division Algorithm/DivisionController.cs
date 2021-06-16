@@ -10,9 +10,9 @@ public class DivisionController : MonoBehaviour
     void Start()
     {
         SetCorners();
-        SetPoints();
+        CreatePoints();
         RunTriangulation();
-        SetPuzzle();
+        ConstructPuzzle();
     }
     void SetCorners()
     {
@@ -24,7 +24,7 @@ public class DivisionController : MonoBehaviour
         corners.Add(new Vector3(0.0f, boardSize.y, 0.0f));
         GetComponent<DivisionModel>().corners = corners;
     }
-    void SetPoints()
+    void CreatePoints()
     {
         int numberOfPieces = GetComponent<DivisionModel>().numberOfPieces;
         Vector2 boardSize = GetComponent<DivisionModel>().boardSize;
@@ -35,8 +35,20 @@ public class DivisionController : MonoBehaviour
     {
         GetComponent<DivisionModel>().triangles = GetComponent<Triangulation>().BowyerWatsonTriangulate(GetComponent<DivisionModel>().points);
     }
-    void SetPuzzle()
+    void ConstructPuzzle()
     {
         GetComponent<DivisionModel>().puzzle = GetComponent<JSONSerializer>().CreatePuzzle();
+    }
+    public void SetNumberOfPieces(string inputNumber)
+    {
+        GetComponent<DivisionModel>().numberOfPieces = int.Parse(inputNumber);
+    }
+    public void SetLengthOfBoard(string inputLength)
+    {
+        GetComponent<DivisionModel>().boardSize.y = int.Parse(inputLength);
+    }
+    public void SetWidthOfBoard(string inputWidth)
+    {
+        GetComponent<DivisionModel>().boardSize.x = int.Parse(inputWidth);
     }
 }
