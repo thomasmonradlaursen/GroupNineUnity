@@ -19,7 +19,7 @@ public class SnowflakeAlgorithm : MonoBehaviour
     {
         Debug.Log("SnowflakeAlgorithm Start()");
         puzzle = GetComponentInParent<PuzzleModel>().puzzle;
-        pieces = GetComponent<PuzzleModel>().pieces;
+        pieces = GetComponentInParent<PuzzleModel>().pieces;
 
         areaOfPieces = areaSorting.GetAreaOfPieces(pieces);
         lengthsOfPieces = lengthsAndAnglesSorting.GetLengthsOfPieces(pieces);
