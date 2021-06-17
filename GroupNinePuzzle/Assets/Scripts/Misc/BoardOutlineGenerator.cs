@@ -13,7 +13,7 @@ public class BoardOutlineGenerator : MonoBehaviour
         lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
         lineRenderer.material.color = Color.black;
         float lineWidth = GetComponent<PuzzleModel>().puzzle.puzzle.form[2].coord.x + GetComponent<PuzzleModel>().puzzle.puzzle.form[2].coord.y;
-        lineRenderer.widthMultiplier = lineWidth * 0.01f;
+        lineRenderer.widthMultiplier = lineWidth * 0.005f;
         lineRenderer.positionCount = 4;
         lineRenderer.loop = true;
         lineobject.transform.parent = this.transform;
