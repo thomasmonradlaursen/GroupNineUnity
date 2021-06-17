@@ -9,7 +9,6 @@ public class PieceController : MonoBehaviour
     {
         if (GetComponentInParent<PuzzleModel>().generateRandom)
         {
-            Debug.Log("Random piece");
             GetComponentInChildren<MeshGenerator>().MeshesFromRandom();
         }
         else
