@@ -137,7 +137,7 @@ public class MagneticTouchCalculations : MonoBehaviour
     {
         SnapInformation snapInformation = new SnapInformation();
         snapInformation.DistanceBetweenPrimaryVertices = 100000f;
-        snapInformation.DistanceBetweenPreviousVertices = 100000f;
+        snapInformation.DistanceBetweenSecondaryVertices = 100000f;
 
         for (int i = 0; i < piece1.Length; i++) // Iterate through piece 1
         {
@@ -167,25 +167,27 @@ public class MagneticTouchCalculations : MonoBehaviour
 
                     if (distPreviousVertices <= distNextVertices)
                     {
-                        snapInformation.DistanceBetweenPreviousVertices = distPreviousVertices;
+                        snapInformation.DistanceBetweenSecondaryVertices = distPreviousVertices;
 
-                        snapInformation.PreviousVertexInSelectedPiece = previousVertex_piece1;
-                        snapInformation.PreviousVertexInPieceToSnapTo = previousVertex_piece2;
+                        snapInformation.SecondaryVertexInSelectedPiece = previousVertex_piece1;
+                        snapInformation.SecondaryVertexInPieceToSnapTo = previousVertex_piece2;
 
-                        snapInformation.IndexOfPreviousVertexInSelectedPiece = GetWrappingIndex(i - 1, piece1.Length);
-                        snapInformation.IndexOfPreviousVertexInPieceToSnapTo = GetWrappingIndex(k + 1, piece2.Length);
+                        snapInformation.IndexOfSecondaryVertexInSelectedPiece = GetWrappingIndex(i - 1, piece1.Length);
+                        snapInformation.IndexOfSecondaryVertexInPieceToSnapTo = GetWrappingIndex(k + 1, piece2.Length);
 
+                        snapInformation.SecondaryVerticeIsPreviousVertice = true;
                     }
                     else
                     {
-                        snapInformation.DistanceBetweenPreviousVertices = distNextVertices;
+                        snapInformation.DistanceBetweenSecondaryVertices = distNextVertices;
 
-                        snapInformation.PreviousVertexInSelectedPiece = nextVertex_piece1;
-                        snapInformation.PreviousVertexInPieceToSnapTo = nextVertex_piece2;
+                        snapInformation.SecondaryVertexInSelectedPiece = nextVertex_piece1;
+                        snapInformation.SecondaryVertexInPieceToSnapTo = nextVertex_piece2;
 
-                        snapInformation.IndexOfPreviousVertexInSelectedPiece = GetWrappingIndex(i + 1, piece1.Length);
-                        snapInformation.IndexOfPreviousVertexInPieceToSnapTo = GetWrappingIndex(k - 1, piece2.Length);
+                        snapInformation.IndexOfSecondaryVertexInSelectedPiece = GetWrappingIndex(i + 1, piece1.Length);
+                        snapInformation.IndexOfSecondaryVertexInPieceToSnapTo = GetWrappingIndex(k - 1, piece2.Length);
 
+                        snapInformation.SecondaryVerticeIsPreviousVertice = false;
                     }
                 }
             }

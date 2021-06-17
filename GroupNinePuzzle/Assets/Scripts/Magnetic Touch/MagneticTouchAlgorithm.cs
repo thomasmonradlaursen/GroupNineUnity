@@ -44,12 +44,19 @@ public class MagneticTouchAlgorithm : MonoBehaviour
 
         if (this.name.Equals(selectedPiece.name))
         {
-            int indexOfClosestVertexInSelectedPiece = snapInformation.IndexOfPrimaryVertexInSelectedPiece;
-            int indexOfClosestVertexInPieceToSnapTo = snapInformation.IndexOfPrimaryVertexInPieceToSnapTo;
-            int indexOfNeighborVertexInSelectedPiece = snapInformation.IndexOfPreviousVertexInSelectedPiece;
-            int indexOfNeighborVertexInPieceToSnapTo = snapInformation.IndexOfPreviousVertexInPieceToSnapTo;
-            Vector3 displacement = GetComponentInParent<MagneticTouchCalculations>().CalculateDisplacementForSnapToPiece(selectedPiece, snapInformation.PieceToSnapTo, indexOfClosestVertexInSelectedPiece, indexOfClosestVertexInPieceToSnapTo);
-            float rotation = GetComponentInParent<MagneticTouchCalculations>().CalculateRotation(snapInformation.PrimaryVertexInSelectedPiece, snapInformation.PrimaryVertexInPieceToSnapTo, snapInformation.PreviousVertexInSelectedPiece, snapInformation.PreviousVertexInPieceToSnapTo);
+            Vector3 displacement = GetComponentInParent<MagneticTouchCalculations>().CalculateDisplacementForSnapToPiece(selectedPiece, snapInformation.PieceToSnapTo, snapInformation.IndexOfPrimaryVertexInSelectedPiece, snapInformation.IndexOfPrimaryVertexInPieceToSnapTo);
+            float rotation = GetComponentInParent<MagneticTouchCalculations>().CalculateRotation(snapInformation.PrimaryVertexInSelectedPiece, snapInformation.PrimaryVertexInPieceToSnapTo, snapInformation.SecondaryVertexInSelectedPiece, snapInformation.SecondaryVertexInPieceToSnapTo);
+
+            var test1 = CalculateConstantsForLineThroughTwoVertices(snapInformation.PrimaryVertexInSelectedPiece, snapInformation.SecondaryVertexInSelectedPiece);
+            var test2 = CalculateConstantsForLineThroughTwoVertices(snapInformation.PrimaryVertexInPieceToSnapTo, snapInformation.SecondaryVertexInPieceToSnapTo);
+            Debug.Log("line selected: " + test1.Item1 + "*x + " + test1.Item2);
+            Debug.Log("line to snap to: " + test2.Item1 + "*x + " + test2.Item2);
+            Debug.Log("selected Point1: " + snapInformation.PrimaryVertexInSelectedPiece);
+            Debug.Log("selected Point2: " + snapInformation.SecondaryVertexInSelectedPiece);
+            Debug.Log("snap to Point1: " + snapInformation.PrimaryVertexInPieceToSnapTo);
+            Debug.Log("snap to Point2: " + snapInformation.SecondaryVertexInPieceToSnapTo);
+
+
             if (rotation > 0.35 || rotation < -0.35)
             {
                 Debug.Log("Angle is too big.");
@@ -57,6 +64,8 @@ public class MagneticTouchAlgorithm : MonoBehaviour
             }
             Vector3[] originalVertices = selectedPiece.GetComponent<MeshFilter>().mesh.vertices;
             GetComponentInParent<MagneticTouchCalculations>().TranslateAndRotatePiece(selectedPiece, displacement, rotation, snapInformation.IndexOfPrimaryVertexInSelectedPiece);
+
+
             if (CheckIfPiecesOverlap(selectedPiece, snapInformation.PieceToSnapTo))
             {
                 Debug.Log("Cannot snap pieces together. They overlap.");
@@ -166,23 +175,26 @@ public class MagneticTouchAlgorithm : MonoBehaviour
 
     bool CheckIfPiecesOverlap(GameObject selectedPiece, GameObject pieceToSnapTo/*, Vector3 snapVertexSelectedPiece*/)
     {
-        // Check that two or more vertices in succession in the two pieces are identical.
-        // Any identical vertices that are not in succession means the two pieces don't fit together (in the current orientation).
-        // The above method assumes that a long straight line will only fit with a short straight line if
-        // the long straight line is made up of multiple shorter straight lines.
-
-        // Use PolygonTriangulation methods to determine if pieces overlap?
-        // Maybe check all lines from one piece for intersections with any lines in the other piece?
-        // If we do the line thing we should maybe exclude the lines that the two pieces share?
-
         // Line intersection:
         Vector3[] verticesSelectedPiece = selectedPiece.GetComponent<MeshFilter>().mesh.vertices;
         Vector3[] verticesSnapPiece = pieceToSnapTo.GetComponent<MeshFilter>().mesh.vertices;
-        if (AnyIntersectionsBetweenLines(verticesSelectedPiece, verticesSnapPiece))
+        var meshTrianglesSelected = selectedPiece.GetComponent<MeshFilter>().mesh.triangles;
+        var meshTrianglesSnapPiece = pieceToSnapTo.GetComponent<MeshFilter>().mesh.triangles;
+
+
+        if (AnyIntersectionsBetweenLines(verticesSelectedPiece, verticesSnapPiece)
+            || CheckIfAnyPointIsContainedInTheOtherPiece(verticesSelectedPiece, meshTrianglesSelected, verticesSnapPiece)
+            || CheckIfAnyPointIsContainedInTheOtherPiece(verticesSnapPiece, meshTrianglesSnapPiece, verticesSelectedPiece))
         {
             Debug.Log("Overlap with piece (first): " + pieceToSnapTo.name);
             return true;
         }
+
+        //Check if any point is contained in other piece
+        /*  Looking at intersections between lines is not enough because two vertices in
+            piece A can be on a line of piece B and have a vertex between them that is inside B.
+            This is not found by line intersections. */
+
 
         List<string> connectedPiecesNames = pieceToSnapTo.GetComponentInParent<PuzzleModel>().connectedPieces[pieceToSnapTo.name];
         var connectedPieces = new List<GameObject>();
@@ -197,13 +209,41 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         foreach (var connectedPiece in connectedPieces)
         {
             Vector3[] verticesConnectedPiece = connectedPiece.GetComponent<MeshFilter>().mesh.vertices;
-            if (AnyIntersectionsBetweenLines(verticesSelectedPiece, verticesConnectedPiece))
+            var meshTrianglesConnected = connectedPiece.GetComponent<MeshFilter>().mesh.triangles;
+
+            if (AnyIntersectionsBetweenLines(verticesSelectedPiece, verticesConnectedPiece)
+                || CheckIfAnyPointIsContainedInTheOtherPiece(verticesSelectedPiece, meshTrianglesSelected, verticesConnectedPiece)
+                || CheckIfAnyPointIsContainedInTheOtherPiece(verticesConnectedPiece, meshTrianglesSnapPiece, verticesSelectedPiece))
             {
                 Debug.Log("Overlap with piece: " + connectedPiece.name);
                 return true;
             }
+
         }
 
+        return false;
+    }
+
+    bool CheckIfAnyPointIsContainedInTheOtherPiece(Vector3[] piece1Vertices, int[] piece1Triangles, Vector3[] piece2Vertices)
+    {
+        for (int i = 0; i < piece1Triangles.Length; i += 3)
+        {
+            var vertex1 = new Vector2(RoundToXDecimals(piece1Vertices[piece1Triangles[i]].x, 1), RoundToXDecimals(piece1Vertices[piece1Triangles[i]].y, 1));
+            var vertex2 = new Vector2(RoundToXDecimals(piece1Vertices[piece1Triangles[i+1]].x, 1), RoundToXDecimals(piece1Vertices[piece1Triangles[i+1]].y, 1));
+            var vertex3 = new Vector2(RoundToXDecimals(piece1Vertices[piece1Triangles[i+2]].x, 1), RoundToXDecimals(piece1Vertices[piece1Triangles[i+2]].y, 1));
+
+            foreach (var vertexToCheck in piece2Vertices)
+            {
+                if (PolygonTriangulation.IsPointInTriangle(vertex1, vertex2, vertex3, vertexToCheck))
+                {
+                    Debug.Log("This point in other piece is in selected piece: " + vertexToCheck);
+                    Debug.Log("In triangle: " + vertex1 + " " + vertex2 + " " + vertex3);
+
+                    return true;
+                }
+            }
+        }
+        
         return false;
     }
 
@@ -269,10 +309,10 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         // var intersectionY = line1.Item1 * intersectionX + line1.Item2;
 
         // if the x-value of the intersection point is in both line segments, the two line segments intersect.
-        if (((RoundTo3Decimals(point1Line1.x) < intersectionX - 0.01 && intersectionX + 0.01 < RoundTo3Decimals(point2Line1.x))
-            || (RoundTo3Decimals(point1Line1.x) > intersectionX + 0.01 && intersectionX - 0.01 > RoundTo3Decimals(point2Line1.x)))
-            && ((RoundTo3Decimals(point1Line2.x) < intersectionX - 0.01 && intersectionX + 0.01 < RoundTo3Decimals(point2Line2.x))
-            || (RoundTo3Decimals(point1Line2.x) > intersectionX + 0.01 && intersectionX - 0.01 > RoundTo3Decimals(point2Line2.x))))
+        if (((RoundToXDecimals(point1Line1.x, 3) < intersectionX - 0.01 && intersectionX + 0.01 < RoundToXDecimals(point2Line1.x, 3))
+            || (RoundToXDecimals(point1Line1.x, 3) > intersectionX + 0.01 && intersectionX - 0.01 > RoundToXDecimals(point2Line1.x, 3)))
+            && ((RoundToXDecimals(point1Line2.x, 3) < intersectionX - 0.01 && intersectionX + 0.01 < RoundToXDecimals(point2Line2.x, 3))
+            || (RoundToXDecimals(point1Line2.x, 3) > intersectionX + 0.01 && intersectionX - 0.01 > RoundToXDecimals(point2Line2.x, 3))))
         {
             return true;
         }
@@ -280,9 +320,10 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         return false;
     }
 
-    float RoundTo3Decimals(float toRound)
+    float RoundToXDecimals(float toRound, int decimals)
     {
-        return Mathf.Round(toRound * 100f) / 100f;
+        var multiplier = Mathf.Pow(10, decimals);
+        return Mathf.Round(toRound * multiplier) / multiplier;
     }
 
     (float, float) CalculateConstantsForLineThroughTwoVertices(Vector3 vertex1, Vector3 vertex2)
