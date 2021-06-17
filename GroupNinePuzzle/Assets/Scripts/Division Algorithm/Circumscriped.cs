@@ -22,8 +22,8 @@ public class Circumscribed //Circumscribed circle script
         float[,] matrixForYCoordinate = new float[3, 3] { { A.x, Mathf.Pow(A.magnitude,2), 1 }, { B.x, Mathf.Pow(B.magnitude,2), 1 }, { C.x, Mathf.Pow(C.magnitude,2), 1 } };
         S.x = (1.0f / 2.0f) * DeterminantOf3DMatrix(matrixForXCoordinate);
         S.y = (1.0f / 2.0f) * DeterminantOf3DMatrix(matrixForYCoordinate);
-        Debug.Log("x-coordinate: " + S.x);
-        Debug.Log("y-coordinate: " + S.y);
+        //Debug.Log("x-coordinate: " + S.x);
+        //Debug.Log("y-coordinate: " + S.y);
         return S;
     }
     float CalculateConstantA(Vector3 A, Vector3 B, Vector3 C)
