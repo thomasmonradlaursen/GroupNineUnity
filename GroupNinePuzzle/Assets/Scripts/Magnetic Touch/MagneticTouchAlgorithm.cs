@@ -15,15 +15,13 @@ public class MagneticTouchAlgorithm : MonoBehaviour
 
     private void Start()
     {
-        //Debug.Log("MagneticTouchAlgorithm - Start()");
-        pieces = GetComponentInParent<PieceController>().pieces;
+        pieces = GetComponentInParent<PuzzleModel>().pieces;
     }
     void FixedUpdate()
     {
         if (Input.GetKeyDown(KeyCode.S))
         {
-            // Debug.Log("MagneticTouchAlgorithm - TestingImplementation()");
-            FindCandidatesForSnap(GetComponentInParent<MeshGenerator>().selectedObject);
+            FindCandidatesForSnap(GetComponentInParent<PuzzleModel>().selectedObject);
             LogPossibleSnaps();
             if (possibleSnaps.Item2.Count > 0)
             {
@@ -33,7 +31,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.K))
         {
             FindCorners();
-            SnapToCorner(GetComponentInParent<MeshGenerator>().selectedObject);
+            SnapToCorner(GetComponentInParent<PuzzleModel>().selectedObject);
         }
     }
 
@@ -41,41 +39,23 @@ public class MagneticTouchAlgorithm : MonoBehaviour
     {
         SnapInformation snapInformation;
         snapInformation = GetComponentInParent<FindClosestVertex>().FindClosestVertexToSelectedPiece(possibleSnaps);
-        GameObject selectedPiece = GetComponentInParent<MeshGenerator>().selectedObject;
+        GameObject selectedPiece = GetComponentInParent<PuzzleModel>().selectedObject;
 
         if (this.name.Equals(selectedPiece.name))
         {
-            // snapInformation.DebugLogInformation();
-            // Debug.Log(selectedPiece.name);
-            // Debug.Log("this: " + this.name);
-            // Debug.Log("this.name.Equals(selectedPiece.name");
-
             int indexOfClosestVertexInSelectedPiece = snapInformation.IndexOfPrimaryVertexInSelectedPiece;
             int indexOfClosestVertexInPieceToSnapTo = snapInformation.IndexOfPrimaryVertexInPieceToSnapTo;
             int indexOfNeighborVertexInSelectedPiece = snapInformation.IndexOfPreviousVertexInSelectedPiece;
             int indexOfNeighborVertexInPieceToSnapTo = snapInformation.IndexOfPreviousVertexInPieceToSnapTo;
-
-            // Debug.LogFormat("index of vertex in selected piece: " + indexOfClosestVertexInSelectedPiece);
-            // Debug.LogFormat("vertex in selected piece: " + selectedPiece.GetComponent<MeshFilter>().mesh.vertices[indexOfClosestVertexInSelectedPiece]);
-
             Vector3 displacement = GetComponentInParent<FindClosestVertex>().CalculateDisplacementForSnap(selectedPiece, snapInformation.PieceToSnapTo, indexOfClosestVertexInSelectedPiece, indexOfClosestVertexInPieceToSnapTo);
             float rotation = GetComponentInParent<FindClosestVertex>().CalculateRotationForSnap(snapInformation.PrimaryVertexInSelectedPiece, snapInformation.PrimaryVertexInPieceToSnapTo, snapInformation.PreviousVertexInSelectedPiece, snapInformation.PreviousVertexInPieceToSnapTo);
-
-            // Angle is too big.
-            // Either the rotation is not as intenden or the player should try harder to place the pieces accurately
             if (rotation > 0.35 || rotation < -0.35)
             {
                 Debug.Log("Angle is too big.");
                 return;
             }
-
-            // Debug.Log("Displacement: " + displacement);
-            // Debug.Log("Rotation: " + rotation);
             Vector3[] originalVertices = selectedPiece.GetComponent<MeshFilter>().mesh.vertices;
-
-
             GetComponentInParent<FindClosestVertex>().CalculateVerticesAfterSnapTranslationAndRotation(selectedPiece, displacement, rotation, snapInformation.IndexOfPrimaryVertexInSelectedPiece);
-
             if (CheckIfPiecesOverlap(selectedPiece, snapInformation.PieceToSnapTo))
             {
                 Debug.Log("Cannot snap pieces together. They overlap.");
@@ -84,30 +64,24 @@ public class MagneticTouchAlgorithm : MonoBehaviour
             else
             {
                 // Establish new connections
-                foreach (var pieceName in GetComponentInParent<PieceController>().connectedPieces[snapInformation.PieceToSnapTo.name])
+                foreach (var pieceName in GetComponentInParent<PuzzleModel>().connectedPieces[snapInformation.PieceToSnapTo.name])
                 {
-                    GetComponentInParent<PieceController>().connectedPieces[selectedPiece.name].Add(pieceName);
+                    GetComponentInParent<PuzzleModel>().connectedPieces[selectedPiece.name].Add(pieceName);
 
-                    if (!GetComponentInParent<PieceController>().connectedPieces[pieceName].Contains(selectedPiece.name))
+                    if (!GetComponentInParent<PuzzleModel>().connectedPieces[pieceName].Contains(selectedPiece.name))
                     {
-                        GetComponentInParent<PieceController>().connectedPieces[pieceName].Add(selectedPiece.name);
+                        GetComponentInParent<PuzzleModel>().connectedPieces[pieceName].Add(selectedPiece.name);
                     }
                 }
-                if (!GetComponentInParent<PieceController>().connectedPieces[snapInformation.PieceToSnapTo.name].Contains(selectedPiece.name))
+                if (!GetComponentInParent<PuzzleModel>().connectedPieces[snapInformation.PieceToSnapTo.name].Contains(selectedPiece.name))
                 {
-                    GetComponentInParent<PieceController>().connectedPieces[snapInformation.PieceToSnapTo.name].Add(selectedPiece.name);
+                    GetComponentInParent<PuzzleModel>().connectedPieces[snapInformation.PieceToSnapTo.name].Add(selectedPiece.name);
                 }
-                GetComponentInParent<PieceController>().connectedPieces[selectedPiece.name].Add(snapInformation.PieceToSnapTo.name);
+                GetComponentInParent<PuzzleModel>().connectedPieces[selectedPiece.name].Add(snapInformation.PieceToSnapTo.name);
             }
-
-            Debug.Log("========= Connected Pieces =========");
-
-            Debug.Log("ConnectedWith: " + selectedPiece.name);
-
-            foreach (var item in GetComponentInParent<PieceController>().connectedPieces[selectedPiece.name])
+            foreach (var item in GetComponentInParent<PuzzleModel>().connectedPieces[selectedPiece.name])
             {
-                Debug.Log("Next: " + item);
-                foreach (var item2 in GetComponentInParent<PieceController>().connectedPieces[item])
+                foreach (var item2 in GetComponentInParent<PuzzleModel>().connectedPieces[item])
                 {
                     Debug.Log(item2);
                 }
@@ -147,7 +121,6 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         float maximumYForSelected = boundBoxForSelectedPiece.Item2.Item2;
         float minimumYForCompare;
         float maximumYForCompare;
-        // Debug.Log("MinimumForSelected: " + minimumForSelected + ", MaximumForSelected: " + maximumForSelected);
         foreach (GameObject piece in pieces)
         {
             var boundBoxForNext = ConstructBoundBox(piece);
@@ -155,11 +128,10 @@ public class MagneticTouchAlgorithm : MonoBehaviour
             maximumXForCompare = boundBoxForNext.Item1.Item2;
             minimumYForCompare = boundBoxForNext.Item2.Item1;
             maximumYForCompare = boundBoxForNext.Item2.Item2;
-            // Debug.Log("Minimum: " + minimumForCompare + ", maximum: " + maximumForCompare);
             if (minimumXForSelected < maximumXForCompare && maximumXForSelected > minimumXForCompare
                 && minimumYForSelected < maximumYForCompare && maximumYForSelected > minimumYForCompare)
             {
-                if (!(piece.name.Equals(GetComponentInParent<MeshGenerator>().selected)))
+                if (!(piece.name.Equals(GetComponentInParent<PuzzleModel>().selectedObject.name)))
                 {
                     possibleSnaps.Item2.Add(piece);
                 }
@@ -169,7 +141,6 @@ public class MagneticTouchAlgorithm : MonoBehaviour
 
     void LogPossibleSnaps()
     {
-        // Debug.Log("Number of possible snaps " + possibleSnaps.Item2.Count);
         if (possibleSnaps.Item2.Count > 0)
         {
             string printString = "";
@@ -212,9 +183,9 @@ public class MagneticTouchAlgorithm : MonoBehaviour
             return true;
         }
 
-        List<string> connectedPiecesNames = pieceToSnapTo.GetComponentInParent<PieceController>().connectedPieces[pieceToSnapTo.name];
+        List<string> connectedPiecesNames = pieceToSnapTo.GetComponentInParent<PuzzleModel>().connectedPieces[pieceToSnapTo.name];
         var connectedPieces = new List<GameObject>();
-        foreach (var piece in pieceToSnapTo.GetComponentInParent<PieceController>().pieces)
+        foreach (var piece in pieceToSnapTo.GetComponentInParent<PuzzleModel>().pieces)
         {
             if (connectedPiecesNames.Contains(piece.name) && piece.name != selectedPiece.name)
             {
@@ -273,13 +244,6 @@ public class MagneticTouchAlgorithm : MonoBehaviour
                         );
                 if (linesIntersect)
                 {
-                    // Debug.Log("===== Intersection =====");
-                    // Debug.Log("");
-                    // Debug.Log(verticesPiece1[idx1]);
-                    // Debug.Log(verticesPiece1[GetWrappingIndex(idx1 + 1, verticesPiece1.Length)]);
-                    // Debug.Log(verticesPiece2[idx2]);
-                    // Debug.Log(verticesPiece2[GetWrappingIndex(idx2 + 1, verticesPiece2.Length)]);
-
                     return true;
                 }
                 idx2++;
@@ -309,16 +273,6 @@ public class MagneticTouchAlgorithm : MonoBehaviour
             && ((RoundTo3Decimals(point1Line2.x) < intersectionX - 0.01 && intersectionX + 0.01 < RoundTo3Decimals(point2Line2.x))
             || (RoundTo3Decimals(point1Line2.x) > intersectionX + 0.01 && intersectionX - 0.01 > RoundTo3Decimals(point2Line2.x))))
         {
-            Debug.Log("===== Intersection =====");
-            Debug.Log("Top: " + (line2.Item2 - line1.Item2));
-            Debug.Log("Bottom: " + (line1.Item1 - line2.Item1));
-            Debug.Log("");
-            Debug.Log("intersectionX: " + intersectionX);
-            Debug.Log("intersectionX rounded: " + RoundTo3Decimals(intersectionX));
-            Debug.Log("line1 point1: " + RoundTo3Decimals(point1Line1.x));
-            Debug.Log("line1 point2: " + RoundTo3Decimals(point2Line1.x));
-            Debug.Log("line2 point1: " + RoundTo3Decimals(point1Line2.x));
-            Debug.Log("line2 point2: " + RoundTo3Decimals(point2Line2.x));
             return true;
         }
 
@@ -343,7 +297,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
 
     void FindCorners()
     {
-        var form = GetComponentInParent<PieceController>().puzzle.puzzle.form;
+        var form = GetComponentInParent<PuzzleModel>().puzzle.puzzle.form;
 
         var corners = new List<Vector3>();
 
@@ -397,7 +351,8 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         var neighboringCorners = findVertexToSnapToCornerResult.Item4;
 
 
-        if(distanceFromVertexToCorner > margin*3){
+        if (distanceFromVertexToCorner > margin * 3)
+        {
             Debug.Log("Too far away from corner");
             Debug.Log("Distance: " + distanceFromVertexToCorner);
             return;
@@ -428,7 +383,8 @@ public class MagneticTouchAlgorithm : MonoBehaviour
             return;
         }
 
-        if(AnyIntersectionsBetweenLines(pieceVertices, cornerVertices)){
+        if (AnyIntersectionsBetweenLines(pieceVertices, cornerVertices))
+        {
             Debug.Log("Piece overlaps with border.");
         }
 

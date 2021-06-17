@@ -11,11 +11,11 @@ public class Rotation : MonoBehaviour
     MiscellaneousMath miscellaneousMath = new MiscellaneousMath();
     void FixedUpdate()
     {
-        if (this.name.Equals(this.GetComponentInParent<MeshGenerator>().selected))
+        if (this.name.Equals(this.GetComponentInParent<PuzzleModel>().selectedObject.name))
         {
             if (Input.GetKey(KeyCode.UpArrow))
             {
-                RotateMesh((1 * Mathf.PI) / 180);   //counter-clockwise
+                RotateMesh((1 * Mathf.PI) / 180);  //counter-clockwise
             }
             if (Input.GetKey(KeyCode.DownArrow))
             {
@@ -45,27 +45,19 @@ public class Rotation : MonoBehaviour
     }
     void OnMouseDown()
     {
+        var currentlySelectedObject = this.GetComponentInParent<PuzzleModel>().selectedObject;
 
-        // set the currently selected piece as previously selected piece
-        var currentlySelected = this.GetComponentInParent<MeshGenerator>().selected;
-        var currentlySelectedObject = this.GetComponentInParent<MeshGenerator>().selectedObject;
-
-        if (currentlySelectedObject != null && currentlySelected != this.name)
+        if (currentlySelectedObject != null && currentlySelectedObject.name != this.name)
         {
             var renderer1 = currentlySelectedObject.GetComponent<MeshRenderer>();
             var materials1 = renderer1.materials;
             materials1[0].color = Color.blue;
-            this.GetComponentInParent<MeshGenerator>().previousSelected = currentlySelected;
-            this.GetComponentInParent<MeshGenerator>().previousSelectedObject = currentlySelectedObject;
+            this.GetComponentInParent<PuzzleModel>().previousSelectedObject = currentlySelectedObject;
         }
-
-
         // Set the new piece as currently selected piece 
-        currentlySelected = this.name;
         currentlySelectedObject = this.gameObject;
-        this.GetComponentInParent<MeshGenerator>().selected = currentlySelected;
-        this.GetComponentInParent<MeshGenerator>().selectedObject = currentlySelectedObject;
-        if (currentlySelectedObject != null && currentlySelected == this.name)
+        this.GetComponentInParent<PuzzleModel>().selectedObject = currentlySelectedObject;
+        if (currentlySelectedObject != null && currentlySelectedObject.name == this.name)
         {
             var renderer2 = this.GetComponent<MeshRenderer>();
             var materials2 = renderer2.materials;
@@ -83,7 +75,7 @@ public class Rotation : MonoBehaviour
         originalVertices = new Vector3[mesh.vertices.Length];
         originalVertices = mesh.vertices;
         rotatedVertices = new Vector3[originalVertices.Length];
-        this.GetComponentInParent<MeshGenerator>().selected = this.name;
+        this.GetComponentInParent<PuzzleModel>().selectedObject.name = this.name;
     }
 
     void CentralizeVertices(Vector3 centroid)

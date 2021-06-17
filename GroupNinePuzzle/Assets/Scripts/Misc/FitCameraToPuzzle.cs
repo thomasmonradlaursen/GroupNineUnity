@@ -16,7 +16,7 @@ public class FitCameraToPuzzle : MonoBehaviour
     void Start()
     {
         _camera = GetComponent<Camera>();
-        var jsonPuzzle = GetComponentInParent<PieceController>().puzzle;
+        var jsonPuzzle = GetComponentInParent<PuzzleModel>().puzzle;
         var shape = jsonPuzzle.puzzle.form;
 
         var lowestXValueOfPieces = 0f;

@@ -30,8 +30,8 @@ public class AutoSolveAlgorithm : MonoBehaviour
 
     }
      void AutoSolve2(){
-        puzzle = GetComponentInParent<PieceController>().puzzle;
-        pieces = GetComponent<PieceController>().pieces;
+        puzzle = GetComponentInParent<PuzzleModel>().puzzle;
+        pieces = GetComponent<PuzzleModel>().pieces;
         //Debug.Log("AUTOSOLVER started");
 
         FindCorners();

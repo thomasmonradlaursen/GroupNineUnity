@@ -48,10 +48,10 @@ public class PieceInfo : MonoBehaviour
     public void RemoveConnectionsToOtherPieces()
     {
         // Remove existing connections
-        foreach (var pieceName in GetComponentInParent<PieceController>().connectedPieces[this.name])
+        foreach (var pieceName in GetComponentInParent<PuzzleModel>().connectedPieces[this.name])
         {
-            GetComponentInParent<PieceController>().connectedPieces[pieceName].Remove(this.name);
+            GetComponentInParent<PuzzleModel>().connectedPieces[pieceName].Remove(this.name);
         }
-        GetComponentInParent<PieceController>().connectedPieces[this.name].Clear();
+        GetComponentInParent<PuzzleModel>().connectedPieces[this.name].Clear();
     }
 }

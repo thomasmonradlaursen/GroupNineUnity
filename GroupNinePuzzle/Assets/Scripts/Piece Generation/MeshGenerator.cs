@@ -9,11 +9,6 @@ using DivisionTriangles;
 public class MeshGenerator : MonoBehaviour
 
 {
-    public string selected = "empty";
-    public GameObject selectedObject = null;
-    public string previousSelected = "empty";
-    public GameObject previousSelectedObject = null;
-    Vector2[] newUV;
     public void GenerateMeshes(JSONPuzzle puzzle)
     {
         foreach (var piece in puzzle.pieces)
@@ -28,7 +23,7 @@ public class MeshGenerator : MonoBehaviour
                 idx++;
             }
             mesh.vertices = vertices;
-            mesh.uv = newUV;
+            mesh.uv = GetComponent<MeshModel>().newUV;
             var verticesList = new List<Vector3>();
             foreach (var vertex in vertices)
             {
@@ -45,7 +40,7 @@ public class MeshGenerator : MonoBehaviour
                 idx += 3;
             }
             mesh.triangles = trianglesAsIntArray;
-            GetComponent<PieceModel>().meshes.Add(mesh);
+            GetComponent<MeshModel>().meshes.Add(mesh);
         }
     }
     public void MeshesFromRandom()
@@ -55,7 +50,7 @@ public class MeshGenerator : MonoBehaviour
             Mesh mesh = new Mesh();
             mesh.vertices = triangle.vertices;
             mesh.triangles = new int[3] { 0, 2, 1 };
-            GetComponent<PieceModel>().meshes.Add(mesh);
+            GetComponent<MeshModel>().meshes.Add(mesh);
         }
     }
 }

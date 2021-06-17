@@ -18,13 +18,12 @@ public class AutoSolveCleverVersion : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
-            Debug.Log("AutoSolve - TestingImplementation()");
             AutoSolve();
         }
     }
      void AutoSolve(){
-        puzzle = GetComponentInParent<PieceController>().puzzle;
-        pieces = GetComponent<PieceController>().pieces;
+        puzzle = GetComponentInParent<PuzzleModel>().puzzle;
+        pieces = GetComponent<PuzzleModel>().pieces;
         FindCorners();
         /*
         Debug.Log("lower left corner: "+ lowerLeftCorner);

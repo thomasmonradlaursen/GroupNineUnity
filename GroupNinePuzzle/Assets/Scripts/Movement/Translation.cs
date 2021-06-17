@@ -16,30 +16,25 @@ public class Translation : MonoBehaviour
         mouseOffset = gameObject.transform.position - MouseWorldPosition();
 
         // set the currently selected piece as previously selected piece
-        var currentlySelected = this.GetComponentInParent<MeshGenerator>().selected;
-        var currentlySelectedObject = this.GetComponentInParent<MeshGenerator>().selectedObject;
+        var currentlySelectedObject = this.GetComponentInParent<PuzzleModel>().selectedObject;
 
-        if (currentlySelectedObject != null && currentlySelected != this.name)
+        if (currentlySelectedObject != null && currentlySelectedObject.name != this.name)
         {
             var renderer1 = currentlySelectedObject.GetComponent<MeshRenderer>();
             var materials1 = renderer1.materials;
             materials1[0].color = Color.blue;
-            this.GetComponentInParent<MeshGenerator>().previousSelected = currentlySelected;
-            this.GetComponentInParent<MeshGenerator>().previousSelectedObject = currentlySelectedObject;
+            this.GetComponentInParent<PuzzleModel>().previousSelectedObject = currentlySelectedObject;
         }
 
         // Set the new piece as currently selected piece 
-        currentlySelected = this.name;
         currentlySelectedObject = this.gameObject;
-        this.GetComponentInParent<MeshGenerator>().selected = currentlySelected;
-        this.GetComponentInParent<MeshGenerator>().selectedObject = currentlySelectedObject;
-        if (currentlySelectedObject != null && currentlySelected == this.name)
+        this.GetComponentInParent<PuzzleModel>().selectedObject = currentlySelectedObject;
+        if (currentlySelectedObject != null && currentlySelectedObject.name == this.name)
         {
             var renderer2 = this.GetComponent<MeshRenderer>();
             var materials2 = renderer2.materials;
             materials2[0].color = Color.red;
         }
-
         pieceHasBeenMoved = false;
     }
     void OnMouseDrag()
