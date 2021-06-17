@@ -94,19 +94,4 @@ public class Rotation : MonoBehaviour
             rotatedVertices[index].y += centroid.y;
         }
     }
-    void LogVertices(Vector3[] vertices)
-    {
-        foreach (Vector3 vertex in vertices)
-        {
-            Debug.Log(vertex);
-        }
-    }
-
-    void LogAngles(float[] angles)
-    {
-        foreach (float angle in angles)
-        {
-            Debug.Log(angle);
-        }
-    }
 }
