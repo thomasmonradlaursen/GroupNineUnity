@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Circumscribed //Circumscribed circle script
+public class Circumscribed
 {
     float DeterminantOf3DMatrix(float[,] matrix)
     {
