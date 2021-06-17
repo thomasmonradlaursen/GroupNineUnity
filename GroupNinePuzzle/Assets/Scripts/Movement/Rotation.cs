@@ -11,7 +11,7 @@ public class Rotation : MonoBehaviour
     MiscellaneousMath miscellaneousMath = new MiscellaneousMath();
     void FixedUpdate()
     {
-        if (this.name.Equals(this.GetComponentInParent<PuzzleModel>().selectedObject.name))
+        if (GetComponentInParent<PuzzleModel>().selectedObject != null && this.name.Equals(this.GetComponentInParent<PuzzleModel>().selectedObject.name))
         {
             if (Input.GetKey(KeyCode.UpArrow))
             {
