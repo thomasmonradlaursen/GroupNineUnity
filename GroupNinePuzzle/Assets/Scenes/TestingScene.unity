@@ -1302,7 +1302,7 @@ MonoBehaviour:
     name: 
     nPieces: 0
     pieces: []
-  fileName: Classic-003-005-1331.json
+  fileName: puzzle_01_manual.json
   locationOfFile: Assets/ExamFiles/
   pieces: []
   generateRandom: 0
