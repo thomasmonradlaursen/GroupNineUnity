@@ -54,7 +54,7 @@ public class MiscellaneousMath
         float angle = Vector3.SignedAngle(temp1, temp2, Vector3.up);
         Vertex vertex = new Vertex(b);
         Vertex prev = new Vertex(a); Vertex next = new Vertex(c);
-        vertex.prevVertex = prev; vertex.nextVertex = next; 
+        vertex.previousVertex = prev; vertex.nextVertex = next; 
         PolygonTriangulation.CheckIfReflexOrConvex(vertex);
         if(vertex.isReflex == true){
             angle = 360 - angle;
@@ -71,7 +71,7 @@ public class MiscellaneousMath
                 angle = Vector3.SignedAngle(temp1, temp2, Vector3.up);
                 vertex = new Vertex(b);
                 prev = new Vertex(a); next = new Vertex(c);
-                vertex.prevVertex = prev; vertex.nextVertex = next; 
+                vertex.previousVertex = prev; vertex.nextVertex = next; 
                 PolygonTriangulation.CheckIfReflexOrConvex(vertex);
                 if(vertex.isReflex == true){
                     angle = 360 - angle;
@@ -86,7 +86,7 @@ public class MiscellaneousMath
                 angle = Vector3.SignedAngle(temp1, temp2, Vector3.up);
                 vertex = new Vertex(b);
                 prev = new Vertex(a); next = new Vertex(c);
-                vertex.prevVertex = prev; vertex.nextVertex = next;
+                vertex.previousVertex = prev; vertex.nextVertex = next;
                 PolygonTriangulation.CheckIfReflexOrConvex(vertex);
                 if(vertex.isReflex == true){
                     angle = 360 - angle;

@@ -6,10 +6,10 @@ using JSONPuzzleTypes;
 public class Vertex
 {
     public Vector3 vertex { get; set; }
-    public Vertex prevVertex { get; set; }
+    public Vertex previousVertex { get; set; }
     public Vertex nextVertex { get; set; }
-    public bool isConvex { get; set; }
-    public bool isReflex { get; set; }
+    public bool isConvex { get; set; } // Angle smaller than 180 degrees
+    public bool isReflex { get; set; } // Angle larger than 180 degrees
 
     public Vertex(Vector3 vertexIn)
     {
@@ -38,29 +38,10 @@ public class Triangle
         this.vertex2 = new Vertex(vertex2in);
         this.vertex3 = new Vertex(vertex3in);
     }
-
-    public Triangle(Vertex vertex1in, Vertex vertex2in, Vertex vertex3in)
-    {
-        this.vertex1 = vertex1in;
-        this.vertex2 = vertex2in;
-        this.vertex3 = vertex3in;
-    }
 }
 
-public class PolygonTriangulation : MonoBehaviour
+public class PolygonTriangulation
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     // ===== BELOW CODE IS BASED ON https://www.habrador.com/tutorials/math/10-triangulation/  =====
 
     //This assumes that we have a polygon and now we want to triangulate it
@@ -83,7 +64,7 @@ public class PolygonTriangulation : MonoBehaviour
 
 
 
-        //Step 1. Store the vertices in a list and we also need to know the next and prev vertex
+        //Step 1. Store the vertices in a list and we also need to know the next and previous vertex
         List<Vertex> vertices = new List<Vertex>();
 
         for (int i = 0; i < points.Count; i++)
@@ -94,12 +75,10 @@ public class PolygonTriangulation : MonoBehaviour
         //Find the next and previous vertex
         for (int i = 0; i < vertices.Count; i++)
         {
-            int nextPos = (((i + 1) % vertices.Count) + vertices.Count) % vertices.Count;
+            int nextPos = GetWrappingIndex(i+1, vertices.Count);
+            int prevPos = GetWrappingIndex(i-1, vertices.Count);
 
-            int prevPos = (((i - 1) % vertices.Count) + vertices.Count) % vertices.Count;
-
-            vertices[i].prevVertex = vertices[prevPos];
-
+            vertices[i].previousVertex = vertices[prevPos];
             vertices[i].nextVertex = vertices[nextPos];
         }
 
@@ -133,13 +112,13 @@ public class PolygonTriangulation : MonoBehaviour
             //This means we have just one triangle left
             if (vertices.Count == 3)
             {
-                if (IsTriangleOrientedClockwise(vertices[0].GetXY(), vertices[0].prevVertex.GetXY(), vertices[0].nextVertex.GetXY()))
+                if (IsTriangleOrientedClockwise(vertices[0].GetXY(), vertices[0].previousVertex.GetXY(), vertices[0].nextVertex.GetXY()))
                 {
-                    triangles.Add(new Triangle(vertices[0].vertex, vertices[0].prevVertex.vertex, vertices[0].nextVertex.vertex));
+                    triangles.Add(new Triangle(vertices[0].vertex, vertices[0].previousVertex.vertex, vertices[0].nextVertex.vertex));
                 }
                 else
                 {
-                    triangles.Add(new Triangle(vertices[0].prevVertex.vertex, vertices[0].vertex, vertices[0].nextVertex.vertex));
+                    triangles.Add(new Triangle(vertices[0].previousVertex.vertex, vertices[0].vertex, vertices[0].nextVertex.vertex));
                 }
 
                 break;
@@ -149,7 +128,7 @@ public class PolygonTriangulation : MonoBehaviour
             //(we know the vertices in the ear are oriented clockwise)
             Vertex earVertex = earVertices[0];
 
-            Vertex earVertexPrev = earVertex.prevVertex;
+            Vertex earVertexPrev = earVertex.previousVertex;
             Vertex earVertexNext = earVertex.nextVertex;
 
             Triangle newTriangle = new Triangle(earVertex.vertex, earVertexPrev.vertex, earVertexNext.vertex);
@@ -163,9 +142,9 @@ public class PolygonTriangulation : MonoBehaviour
 
             //Update the previous vertex and next vertex
             earVertexPrev.nextVertex = earVertexNext;
-            earVertexNext.prevVertex = earVertexPrev;
+            earVertexNext.previousVertex = earVertexPrev;
 
-            //...see if we have found a new ear by investigating the two vertices that was part of the ear
+            //...see if we have found a new ear by investigating the two vertices that were part of the ear
             CheckIfReflexOrConvex(earVertexPrev);
             CheckIfReflexOrConvex(earVertexNext);
 
@@ -190,7 +169,7 @@ public class PolygonTriangulation : MonoBehaviour
         v.isConvex = false;
 
         //This is a reflex vertex if its triangle is oriented clockwise
-        Vector2 a = v.prevVertex.GetXY();
+        Vector2 a = v.previousVertex.GetXY();
         Vector2 b = v.GetXY();
         Vector2 c = v.nextVertex.GetXY();
 
@@ -235,7 +214,7 @@ public class PolygonTriangulation : MonoBehaviour
         }
 
         //This triangle to check point in triangle
-        Vector2 a = v.prevVertex.GetXY();
+        Vector2 a = v.previousVertex.GetXY();
         Vector2 b = v.GetXY();
         Vector2 c = v.nextVertex.GetXY();
 
@@ -280,13 +259,7 @@ public class PolygonTriangulation : MonoBehaviour
         float b = ((p3.y - p1.y) * (p.x - p3.x) + (p1.x - p3.x) * (p.y - p3.y)) / denominator;
         float c = 1 - a - b;
 
-        //The point is within the triangle or on the border if 0 <= a <= 1 and 0 <= b <= 1 and 0 <= c <= 1
-        //if (a >= 0f && a <= 1f && b >= 0f && b <= 1f && c >= 0f && c <= 1f)
-        //{
-        //    isWithinTriangle = true;
-        //}
-
-        //The point is within the triangle
+        //The point is within the triangle if 0 < a < 1 and 0 < b < 1 and 0 < c < 1
         if (a > 0f && a < 1f && b > 0f && b < 1f && c > 0f && c < 1f)
         {
             isWithinTriangle = true;
@@ -294,5 +267,10 @@ public class PolygonTriangulation : MonoBehaviour
 
         return isWithinTriangle;
     }
+    public static int GetWrappingIndex(int index, int lengthOfArray)
+    {
+        return ((index % lengthOfArray) + lengthOfArray) % lengthOfArray;
+    }
+
 
 }
