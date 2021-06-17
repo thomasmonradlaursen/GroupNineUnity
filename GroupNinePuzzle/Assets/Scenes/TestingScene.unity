@@ -1210,9 +1210,9 @@ GameObject:
   - component: {fileID: 247557107}
   - component: {fileID: 247557104}
   - component: {fileID: 247557115}
-  - component: {fileID: 247557112}
   - component: {fileID: 247557105}
   - component: {fileID: 247557111}
+  - component: {fileID: 247557106}
   m_Layer: 0
   m_Name: PuzzleHandler
   m_TagString: Untagged
@@ -1244,6 +1244,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3f97fce58bbacd4a91fd27795492e58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &247557106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 247557103}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c4d93a500773ba41a66ec11e91cb929, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &247557107
 Transform:
   m_ObjectHideFlags: 0
@@ -1270,18 +1282,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c6fa5342a6aaf4548852607c40446816, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &247557112
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 247557103}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c73def232f1843cc81330b44b044343, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &247557115
