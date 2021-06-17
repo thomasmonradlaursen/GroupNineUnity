@@ -11,19 +11,22 @@ public class Rotation : MonoBehaviour
     MiscellaneousMath miscellaneousMath = new MiscellaneousMath();
     void FixedUpdate()
     {
-        if (GetComponentInParent<PuzzleModel>().selectedObject != null && this.name.Equals(this.GetComponentInParent<PuzzleModel>().selectedObject.name))
+        if (GetComponentInParent<PuzzleModel>().selectedObject != null)
         {
-            if (Input.GetKey(KeyCode.UpArrow))
+            if (this.name.Equals(this.GetComponentInParent<PuzzleModel>().selectedObject.name))
             {
-                RotateMesh((1 * Mathf.PI) / 180);  //counter-clockwise
-            }
-            if (Input.GetKey(KeyCode.DownArrow))
-            {
-                RotateMesh(-(1 * Mathf.PI) / 180); //Clockwise
-            }
-            if (Input.GetKeyUp(KeyCode.UpArrow) || Input.GetKeyUp(KeyCode.DownArrow))
-            {
-                this.GetComponent<PieceInfo>().RemoveConnectionsToOtherPieces();
+                if (Input.GetKey(KeyCode.UpArrow))
+                {
+                    RotateMesh((1 * Mathf.PI) / 180);  //counter-clockwise
+                }
+                if (Input.GetKey(KeyCode.DownArrow))
+                {
+                    RotateMesh(-(1 * Mathf.PI) / 180); //Clockwise
+                }
+                if (Input.GetKeyUp(KeyCode.UpArrow) || Input.GetKeyUp(KeyCode.DownArrow))
+                {
+                    this.GetComponent<PieceInfo>().RemoveConnectionsToOtherPieces();
+                }
             }
         }
     }

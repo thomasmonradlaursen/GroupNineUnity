@@ -8,10 +8,9 @@ public class PuzzleController : MonoBehaviour
     {
         SetPuzzle();
         GetComponentInChildren<PieceController>().CreatePieces();
+        DetermineAndDisplaySnowflakeism();
         GetComponentInChildren<FitCameraToPuzzle>().FitCamera();
         GetComponent<BoardOutlineGenerator>().DrawBoard();
-        GetComponentInChildren<FitCameraToPuzzle>().FitCamera();
-        DetermineAndDisplaySnowflakeism();
     }
     void SetPuzzle()
     {
@@ -36,7 +35,7 @@ public class PuzzleController : MonoBehaviour
     }
     public void DetermineAndDisplaySnowflakeism()
     {
-        if(!GetComponentInChildren<SnowflakeAlgorithm>().DetermineSnowflakeism())
+        if(!(GetComponentInChildren<SnowflakeAlgorithm>().DetermineSnowflakeism()))
         {
             GetComponent<PuzzleModel>().displayForSnowflake.SetActive(true);
         }
