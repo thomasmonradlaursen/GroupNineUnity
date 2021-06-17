@@ -9,6 +9,7 @@ public class PuzzleController : MonoBehaviour
         SetPuzzle();
         GetComponentInChildren<PieceController>().CreatePieces();
         GetComponentInChildren<FitCameraToPuzzle>().FitCamera();
+        GetComponent<BoardOutlineGenerator>().DrawBoard();
         
     }
     void SetPuzzle()
