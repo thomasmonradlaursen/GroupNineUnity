@@ -1208,11 +1208,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 247557107}
+  - component: {fileID: 247557104}
+  - component: {fileID: 247557115}
+  - component: {fileID: 247557112}
   - component: {fileID: 247557105}
   - component: {fileID: 247557111}
-  - component: {fileID: 247557112}
-  - component: {fileID: 247557113}
-  - component: {fileID: 247557115}
   m_Layer: 0
   m_Name: PuzzleHandler
   m_TagString: Untagged
@@ -1220,6 +1220,18 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &247557104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 247557103}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27b5b1d5d8d454a15bd8fe8423ab7bdc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &247557105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1232,8 +1244,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3f97fce58bbacd4a91fd27795492e58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fileName: puzzle_03_manual.json
-  locationOfFile: Assets/ExamFiles/
 --- !u!4 &247557107
 Transform:
   m_ObjectHideFlags: 0
@@ -1274,19 +1284,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c73def232f1843cc81330b44b044343, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &247557113
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 247557103}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c2a3411174d2bbf4f95eaeafb3f45226, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pieces: []
 --- !u!114 &247557115
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1305,6 +1302,8 @@ MonoBehaviour:
     name: 
     nPieces: 0
     pieces: []
+  fileName: Classic-003-005-1331.json
+  locationOfFile: Assets/ExamFiles/
   pieces: []
   generateRandom: 0
   selectedObject: {fileID: 0}
@@ -2455,6 +2454,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 530418445}
+  - component: {fileID: 530418446}
   m_Layer: 0
   m_Name: AutoSolveHandler
   m_TagString: Untagged
@@ -2476,6 +2476,19 @@ Transform:
   m_Father: {fileID: 1509262227}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &530418446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 530418444}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2a3411174d2bbf4f95eaeafb3f45226, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pieces: []
 --- !u!1 &565461523
 GameObject:
   m_ObjectHideFlags: 0

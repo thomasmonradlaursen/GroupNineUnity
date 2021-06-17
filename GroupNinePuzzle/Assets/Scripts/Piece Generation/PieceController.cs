@@ -5,22 +5,7 @@ using JSONPuzzleTypes;
 
 public class PieceController : MonoBehaviour
 {
-    void Start()
-    {
-        if (GetComponentInParent<PuzzleModel>().generateRandom)
-        {
-            Debug.Log(GetComponentInParent<PuzzleModel>().generateRandom);
-            GetComponentInParent<PuzzleModel>().puzzle = GetComponentInChildren<DivisionModel>().puzzle;
-        }
-        else
-        {
-            Debug.Log(GetComponentInParent<PuzzleModel>().generateRandom);
-            JSONDeserializer deserializer = GetComponentInParent<JSONDeserializer>();
-            GetComponentInParent<PuzzleModel>().puzzle = deserializer.DeserializerPuzzleFromJSON(deserializer.locationOfFile + deserializer.fileName);
-        }
-        CreatePieces();
-    }
-    void CreatePieces()
+    public void CreatePieces()
     {
         if (GetComponentInParent<PuzzleModel>().generateRandom)
         {
