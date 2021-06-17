@@ -33,7 +33,7 @@ public class PieceController : MonoBehaviour
             newPiece.GetComponent<PieceInfo>().CalculateInformation();
             newPiece.GetComponent<PieceInfo>().vertices = mesh.vertices;
             newPiece.AddComponent<MagneticTouchAlgorithm>();
-            PieceOutlineGenerator.GenerateOutline(newPiece, mesh.vertices);
+            PieceOutlineGenerator.GenerateOutline(newPiece, mesh.vertices, GetComponentInParent<PuzzleModel>().puzzle.puzzle.form[2].coord.x, GetComponentInParent<PuzzleModel>().puzzle.puzzle.form[2].coord.y);
             newPiece.transform.parent = this.transform;
 
             var renderer = newPiece.GetComponent<MeshRenderer>();
