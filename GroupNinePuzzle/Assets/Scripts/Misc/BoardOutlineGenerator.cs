@@ -6,19 +6,20 @@ using JSONPuzzleTypes;
 public class BoardOutlineGenerator : MonoBehaviour
 {
     LineRenderer lineRenderer;
-    void Start()
+    public void DrawBoard()
     {
-        var lineobject = new GameObject();
+        var lineobject = new GameObject("BoardOutline");
         lineRenderer = lineobject.AddComponent<LineRenderer>();
         lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
-        lineRenderer.material.color = Color.yellow;
+        lineRenderer.material.color = Color.black;
         lineRenderer.widthMultiplier = 0.03f;
         lineRenderer.positionCount = 4;
         lineRenderer.loop = true;
         lineobject.transform.parent = this.transform;
+        SetLines();
     }
 
-    void Update()
+    void SetLines()
     {
         var jsonPuzzle = GetComponent<PuzzleModel>().puzzle;
         var shape = jsonPuzzle.puzzle.form;

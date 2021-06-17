@@ -5,37 +5,25 @@ using JSONPuzzleTypes;
 
 public class PieceController : MonoBehaviour
 {
-    void Start()
+    public void CreatePieces()
     {
-        if (GetComponent<PuzzleModel>().generateRandom)
+        if (GetComponentInParent<PuzzleModel>().generateRandom)
         {
-            GetComponent<PuzzleModel>().puzzle = GetComponentInChildren<DivisionModel>().puzzle;
+            Debug.Log("Random piece");
+            GetComponentInChildren<MeshGenerator>().MeshesFromRandom();
         }
         else
         {
-            JSONDeserializer deserializer = GetComponent<JSONDeserializer>();
-            GetComponent<PuzzleModel>().puzzle = deserializer.DeserializerPuzzleFromJSON(deserializer.locationOfFile + deserializer.fileName);
+            GetComponentInChildren<MeshGenerator>().GenerateMeshes(GetComponentInParent<PuzzleModel>().puzzle);
         }
-        CreatePieces();
-    }
-    void CreatePieces()
-    {
-        if (GetComponent<PuzzleModel>().generateRandom)
-        {
-            GetComponent<MeshGenerator>().MeshesFromRandom();
-        }
-        else
-        {
-            GetComponent<MeshGenerator>().GenerateMeshes(GetComponent<PuzzleModel>().puzzle);
-        }
-        List<Mesh> meshes = GetComponent<MeshModel>().meshes;
+        List<Mesh> meshes = GetComponentInChildren<MeshModel>().meshes;
 
-        GetComponent<PuzzleModel>().connectedPieces = new Dictionary<string, List<string>>();
+        GetComponentInParent<PuzzleModel>().connectedPieces = new Dictionary<string, List<string>>();
 
         int idx = 0;
         foreach (Mesh mesh in meshes)
         {
-            var newPiece = new GameObject("Piece " + GetComponent<PuzzleModel>().puzzle.pieces[idx].piece);
+            var newPiece = new GameObject("Piece " + GetComponentInParent<PuzzleModel>().puzzle.pieces[idx].piece);
             newPiece.AddComponent<MeshFilter>();
             newPiece.GetComponent<MeshFilter>().mesh = mesh;
             newPiece.AddComponent<MeshRenderer>();
@@ -58,18 +46,10 @@ public class PieceController : MonoBehaviour
             materials[0].color = Color.blue;
             renderer.materials = materials;
 
-            GetComponent<PuzzleModel>().pieces.Add(newPiece);
-            GetComponent<PuzzleModel>().connectedPieces.Add(newPiece.name, new List<string>());
+            GetComponentInParent<PuzzleModel>().pieces.Add(newPiece);
+            GetComponentInParent<PuzzleModel>().connectedPieces.Add(newPiece.name, new List<string>());
 
             idx++;
         }
-    }
-    public void EnableRandomlyGeneratedPuzzled()
-    {
-        GetComponent<PuzzleModel>().generateRandom = true;
-    }
-    public void DisableRandomlyGeneratedPuzzled()
-    {
-        GetComponent<PuzzleModel>().generateRandom = false;
     }
 }
