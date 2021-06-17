@@ -23,7 +23,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.S))
         {
             // Debug.Log("MagneticTouchAlgorithm - TestingImplementation()");
-            FindCandidatesForSnap(GetComponentInParent<MeshFromJsonGenerator>().selectedObject);
+            FindCandidatesForSnap(GetComponentInParent<MeshGenerator>().selectedObject);
             LogPossibleSnaps();
             if (possibleSnaps.Item2.Count > 0)
             {
@@ -33,7 +33,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.K))
         {
             FindCorners();
-            SnapToCorner(GetComponentInParent<MeshFromJsonGenerator>().selectedObject);
+            SnapToCorner(GetComponentInParent<MeshGenerator>().selectedObject);
         }
     }
 
@@ -41,7 +41,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
     {
         SnapInformation snapInformation;
         snapInformation = GetComponentInParent<FindClosestVertex>().FindClosestVertexToSelectedPiece(possibleSnaps);
-        GameObject selectedPiece = GetComponentInParent<MeshFromJsonGenerator>().selectedObject;
+        GameObject selectedPiece = GetComponentInParent<MeshGenerator>().selectedObject;
 
         if (this.name.Equals(selectedPiece.name))
         {
@@ -159,7 +159,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
             if (minimumXForSelected < maximumXForCompare && maximumXForSelected > minimumXForCompare
                 && minimumYForSelected < maximumYForCompare && maximumYForSelected > minimumYForCompare)
             {
-                if (!(piece.name.Equals(GetComponentInParent<MeshFromJsonGenerator>().selected)))
+                if (!(piece.name.Equals(GetComponentInParent<MeshGenerator>().selected)))
                 {
                     possibleSnaps.Item2.Add(piece);
                 }

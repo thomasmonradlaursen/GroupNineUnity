@@ -11,7 +11,7 @@ public class Rotation : MonoBehaviour
     MiscellaneousMath miscellaneousMath = new MiscellaneousMath();
     void FixedUpdate()
     {
-        if (this.name.Equals(this.GetComponentInParent<MeshFromJsonGenerator>().selected))
+        if (this.name.Equals(this.GetComponentInParent<MeshGenerator>().selected))
         {
             if (Input.GetKey(KeyCode.UpArrow))
             {
@@ -47,24 +47,24 @@ public class Rotation : MonoBehaviour
     {
 
         // set the currently selected piece as previously selected piece
-        var currentlySelected = this.GetComponentInParent<MeshFromJsonGenerator>().selected;
-        var currentlySelectedObject = this.GetComponentInParent<MeshFromJsonGenerator>().selectedObject;
+        var currentlySelected = this.GetComponentInParent<MeshGenerator>().selected;
+        var currentlySelectedObject = this.GetComponentInParent<MeshGenerator>().selectedObject;
 
         if (currentlySelectedObject != null && currentlySelected != this.name)
         {
             var renderer1 = currentlySelectedObject.GetComponent<MeshRenderer>();
             var materials1 = renderer1.materials;
             materials1[0].color = Color.blue;
-            this.GetComponentInParent<MeshFromJsonGenerator>().previousSelected = currentlySelected;
-            this.GetComponentInParent<MeshFromJsonGenerator>().previousSelectedObject = currentlySelectedObject;
+            this.GetComponentInParent<MeshGenerator>().previousSelected = currentlySelected;
+            this.GetComponentInParent<MeshGenerator>().previousSelectedObject = currentlySelectedObject;
         }
 
 
         // Set the new piece as currently selected piece 
         currentlySelected = this.name;
         currentlySelectedObject = this.gameObject;
-        this.GetComponentInParent<MeshFromJsonGenerator>().selected = currentlySelected;
-        this.GetComponentInParent<MeshFromJsonGenerator>().selectedObject = currentlySelectedObject;
+        this.GetComponentInParent<MeshGenerator>().selected = currentlySelected;
+        this.GetComponentInParent<MeshGenerator>().selectedObject = currentlySelectedObject;
         if (currentlySelectedObject != null && currentlySelected == this.name)
         {
             var renderer2 = this.GetComponent<MeshRenderer>();
@@ -83,7 +83,7 @@ public class Rotation : MonoBehaviour
         originalVertices = new Vector3[mesh.vertices.Length];
         originalVertices = mesh.vertices;
         rotatedVertices = new Vector3[originalVertices.Length];
-        this.GetComponentInParent<MeshFromJsonGenerator>().selected = this.name;
+        this.GetComponentInParent<MeshGenerator>().selected = this.name;
     }
 
     void CentralizeVertices(Vector3 centroid)

@@ -3,18 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using JSONPuzzleTypes;
 
-public class Vertex{
-    public Vector3 vertex {get; set;}
-    public Vertex prevVertex {get; set;}
-    public Vertex nextVertex {get; set;}
-    public bool isConvex {get; set;}
-    public bool isReflex {get; set;}
+public class Vertex
+{
+    public Vector3 vertex { get; set; }
+    public Vertex prevVertex { get; set; }
+    public Vertex nextVertex { get; set; }
+    public bool isConvex { get; set; }
+    public bool isReflex { get; set; }
 
-    public Vertex(Vector3 vertexIn){
+    public Vertex(Vector3 vertexIn)
+    {
         this.vertex = vertexIn;
     }
 
-    public Vector2 GetXY(){
+    public Vector2 GetXY()
+    {
         return new Vector2(
             this.vertex.x,
             this.vertex.y
@@ -23,18 +26,21 @@ public class Vertex{
 
 }
 
-public class Triangle{
-    public Vertex vertex1 {get; set;}
-    public Vertex vertex2 {get; set;}
-    public Vertex vertex3 {get; set;}
+public class Triangle
+{
+    public Vertex vertex1 { get; set; }
+    public Vertex vertex2 { get; set; }
+    public Vertex vertex3 { get; set; }
 
-    public Triangle(Vector3 vertex1in, Vector3 vertex2in, Vector3 vertex3in){
+    public Triangle(Vector3 vertex1in, Vector3 vertex2in, Vector3 vertex3in)
+    {
         this.vertex1 = new Vertex(vertex1in);
         this.vertex2 = new Vertex(vertex2in);
         this.vertex3 = new Vertex(vertex3in);
     }
 
-    public Triangle(Vertex vertex1in, Vertex vertex2in, Vertex vertex3in){
+    public Triangle(Vertex vertex1in, Vertex vertex2in, Vertex vertex3in)
+    {
         this.vertex1 = vertex1in;
         this.vertex2 = vertex2in;
         this.vertex3 = vertex3in;
@@ -46,22 +52,22 @@ public class PolygonTriangulation : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
-// ===== BELOW CODE IS BASED ON https://www.habrador.com/tutorials/math/10-triangulation/  =====
+    // ===== BELOW CODE IS BASED ON https://www.habrador.com/tutorials/math/10-triangulation/  =====
 
-//This assumes that we have a polygon and now we want to triangulate it
-//The points on the polygon should be ordered counter-clockwise
-//This alorithm is called ear clipping and it's O(n*n) Another common algorithm is dividing it into trapezoids and it's O(n log n)
-//One can maybe do it in O(n) time but no such version is known
-//Assumes we have at least 3 points
+    //This assumes that we have a polygon and now we want to triangulate it
+    //The points on the polygon should be ordered counter-clockwise
+    //This alorithm is called ear clipping and it's O(n*n) Another common algorithm is dividing it into trapezoids and it's O(n log n)
+    //One can maybe do it in O(n) time but no such version is known
+    //Assumes we have at least 3 points
     public static List<Triangle> TriangulateConcavePolygon(List<Vector3> points)
     {
         //The list with triangles the method returns
@@ -88,9 +94,9 @@ public class PolygonTriangulation : MonoBehaviour
         //Find the next and previous vertex
         for (int i = 0; i < vertices.Count; i++)
         {
-            int nextPos = (((i+1) % vertices.Count) + vertices.Count) % vertices.Count;
+            int nextPos = (((i + 1) % vertices.Count) + vertices.Count) % vertices.Count;
 
-            int prevPos = (((i-1) % vertices.Count) + vertices.Count) % vertices.Count;
+            int prevPos = (((i - 1) % vertices.Count) + vertices.Count) % vertices.Count;
 
             vertices[i].prevVertex = vertices[prevPos];
 
@@ -107,7 +113,7 @@ public class PolygonTriangulation : MonoBehaviour
 
         //Have to find the ears after we have found if the vertex is reflex or convex
         List<Vertex> earVertices = new List<Vertex>();
-        
+
 
         //Debug.Log("no. of vertices: " + vertices.Count);
         for (int i = 0; i < vertices.Count; i++)
@@ -122,15 +128,17 @@ public class PolygonTriangulation : MonoBehaviour
         {
             //Debug.Log($"no. of earVertices left: {earVertices.Count}");
             //Debug.Log($"no. of normal vertices left: {vertices.Count}");
-            if(earVertices.Count == 0) break;
-            
+            if (earVertices.Count == 0) break;
+
             //This means we have just one triangle left
             if (vertices.Count == 3)
             {
-                if(IsTriangleOrientedClockwise(vertices[0].GetXY(), vertices[0].prevVertex.GetXY(), vertices[0].nextVertex.GetXY())){
+                if (IsTriangleOrientedClockwise(vertices[0].GetXY(), vertices[0].prevVertex.GetXY(), vertices[0].nextVertex.GetXY()))
+                {
                     triangles.Add(new Triangle(vertices[0].vertex, vertices[0].prevVertex.vertex, vertices[0].nextVertex.vertex));
                 }
-                else{
+                else
+                {
                     triangles.Add(new Triangle(vertices[0].prevVertex.vertex, vertices[0].vertex, vertices[0].nextVertex.vertex));
                 }
 
@@ -201,7 +209,8 @@ public class PolygonTriangulation : MonoBehaviour
     //Takes the three vertices in a triangle as input and determines if the order a-b-c is clockwise
     //https://math.stackexchange.com/questions/1324179/how-to-tell-if-3-connected-points-are-connected-clockwise-or-counter-clockwise
     //https://en.wikipedia.org/wiki/Curve_orientation
-    private static bool IsTriangleOrientedClockwise(Vector2 a, Vector2 b, Vector2 c){
+    private static bool IsTriangleOrientedClockwise(Vector2 a, Vector2 b, Vector2 c)
+    {
         bool isClockWise = true;
 
         float determinant = a.x * b.y + c.x * a.y + b.x * c.y - a.x * c.y - c.x * b.y - b.x * a.y;

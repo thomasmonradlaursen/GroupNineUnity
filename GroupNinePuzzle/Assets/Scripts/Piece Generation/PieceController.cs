@@ -5,44 +5,37 @@ using JSONPuzzleTypes;
 
 public class PieceController : MonoBehaviour
 {
-    public List<GameObject> pieces;
-    public Dictionary<string, List<string>> connectedPieces;
-
-    public JSONPuzzle puzzle;
-    public bool puzzleFromRandom = false;
     void Start()
     {
-        Debug.Log("PieceGenerator: Start()");
-        if (puzzleFromRandom)
+        if (GetComponent<PieceModel>().generateRandom)
         {
-            puzzle = GetComponentInChildren<DivisionModel>().puzzle;
-            Debug.Log("Puzzle from random: " + puzzle.name);
+            GetComponent<PieceModel>().puzzle = GetComponentInChildren<DivisionModel>().puzzle;
         }
         else
         {
             JSONDeserializer deserializer = GetComponent<JSONDeserializer>();
-            puzzle = deserializer.DeserializerPuzzleFromJSON(deserializer.locationOfFile + deserializer.fileName);
+            GetComponent<PieceModel>().puzzle = deserializer.DeserializerPuzzleFromJSON(deserializer.locationOfFile + deserializer.fileName);
         }
         CreatePieces();
     }
     void CreatePieces()
     {
-        if(puzzleFromRandom)
+        if (GetComponent<PieceModel>().generateRandom)
         {
-            GetComponent<MeshFromJsonGenerator>().MeshesFromRandom();
+            GetComponent<MeshGenerator>().MeshesFromRandom();
         }
         else
         {
-            GetComponent<MeshFromJsonGenerator>().GenerateMeshes();
+            GetComponent<MeshGenerator>().GenerateMeshes(GetComponent<PieceModel>().puzzle);
         }
-        List<Mesh> meshes = GetComponent<MeshFromJsonGenerator>().meshArray;
+        List<Mesh> meshes = GetComponent<PieceModel>().meshes;
 
-        connectedPieces = new Dictionary<string, List<string>>();
+        GetComponent<PieceModel>().connectedPieces = new Dictionary<string, List<string>>();
 
         int idx = 0;
         foreach (Mesh mesh in meshes)
         {
-            var newPiece = new GameObject("Piece " + puzzle.pieces[idx].piece);
+            var newPiece = new GameObject("Piece " + GetComponent<PieceModel>().puzzle.pieces[idx].piece);
             newPiece.AddComponent<MeshFilter>();
             newPiece.GetComponent<MeshFilter>().mesh = mesh;
             newPiece.AddComponent<MeshRenderer>();
@@ -65,19 +58,18 @@ public class PieceController : MonoBehaviour
             materials[0].color = Color.blue;
             renderer.materials = materials;
 
-            pieces.Add(newPiece);
-
-            connectedPieces.Add(newPiece.name, new List<string>());
+            GetComponent<PieceModel>().pieces.Add(newPiece);
+            GetComponent<PieceModel>().connectedPieces.Add(newPiece.name, new List<string>());
 
             idx++;
         }
     }
     public void EnableRandomlyGeneratedPuzzled()
     {
-        puzzleFromRandom = true;
+        GetComponent<PieceModel>().generateRandom = true;
     }
     public void DisableRandomlyGeneratedPuzzled()
     {
-        puzzleFromRandom = false;
+        GetComponent<PieceModel>().generateRandom = false;
     }
 }
