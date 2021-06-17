@@ -424,4 +424,3 @@ public class Pair {
         this.vertex = vertex;
     }
 }
-
