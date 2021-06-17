@@ -13,4 +13,5 @@ public class PuzzleModel : MonoBehaviour
     public bool generateRandom = false;
     public GameObject selectedObject = null;
     public GameObject previousSelectedObject = null;
+    public GameObject displayForSnowflake = null;
 }

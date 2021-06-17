@@ -11,7 +11,7 @@ public class PuzzleController : MonoBehaviour
         GetComponentInChildren<FitCameraToPuzzle>().FitCamera();
         GetComponent<BoardOutlineGenerator>().DrawBoard();
         GetComponentInChildren<FitCameraToPuzzle>().FitCamera();
-        
+        DetermineAndDisplaySnowflakeism();
     }
     void SetPuzzle()
     {
@@ -33,5 +33,12 @@ public class PuzzleController : MonoBehaviour
     public void DisableRandomlyGeneratedPuzzled()
     {
         GetComponent<PuzzleModel>().generateRandom = false;
+    }
+    public void DetermineAndDisplaySnowflakeism()
+    {
+        if(!GetComponentInChildren<SnowflakeAlgorithm>().DetermineSnowflakeism())
+        {
+            GetComponent<PuzzleModel>().displayForSnowflake.SetActive(true);
+        }
     }
 }
