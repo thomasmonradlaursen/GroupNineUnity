@@ -26,7 +26,7 @@ public class AreaSorting
             {
                 for (int inner = outer + 1; inner < areasOfPieces.Count; inner++)
                 {
-                    if (areasOfPieces[outer] == areasOfPieces[inner])
+                    if (areasOfPieces[outer] <= areasOfPieces[inner]+0.01 && areasOfPieces[outer] >= areasOfPieces[inner] -0.01)
                     {
                         piecesWithIdenticalArea.Add(new Vector2(puzzle.pieces[outer].piece, puzzle.pieces[inner].piece));
                     }
