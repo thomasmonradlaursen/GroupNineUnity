@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 
 public class DivisionController : MonoBehaviour
 {
-    void Start()
+    public void SetupRandomPuzzle()
     {
         SetCorners();
         CreatePoints();

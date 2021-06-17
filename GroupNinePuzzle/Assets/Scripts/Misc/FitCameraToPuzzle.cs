@@ -13,7 +13,7 @@ public class FitCameraToPuzzle : MonoBehaviour
     public float sceneHeight;
 
     Camera _camera;
-    void Start()
+    public void FitCamera()
     {
         _camera = GetComponent<Camera>();
         var jsonPuzzle = GetComponentInParent<PuzzleModel>().puzzle;

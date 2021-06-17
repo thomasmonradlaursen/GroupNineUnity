@@ -8,12 +8,14 @@ public class PuzzleController : MonoBehaviour
     {
         SetPuzzle();
         GetComponentInChildren<PieceController>().CreatePieces();
+        GetComponentInChildren<FitCameraToPuzzle>().FitCamera();
         
     }
     void SetPuzzle()
     {
         if (GetComponent<PuzzleModel>().generateRandom)
         {
+            GetComponentInChildren<DivisionController>().SetupRandomPuzzle();
             GetComponent<PuzzleModel>().puzzle = GetComponentInChildren<DivisionModel>().puzzle;
         }
         else
