@@ -22,13 +22,13 @@ public class PieceController : MonoBehaviour
     {
         if (GetComponent<PuzzleModel>().generateRandom)
         {
-            GetComponent<MeshGenerator>().MeshesFromRandom();
+            GetComponentInChildren<MeshGenerator>().MeshesFromRandom();
         }
         else
         {
-            GetComponent<MeshGenerator>().GenerateMeshes(GetComponent<PuzzleModel>().puzzle);
+            GetComponentInChildren<MeshGenerator>().GenerateMeshes(GetComponent<PuzzleModel>().puzzle);
         }
-        List<Mesh> meshes = GetComponent<MeshModel>().meshes;
+        List<Mesh> meshes = GetComponentInChildren<MeshModel>().meshes;
 
         GetComponent<PuzzleModel>().connectedPieces = new Dictionary<string, List<string>>();
 

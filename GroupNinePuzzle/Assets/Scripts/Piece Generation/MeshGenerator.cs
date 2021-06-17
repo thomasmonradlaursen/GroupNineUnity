@@ -45,7 +45,7 @@ public class MeshGenerator : MonoBehaviour
     }
     public void MeshesFromRandom()
     {
-        foreach (DivisionTriangle triangle in GetComponentInChildren<DivisionModel>().triangles)
+        foreach (DivisionTriangle triangle in GetComponentInParent<DivisionModel>().triangles)
         {
             Mesh mesh = new Mesh();
             mesh.vertices = triangle.vertices;
