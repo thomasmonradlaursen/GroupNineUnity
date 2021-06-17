@@ -11,6 +11,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
     private Vector3 upperRightCorner;
     private float margin = 0.175f;
 
+    // Item1 is selected piece and Item 2 is a list of pieces that might be possible to snap to
     public (GameObject, List<GameObject>) possibleSnaps = (null, new List<GameObject>());
 
     private void Start()
@@ -19,26 +20,26 @@ public class MagneticTouchAlgorithm : MonoBehaviour
     }
     void FixedUpdate()
     {
-        if (Input.GetKeyDown(KeyCode.S))
+        if (Input.GetKeyDown(KeyCode.S)) // Snap to other piece
         {
             FindCandidatesForSnap(GetComponentInParent<PuzzleModel>().selectedObject);
-            LogPossibleSnaps();
+            // LogPossibleSnaps();
             if (possibleSnaps.Item2.Count > 0)
             {
-                FindClosestVertexPair();
+                SnapPiecesTogether();
             }
         }
-        else if (Input.GetKeyDown(KeyCode.K))
+        else if (Input.GetKeyDown(KeyCode.K)) // Snap to corner of board
         {
-            FindCorners();
+            FindCorners(); // Todo: move to some BoardModel/PuzzleModel object or something
             SnapToCorner(GetComponentInParent<PuzzleModel>().selectedObject);
         }
     }
 
-    void FindClosestVertexPair()
+    void SnapPiecesTogether()
     {
         SnapInformation snapInformation;
-        snapInformation = GetComponentInParent<FindClosestVertex>().FindClosestVertexToSelectedPiece(possibleSnaps);
+        snapInformation = GetComponentInParent<MagneticTouchCalculations>().FindPieceToSnapToAndSnapInformation(possibleSnaps);
         GameObject selectedPiece = GetComponentInParent<PuzzleModel>().selectedObject;
 
         if (this.name.Equals(selectedPiece.name))
@@ -47,15 +48,15 @@ public class MagneticTouchAlgorithm : MonoBehaviour
             int indexOfClosestVertexInPieceToSnapTo = snapInformation.IndexOfPrimaryVertexInPieceToSnapTo;
             int indexOfNeighborVertexInSelectedPiece = snapInformation.IndexOfPreviousVertexInSelectedPiece;
             int indexOfNeighborVertexInPieceToSnapTo = snapInformation.IndexOfPreviousVertexInPieceToSnapTo;
-            Vector3 displacement = GetComponentInParent<FindClosestVertex>().CalculateDisplacementForSnap(selectedPiece, snapInformation.PieceToSnapTo, indexOfClosestVertexInSelectedPiece, indexOfClosestVertexInPieceToSnapTo);
-            float rotation = GetComponentInParent<FindClosestVertex>().CalculateRotationForSnap(snapInformation.PrimaryVertexInSelectedPiece, snapInformation.PrimaryVertexInPieceToSnapTo, snapInformation.PreviousVertexInSelectedPiece, snapInformation.PreviousVertexInPieceToSnapTo);
+            Vector3 displacement = GetComponentInParent<MagneticTouchCalculations>().CalculateDisplacementForSnapToPiece(selectedPiece, snapInformation.PieceToSnapTo, indexOfClosestVertexInSelectedPiece, indexOfClosestVertexInPieceToSnapTo);
+            float rotation = GetComponentInParent<MagneticTouchCalculations>().CalculateRotation(snapInformation.PrimaryVertexInSelectedPiece, snapInformation.PrimaryVertexInPieceToSnapTo, snapInformation.PreviousVertexInSelectedPiece, snapInformation.PreviousVertexInPieceToSnapTo);
             if (rotation > 0.35 || rotation < -0.35)
             {
                 Debug.Log("Angle is too big.");
                 return;
             }
             Vector3[] originalVertices = selectedPiece.GetComponent<MeshFilter>().mesh.vertices;
-            GetComponentInParent<FindClosestVertex>().CalculateVerticesAfterSnapTranslationAndRotation(selectedPiece, displacement, rotation, snapInformation.IndexOfPrimaryVertexInSelectedPiece);
+            GetComponentInParent<MagneticTouchCalculations>().TranslateAndRotatePiece(selectedPiece, displacement, rotation, snapInformation.IndexOfPrimaryVertexInSelectedPiece);
             if (CheckIfPiecesOverlap(selectedPiece, snapInformation.PieceToSnapTo))
             {
                 Debug.Log("Cannot snap pieces together. They overlap.");
@@ -373,7 +374,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         var otherCornerOfEdgeToSnapTo = edgeInBorder.Item2;
 
         Vector3 displacement = vertexToSnapToCorner - cornerToSnapTo;
-        float rotation = GetComponentInParent<FindClosestVertex>().CalculateRotationForSnap(vertexToSnapToCorner, cornerToSnapTo, vertexToMoveToBorder, otherCornerOfEdgeToSnapTo);
+        float rotation = GetComponentInParent<MagneticTouchCalculations>().CalculateRotation(vertexToSnapToCorner, cornerToSnapTo, vertexToMoveToBorder, otherCornerOfEdgeToSnapTo);
 
         // Angle is too big.
         // Either the rotation is not as intended or the player should try harder to place the pieces accurately
@@ -388,7 +389,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
             Debug.Log("Piece overlaps with border.");
         }
 
-        GetComponentInParent<FindClosestVertex>().CalculateVerticesAfterSnapTranslationAndRotation(selectedPiece, displacement, rotation, indexOfVertexToSnapToCorner);
+        GetComponentInParent<MagneticTouchCalculations>().TranslateAndRotatePiece(selectedPiece, displacement, rotation, indexOfVertexToSnapToCorner);
     }
 
     public (float, int, Vector3, (Vector3, Vector3)) FindVertexToSnapToCorner(Vector3[] pieceVertices)

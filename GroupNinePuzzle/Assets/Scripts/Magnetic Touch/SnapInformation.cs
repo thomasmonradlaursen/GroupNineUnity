@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
+// Helper object for MagneticTochAlgorithm.
+// Contains information needed for attempting to snap two pieces together.
 public class SnapInformation
 {
     public GameObject PieceToSnapTo { get; set; }
