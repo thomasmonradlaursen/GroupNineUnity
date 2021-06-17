@@ -22,4 +22,12 @@ public class PuzzleController : MonoBehaviour
             GetComponent<PuzzleModel>().puzzle = GetComponent<JSONDeserializer>().DeserializerPuzzleFromJSON(puzzleFromFile);
         }
     }
+    public void EnableRandomlyGeneratedPuzzled()
+    {
+        GetComponent<PuzzleModel>().generateRandom = true;
+    }
+    public void DisableRandomlyGeneratedPuzzled()
+    {
+        GetComponent<PuzzleModel>().generateRandom = false;
+    }
 }

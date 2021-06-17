@@ -51,12 +51,4 @@ public class PieceController : MonoBehaviour
             idx++;
         }
     }
-    public void EnableRandomlyGeneratedPuzzled()
-    {
-        GetComponentInParent<PuzzleModel>().generateRandom = true;
-    }
-    public void DisableRandomlyGeneratedPuzzled()
-    {
-        GetComponentInParent<PuzzleModel>().generateRandom = false;
-    }
 }
