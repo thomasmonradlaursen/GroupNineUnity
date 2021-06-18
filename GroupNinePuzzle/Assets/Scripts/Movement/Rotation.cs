@@ -43,7 +43,6 @@ public class Rotation : MonoBehaviour
         RestorePositionOfVertices(centroid);
         mesh.SetVertices(rotatedVertices);
         lineRenderer.SetPositions(rotatedVertices);
-        GetComponentInParent<PieceInfo>().vertices = rotatedVertices;       //her
         originalVertices = mesh.vertices;
         GetComponent<MeshCollider>().sharedMesh = mesh;
     }
