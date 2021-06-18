@@ -1302,7 +1302,11 @@ MonoBehaviour:
     name: 
     nPieces: 0
     pieces: []
+<<<<<<< Updated upstream
   fileName: puzzle_01_manual.json
+=======
+  fileName: puzzle_04_auto.json
+>>>>>>> Stashed changes
   locationOfFile: Assets/ExamFiles/
   pieces: []
   generateRandom: 0
