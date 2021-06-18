@@ -37,7 +37,7 @@ public static class Transformer
     {
         for (int triangleIndex = 0; triangleIndex < triangles.Count; triangleIndex++)
         {
-            float rotationTheta = Random.Range(0.0f, 360.0f);
+            float rotationTheta = Random.Range(0.0f, 2*Mathf.PI);
             for (int vertexIndex = 0; vertexIndex < triangles[triangleIndex].vertices.Length; vertexIndex++)
             {
                 float rotatedX = triangles[triangleIndex].vertices[vertexIndex].x * Mathf.Cos(rotationTheta) - triangles[triangleIndex].vertices[vertexIndex].y * Mathf.Sin(rotationTheta);
