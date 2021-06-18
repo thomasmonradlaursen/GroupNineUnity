@@ -34,9 +34,6 @@ public class PieceController : MonoBehaviour
             newPiece.GetComponent<PieceInfo>().CalculateInformation();
             newPiece.GetComponent<PieceInfo>().vertices = mesh.vertices;
             newPiece.AddComponent<MagneticTouchAlgorithm>();
-<<<<<<< Updated upstream
-            PieceOutlineGenerator.GenerateOutline(newPiece, mesh.vertices);
-=======
             if(GetComponentInParent<PuzzleModel>().puzzle.puzzle.form != null)
             {
                 //Debug.Log("waht");
@@ -46,7 +43,6 @@ public class PieceController : MonoBehaviour
             {
                 PieceOutlineGenerator.GenerateOutline(newPiece, mesh.vertices, 3.0f, 3.0f);
             }
->>>>>>> Stashed changes
             newPiece.transform.parent = this.transform;
 
             var renderer = newPiece.GetComponent<MeshRenderer>();
