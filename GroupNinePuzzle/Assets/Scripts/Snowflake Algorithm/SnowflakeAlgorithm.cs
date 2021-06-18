@@ -17,6 +17,7 @@ public class SnowflakeAlgorithm : MonoBehaviour
 
     public bool DetermineSnowflakeism()
     {
+        // This is fixed
         Debug.Log("SnowflakeAlgorithm Start()");
         puzzle = GetComponentInParent<PuzzleModel>().puzzle;
         pieces = GetComponentInParent<PuzzleModel>().pieces;

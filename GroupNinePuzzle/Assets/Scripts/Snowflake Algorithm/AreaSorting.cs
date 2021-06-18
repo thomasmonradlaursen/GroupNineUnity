@@ -5,6 +5,7 @@ using JSONPuzzleTypes;
 
 public class AreaSorting
 {
+    // This is fixed
     MiscellaneousMath miscellaneousMath = new MiscellaneousMath();
 
     public List<float> GetAreaOfPieces(List<GameObject> pieces)
