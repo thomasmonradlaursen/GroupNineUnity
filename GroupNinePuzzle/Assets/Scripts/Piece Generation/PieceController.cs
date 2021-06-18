@@ -7,7 +7,6 @@ public class PieceController : MonoBehaviour
 {
     public void CreatePieces()
     {
-        // this is fixed also
         if (GetComponentInParent<PuzzleModel>().generateRandom)
         {
             GetComponentInChildren<MeshGenerator>().MeshesFromRandom();

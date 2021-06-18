@@ -16,7 +16,6 @@ public class AutoSolveCleverVersion : MonoBehaviour
     
     void FixedUpdate()
     {
-        // This will be fixed
         if (Input.GetKeyDown(KeyCode.A))
         {
             AutoSolve();
