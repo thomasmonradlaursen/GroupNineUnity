@@ -35,6 +35,7 @@ public class PieceController : MonoBehaviour
             newPiece.AddComponent<MagneticTouchAlgorithm>();
             if(GetComponentInParent<PuzzleModel>().puzzle.puzzle.form != null)
             {
+                // Stop that stash
                 PieceOutlineGenerator.GenerateOutline(newPiece, mesh.vertices, GetComponentInParent<PuzzleModel>().puzzle.puzzle.form[2].coord.x, GetComponentInParent<PuzzleModel>().puzzle.puzzle.form[2].coord.y);
             }
             else 
