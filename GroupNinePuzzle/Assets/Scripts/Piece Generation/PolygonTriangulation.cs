@@ -262,6 +262,7 @@ public class PolygonTriangulation
         //The point is within the triangle if 0 < a < 1 and 0 < b < 1 and 0 < c < 1
         if (a > 0f && a < 1f && b > 0f && b < 1f && c > 0f && c < 1f)
         {
+            // Debug.Log("a: " + a + "   b: " + b + "   c: " + c);
             isWithinTriangle = true;
         }
 

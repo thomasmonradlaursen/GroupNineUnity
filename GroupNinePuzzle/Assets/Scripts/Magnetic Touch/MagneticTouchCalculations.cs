@@ -37,8 +37,16 @@ public class MagneticTouchCalculations : MonoBehaviour
 
             // Debug.Log("radiansSelected " + radiansSelected * Mathf.Rad2Deg);
             // Debug.Log("radiansPieceToSnapTo " + radiansPieceToSnapTo * Mathf.Rad2Deg);
-            Debug.Log("Degrees to rotate: " + radiansToRotate * Mathf.Rad2Deg);
+            // Debug.Log("Degrees to rotate: " + radiansToRotate * Mathf.Rad2Deg);
         }
+
+        // We use the smallest angle possible to reach the same rotation (because we have restrictions on maximum angle size elsewhere)
+        if (Mathf.Abs(radiansToRotate) > Mathf.PI)
+        {
+            radiansToRotate = (Mathf.Sign(radiansToRotate) * (-1)) * (Mathf.Abs(radiansToRotate) - Mathf.PI * 2);
+        }
+        Debug.Log("Degrees to rotate: " + radiansToRotate * Mathf.Rad2Deg);
+
 
         return radiansToRotate;
     }
@@ -121,7 +129,6 @@ public class MagneticTouchCalculations : MonoBehaviour
 
             var snapInformationResult = CalculateSnapInformation(verticesOfSelected, verticesOfCandicate);
 
-            // Todo: Not correct. smallest distance might be item2, if the distance between previous vertice and other piece is smaller than distance between next vertex and other piece.
             if (snapInformationResult.DistanceBetweenPrimaryVertices < smallestDistance.Item1)
             {
                 snapInformation = snapInformationResult;
@@ -155,10 +162,10 @@ public class MagneticTouchCalculations : MonoBehaviour
                 if (distBetweenVertices < snapInformation.DistanceBetweenPrimaryVertices)
                 {
                     snapInformation.DistanceBetweenPrimaryVertices = distBetweenVertices;
-                    
+
                     snapInformation.PrimaryVertexInSelectedPiece = vertex_piece1;
                     snapInformation.PrimaryVertexInPieceToSnapTo = vertex_piece2;
-                    
+
                     snapInformation.IndexOfPrimaryVertexInSelectedPiece = i;
                     snapInformation.IndexOfPrimaryVertexInPieceToSnapTo = k;
 
