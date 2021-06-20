@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Circumscribed //Circumscribed circle script
+public class Circumscribed
 {
     float DeterminantOf3DMatrix(float[,] matrix)
     {
@@ -18,12 +18,10 @@ public class Circumscribed //Circumscribed circle script
     Vector3 CalculateConstantS(Vector3 A, Vector3 B, Vector3 C)
     {
         Vector3 S = new Vector3();
-        float[,] matrixForXCoordinate = new float[3, 3] { { Mathf.Pow(A.magnitude,2), A.y, 1 }, { Mathf.Pow(B.magnitude,2), B.y, 1 }, { Mathf.Pow(C.magnitude,2), C.y, 1 } };
-        float[,] matrixForYCoordinate = new float[3, 3] { { A.x, Mathf.Pow(A.magnitude,2), 1 }, { B.x, Mathf.Pow(B.magnitude,2), 1 }, { C.x, Mathf.Pow(C.magnitude,2), 1 } };
+        float[,] matrixForXCoordinate = new float[3, 3] { { Mathf.Pow(A.magnitude, 2), A.y, 1 }, { Mathf.Pow(B.magnitude, 2), B.y, 1 }, { Mathf.Pow(C.magnitude, 2), C.y, 1 } };
+        float[,] matrixForYCoordinate = new float[3, 3] { { A.x, Mathf.Pow(A.magnitude, 2), 1 }, { B.x, Mathf.Pow(B.magnitude, 2), 1 }, { C.x, Mathf.Pow(C.magnitude, 2), 1 } };
         S.x = (1.0f / 2.0f) * DeterminantOf3DMatrix(matrixForXCoordinate);
         S.y = (1.0f / 2.0f) * DeterminantOf3DMatrix(matrixForYCoordinate);
-        Debug.Log("x-coordinate: " + S.x);
-        Debug.Log("y-coordinate: " + S.y);
         return S;
     }
     float CalculateConstantA(Vector3 A, Vector3 B, Vector3 C)
@@ -34,7 +32,7 @@ public class Circumscribed //Circumscribed circle script
     }
     float CalculateConstantB(Vector3 A, Vector3 B, Vector3 C)
     {
-        float[,] matrixForB = new float[3, 3] { { A.x, A.y, Mathf.Pow(A.magnitude,2) }, { B.x, B.y, Mathf.Pow(B.magnitude,2) }, { C.x, C.y, Mathf.Pow(C.magnitude,2) } };
+        float[,] matrixForB = new float[3, 3] { { A.x, A.y, Mathf.Pow(A.magnitude, 2) }, { B.x, B.y, Mathf.Pow(B.magnitude, 2) }, { C.x, C.y, Mathf.Pow(C.magnitude, 2) } };
         float b = DeterminantOf3DMatrix(matrixForB);
         return b;
     }
@@ -58,7 +56,7 @@ public class Circumscribed //Circumscribed circle script
     public bool IsPointOnCirle(Vector3 circumcenter, float circumradius, Vector3 point)
     {
         bool result = true;
-        if(Vector3.Distance(point, circumcenter) > circumradius) result = false;
+        if (Vector3.Distance(point, circumcenter) > circumradius) result = false;
         return result;
     }
 }

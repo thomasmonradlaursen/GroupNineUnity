@@ -9,7 +9,6 @@ public class PieceController : MonoBehaviour
     {
         if (GetComponentInParent<PuzzleModel>().generateRandom)
         {
-            Debug.Log("Random piece");
             GetComponentInChildren<MeshGenerator>().MeshesFromRandom();
         }
         else
@@ -34,7 +33,15 @@ public class PieceController : MonoBehaviour
             newPiece.GetComponent<PieceInfo>().CalculateInformation();
             newPiece.GetComponent<PieceInfo>().vertices = mesh.vertices;
             newPiece.AddComponent<MagneticTouchAlgorithm>();
-            PieceOutlineGenerator.GenerateOutline(newPiece, mesh.vertices);
+            if(GetComponentInParent<PuzzleModel>().puzzle.puzzle.form != null)
+            {
+                // Stop that stash
+                PieceOutlineGenerator.GenerateOutline(newPiece, mesh.vertices, GetComponentInParent<PuzzleModel>().puzzle.puzzle.form[2].coord.x, GetComponentInParent<PuzzleModel>().puzzle.puzzle.form[2].coord.y);
+            }
+            else 
+            {
+                PieceOutlineGenerator.GenerateOutline(newPiece, mesh.vertices, 3.0f, 3.0f);
+            }
             newPiece.transform.parent = this.transform;
 
             var renderer = newPiece.GetComponent<MeshRenderer>();
