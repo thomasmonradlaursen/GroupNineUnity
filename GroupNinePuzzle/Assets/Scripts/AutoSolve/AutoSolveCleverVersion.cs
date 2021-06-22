@@ -429,7 +429,66 @@ public class AutoSolveCleverVersion : MonoBehaviour
             //Debug.Log("CURRENT POINT: "+currentPoint);
         }
     }
+    
     void findNextPoint(){
+        if(currentRow == 0){                                //case: first row
+            nextPoint = upperRightCorner;
+        }else if(currentColumn != 0){                       //case: middle or end of a row
+            GameObject nextPieceAbove = new GameObject();
+            for(int i = 0; i < placedPieces.Count; i++){
+                if(placedPieces[i].row == currentRow-1 && placedPieces[i].column == (currentColumn)){
+                    //Debug.Log("CURRENT col: "+ currentColumn);
+                    nextPieceAbove = placedPieces[i].piece;
+                    //Debug.Log("nextPieceAbove, name: "+placedPieces[i].piece.GetComponent<PieceInfo>().name + ", row and column: ("+placedPieces[i].row+", "+placedPieces[i].column+")");
+                    break;
+                }
+            }
+            Vector3[] vertices = nextPieceAbove.GetComponent<MeshFilter>().mesh.vertices;
+            int index = 0;
+            foreach(Vector3 vertex in vertices){
+                if(vertex == currentPoint){
+                    break;
+                }
+                index++;
+            }
+            if(index < vertices.Length-1){
+                nextPoint = vertices[index+1];
+            }else{
+                nextPoint = vertices[0];
+            }
+            
+        }else if(currentColumn == 0){                       //case: start of new row
+            GameObject pieceAbove = new GameObject();
+            for(int i = 0; i < placedPieces.Count; i++){
+                if(placedPieces[i].row == currentRow-1 && placedPieces[i].column == currentColumn){     //bug here! probably
+                    pieceAbove = placedPieces[i].piece;
+                    break;
+                }
+            }
+            Vector3[] vertices = pieceAbove.GetComponent<MeshFilter>().mesh.vertices;
+            Vector3 llc = vertices[0];
+            int n = 0; int index = 0;
+            while(n < vertices.Length){
+                if(llc.x > vertices[n].x-0.01){
+                    llc = vertices[n];
+                    index = n;
+                }
+                if(llc.x >= vertices[n].x-0.01 && llc.y > vertices[n].y-0.01){
+                    llc = vertices[n];
+                    index = n;
+                }
+                n++;
+            }
+            currentPoint = llc;
+            if(index < vertices.Length-1){
+                nextPoint = vertices[index+1];
+            }else{
+                nextPoint = vertices[0];
+            }
+        }
+    }
+    
+    void findNextPointAlt(){
         if(currentRow == 0){                                //case: first row
             nextPoint = upperRightCorner;
         }else if(currentColumn != 0){                       //case: middle or end of a row
