@@ -71,10 +71,7 @@ public class AutoSolveCleverVersion : MonoBehaviour
                     currentColumn++;
                     findNextPoint();
                     CalculateNextAngle();
-                }else{
-                    //Debug.Log("we're at the end of the row: "+currentPoint.x);
                 }
-                
             } else {
                 testedPieces.Add(new Triple(currentRow, currentColumn, activePiece));
                 potentialPieces.Remove(activePiece);
@@ -328,7 +325,9 @@ public class AutoSolveCleverVersion : MonoBehaviour
         //remove previously tested pieces
         for(int i = 0; i < testedPieces.Count; i++){
             for(int j = 0; j < potentialPieces.Count; j++){
-                if(potentialPieces[j] == testedPieces[i].piece){
+                if(potentialPieces[j] == testedPieces[i].piece
+                    && testedPieces[i].row ==currentRow 
+                    && testedPieces[i].column == currentColumn){
                     potentialPieces.Remove(potentialPieces[j]);
                 }
             }
