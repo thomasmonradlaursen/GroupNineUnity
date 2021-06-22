@@ -173,6 +173,7 @@ public class SnowflakeAlgorithm : MonoBehaviour
         float[] anglesA = anglesOfPieces[(int) piecesToCompare[0]];
         float[] anglesB = anglesOfPieces[(int) piecesToCompare[1]];
         
+        //make sure A represents the "larger" piece
         if(anglesA.Length > anglesB.Length){
             float[] temp = anglesA;
             anglesA = anglesB;
@@ -182,7 +183,7 @@ public class SnowflakeAlgorithm : MonoBehaviour
             sidesA = sidesB;
             sidesB = temp;
         }
-
+        //find all angles in A that match the first angle in A. 
         List<int> indicesOfIdenticalAnglesInA = new List<int>();
         int numberOfIdenticalAnglesInA = 0; int n = 0;
         foreach(float angle in anglesA){
@@ -192,7 +193,7 @@ public class SnowflakeAlgorithm : MonoBehaviour
             }
             n++;
         }
-
+        while(indicesOfIdenticalAnglesInA.Count > 0){
             float[] tempAngles = anglesA;
             float[] tempSides = sidesA;
             tempAngles = alignArray(anglesA, indicesOfIdenticalAnglesInA[0]);
@@ -312,7 +313,7 @@ public class SnowflakeAlgorithm : MonoBehaviour
         }
         return false;
     }
-    
+
     void DetermineReasonForFailure()
     {
         if (resultAndMessage.Item2.Equals("area"))
