@@ -160,8 +160,6 @@ public class AutoSolveAlgorithm : MonoBehaviour
         }
         */
         AutoRotate(rotationAngle);
-        
-        
     }
     
     void FindPotentialPieces(int place){
@@ -243,6 +241,9 @@ public class AutoSolveAlgorithm : MonoBehaviour
             n++;
         }
         currentPoint = temp;
+
+    }
+    void findNextPointAlg(){
 
     }
     void findNextPoint(){

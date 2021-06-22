@@ -21,9 +21,12 @@ public class SnowflakeAlgorithm : MonoBehaviour
         puzzle = GetComponentInParent<PuzzleModel>().puzzle;
         pieces = GetComponentInParent<PuzzleModel>().pieces;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         foreach(GameObject piece in pieces){
             Debug.Log("piece "+piece.GetComponent<PieceInfo>().name);
 =======
+=======
+>>>>>>> Stashed changes
         /*
         foreach (GameObject piece in pieces)
         {
@@ -207,7 +210,11 @@ public class SnowflakeAlgorithm : MonoBehaviour
             sidesB = temp;
         }
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         
+=======
+        /*
+>>>>>>> Stashed changes
 =======
         /*
 >>>>>>> Stashed changes
@@ -219,7 +226,11 @@ public class SnowflakeAlgorithm : MonoBehaviour
             Debug.Log("B: "+side);
         }
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         
+=======
+        */
+>>>>>>> Stashed changes
 =======
         */
 >>>>>>> Stashed changes
@@ -240,13 +251,21 @@ public class SnowflakeAlgorithm : MonoBehaviour
 =======
         while (indicesOfIdenticalAnglesInA.Count > 0)
         {
+<<<<<<< Updated upstream
             //Debug.Log("While at 112");
+            //Debug.Log("index: " + indicesOfIdenticalAnglesInA[0]);
+>>>>>>> Stashed changes
+=======
             //Debug.Log("index: " + indicesOfIdenticalAnglesInA[0]);
 >>>>>>> Stashed changes
             float[] tempAngles = anglesA;
             float[] tempSides = sidesA;
             tempAngles = alignArray(anglesA, indicesOfIdenticalAnglesInA[0]);
             tempSides = alignArray(sidesA, indicesOfIdenticalAnglesInA[0]);
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
             /*
             Debug.Log("SIDES IN A:");
             foreach(float side in tempSides){
@@ -257,8 +276,11 @@ public class SnowflakeAlgorithm : MonoBehaviour
                 Debug.Log(side+"; ");
             }
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             if(IdenticalAnglesLists(tempAngles, anglesB, tempSides, sidesB)){
 =======
+=======
+>>>>>>> Stashed changes
             */
             if (IdenticalAnglesLists(tempAngles, anglesB, tempSides, sidesB))
             {
@@ -288,7 +310,11 @@ public class SnowflakeAlgorithm : MonoBehaviour
         for(int i = 0; i<shortListAngles.Length; i++){
             //Debug.Log("Angle in A: "+ shortListAngles[i]+", Angle in B: "+ longListAngles[j]);
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             Debug.Log("i = "+i+" , j = "+j);
+=======
+            //Debug.Log("i = " + i + " , j = " + j);
+>>>>>>> Stashed changes
 =======
             //Debug.Log("i = " + i + " , j = " + j);
 >>>>>>> Stashed changes
@@ -299,6 +325,7 @@ public class SnowflakeAlgorithm : MonoBehaviour
                 //Debug.Log("B: "+longListAngles[j]);
                 //if angleA is 180
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                 if((shortListAngles[i] <= 180.01 && shortListAngles[i] >= 179.99) && !(shortListAngles[j] <= 180.01 && shortListAngles[j] >= 179.99)){
                     Debug.Log("caught 180 degree angle in A");
                     if(i != 0){
@@ -307,6 +334,9 @@ public class SnowflakeAlgorithm : MonoBehaviour
                         carryA = shortListSides[i-1];
 =======
                 if ((shortListAngles[i] <= 180.01 && shortListAngles[i] >= 179.99) && !(shortListAngles[j] <= 180.01 && shortListAngles[j] >= 179.99))
+=======
+                if ((shortListAngles[i] <= 180.01 && shortListAngles[i] >= 179.99) && !(longListAngles[j] <= 180.01 && longListAngles[j] >= 179.99))
+>>>>>>> Stashed changes
                 {
                     //Debug.Log("caught 180 degree angle in A");
                     if (i != 0)
@@ -322,6 +352,7 @@ public class SnowflakeAlgorithm : MonoBehaviour
                 }
                 //if angleB is 180
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                 else if(!(shortListAngles[i] <= 180.01 && shortListAngles[i] >= 179.99) && (shortListAngles[j] <= 180.01 && shortListAngles[j] >= 179.99)){
                     Debug.Log("caught 180 degree angle in B");
                     if(j != 0){
@@ -330,6 +361,9 @@ public class SnowflakeAlgorithm : MonoBehaviour
                         carryB = longListSides[j-1];
 =======
                 else if (!(shortListAngles[i] <= 180.01 && shortListAngles[i] >= 179.99) && (shortListAngles[j] <= 180.01 && shortListAngles[j] >= 179.99))
+=======
+                else if (!(shortListAngles[i] <= 180.01 && shortListAngles[i] >= 179.99) && (longListAngles[j] <= 180.01 && longListAngles[j] >= 179.99))
+>>>>>>> Stashed changes
                 {
                     //Debug.Log("caught 180 degree angle in B");
                     if (j != 0)
@@ -355,6 +389,9 @@ public class SnowflakeAlgorithm : MonoBehaviour
             if ((longListAngles[j] >= shortListAngles[i] - 0.01 && longListAngles[j] <= shortListAngles[i] + 0.01))
             {
                 //Debug.Log("Found identical angles: (A, B) = " + "(" + shortListAngles[i] + ", " + longListAngles[j] + ")");
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
                 bool identicalSides = IdenticalSidesLists(shortListSides, longListSides, i, j, carryA, carryB);
                 if(!identicalSides){
@@ -397,9 +434,12 @@ public class SnowflakeAlgorithm : MonoBehaviour
 =======
     bool IdenticalSidesLists(float[] shortList, float[] longList, int i, int j, float carryA, float carryB)
     {
+<<<<<<< Updated upstream
         //Debug.Log("checking sides now!!!! i: " + i + " , j: " + j);
         //Debug.Log("SideA = " + shortList[i] + " + " + carryA);
         //Debug.Log("SideB = " + longList[i] + " + " + carryB);
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
         float sideA = shortList[i] + carryA;
         float sideB = longList[j] + carryB;
@@ -417,6 +457,9 @@ public class SnowflakeAlgorithm : MonoBehaviour
             //Debug.Log("sides not identical:");
             //Debug.Log("A: " + sideA);
             //Debug.Log("B: " + sideB);
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
         }
         return false;
