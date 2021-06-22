@@ -16,7 +16,6 @@ public class AutoSolveCleverVersion : MonoBehaviour
     
     void FixedUpdate()
     {
-        // This will be fixed
         if (Input.GetKeyDown(KeyCode.A))
         {
             AutoSolve();
@@ -41,33 +40,39 @@ public class AutoSolveCleverVersion : MonoBehaviour
             Debug.Log("***************************");
             bool changedRows = false;
             changedRows = CheckForRowChange();
-            //Debug.Log("row and column: ("+currentRow+", "+currentColumn+")");
+            Debug.Log("row and column: ("+currentRow+", "+currentColumn+")");
+            Debug.Log("Theta: "+theta);
+            Debug.Log("Index of Theta: "+indexOfTheta);
             FindPotentialPieces();
             Debug.Log("Found "+potentialPieces.Count+" potential pieces.");
             SetActivePiece();
             PlacePiece();
 
-        
-            while(OverLapsBoard() == true && activePiece.GetComponent<PieceInfo>().thetaAngles.Count > 0){
+            bool overlap = OverLapsBoard();
+            while(overlap == true && activePiece.GetComponent<PieceInfo>().thetaAngles.Count > 0){
+                Debug.Log("Overlaps board!");
                 Pair temp = activePiece.GetComponent<PieceInfo>().thetaAngles[0];
                 activePiece.GetComponent<PieceInfo>().thetaAngles.Remove(temp);
                 indexOfTheta = activePiece.GetComponent<PieceInfo>().thetaAngles[0].index;
                 PlacePiece();
+                overlap = OverLapsBoard();
             }
             if(OverLapsBoard() == false){
                 testedPieces.Add(new Triple(currentRow, currentColumn, activePiece));
                 placedPieces.Add(new Triple(currentRow, currentColumn, activePiece));
+                Debug.Log("index of Theta: "+indexOfTheta);
                 Debug.Log("PLACED PIECE "+ activePiece.GetComponent<PieceInfo>().name);
                 pieces.Remove(activePiece);
                 potentialPieces.Remove(activePiece);
                 updateCurrentPoint(changedRows);
+                //check to see if we're at the end of a row
                 if(!(currentPoint.x >= upperRightCorner.x-0.01 && currentPoint.x <= upperRightCorner.x+0.01)){
-                    Debug.Log("currentPoint: "+currentPoint+", upperRightCorner: "+upperRightCorner);
+                    //Debug.Log("currentPoint: "+currentPoint+", upperRightCorner: "+upperRightCorner);
                     currentColumn++;
                     findNextPoint();
                     CalculateNextAngle();
                 }else{
-                    Debug.Log("we're at the end of the row: "+currentPoint.x);
+                    //Debug.Log("we're at the end of the row: "+currentPoint.x);
                 }
                 
             } else {
@@ -83,13 +88,13 @@ public class AutoSolveCleverVersion : MonoBehaviour
         if(currentPoint.x >= upperRightCorner.x-0.01 && currentPoint.x <= upperRightCorner.x+0.01){   //check for row change
                 currentRow++;
                 currentColumn = 0;
-                Debug.Log("currentRow: "+currentRow);
+                //Debug.Log("currentRow: "+currentRow);
                 updateCurrentPoint(true);
                 findNextPoint();
                 CalculateNextAngle();
-                Debug.Log("currentPoint updated to be: "+currentPoint);
-                Debug.Log("nextPoint updated to be: "+nextPoint);
-                Debug.Log("Theta updated to be: "+theta);
+                //Debug.Log("currentPoint updated to be: "+currentPoint + " by rowChange");
+                //Debug.Log("nextPoint updated to be: "+nextPoint+ " by rowChange");
+                //Debug.Log("Theta updated to be: "+theta + " by rowChange");
             return true;
         } else {
             return false;
@@ -176,8 +181,9 @@ public class AutoSolveCleverVersion : MonoBehaviour
             pointToBeAligned = activePiece.GetComponent<MeshFilter>().mesh.vertices[activePiece.GetComponent<MeshFilter>().mesh.vertices.Length-1];
         }
         float rotationAngle = CalculateRotationAngle(pointToBeAligned);
-        /*
+        
         Debug.Log("pointToBeAligned: " + pointToBeAligned);
+        /*
         Debug.Log("nextPoint: " + nextPoint);
         Debug.Log("currentPoint: " + currentPoint);
         Debug.Log("rotationAngle, radians: " + rotationAngle+ " rotationAngle, degrees: "+(rotationAngle*180)/Mathf.PI);
@@ -209,12 +215,18 @@ public class AutoSolveCleverVersion : MonoBehaviour
         //Debug.Log("centroid: "+ selectedPiece.GetComponent<PieceInfo>().centroid);
     }
     float CalculateRotationAngle(Vector3 pointToBeAligned){
+        /*
         float angle = Vector3.SignedAngle(pointToBeAligned-currentPoint, nextPoint-currentPoint, Vector3.up);
-        //Debug.Log("*************************************************************************************");
-        //Debug.Log("rotation angle: "+angle);
+        Debug.Log("angle before checking sign: "+angle);
         if(pointToBeAligned.y > currentPoint.y){
             angle = angle*(-1);
         }
+        */
+        Vector2 vec1 = new Vector2(pointToBeAligned.x-currentPoint.x, pointToBeAligned.y-currentPoint.y);
+        Vector2 vec2 = new Vector2(nextPoint.x-currentPoint.x, nextPoint.y-currentPoint.y);
+        float angle = Vector2.SignedAngle(vec1, vec2);
+        Debug.Log("*************************************************************************************");
+        Debug.Log("rotation angle degrees: "+angle+"  radians: "+(Mathf.PI*angle/180.0f));
         return (Mathf.PI*angle)/180.0f;
     }
     void AutoRotate(float rotationAngle){
@@ -263,6 +275,7 @@ public class AutoSolveCleverVersion : MonoBehaviour
         }
     }
     void CalculateNextAngle(){
+        
         if(currentColumn > 0){
             Vector3[] vertices = activePiece.GetComponent<MeshFilter>().mesh.vertices;
             int n = 0;
@@ -277,17 +290,17 @@ public class AutoSolveCleverVersion : MonoBehaviour
                 nextVertex = vertices[n-1];
             }
             theta = Vector3.SignedAngle(currentPoint-nextPoint, currentPoint-nextVertex, Vector3.down);
-            //theta = Vector3.SignedAngle(nextPoint - nextVertex, nextVertex-nextNextVertex, Vector3.up);
-            Debug.Log("currentPoint: "+currentPoint);
-            Debug.Log("nextPoint: "+nextPoint);
-            Debug.Log("nextVertex: "+nextVertex);
-            Debug.Log("new theta: "+theta);
+            //Debug.Log("CALCULATING NEXT ANGLE:");
+            //Debug.Log("currentPoint: "+currentPoint);
+            //Debug.Log("nextPoint: "+nextPoint);
+            //Debug.Log("nextVertex: "+nextVertex);
+            //Debug.Log("new theta: "+theta);
         }else{
             theta = Vector3.SignedAngle(currentPoint-nextPoint, currentPoint - lowerLeftCorner, Vector3.up);    //bug here
-            Debug.Log("currentPoint: "+currentPoint);
-            Debug.Log("nextPoint: "+nextPoint);
-            //Debug.Log("nextVertex: "+nextVertex);
-            Debug.Log("new theta: "+theta);
+            //Debug.Log("CALCULATING NEXT ANGLE:");
+            //Debug.Log("currentPoint: "+currentPoint);
+            //Debug.Log("nextPoint: "+nextPoint);
+            //Debug.Log("new theta: "+theta);
         }
     }
     void FindPotentialPieces(){
