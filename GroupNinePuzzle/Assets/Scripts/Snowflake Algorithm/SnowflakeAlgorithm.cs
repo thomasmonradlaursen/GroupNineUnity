@@ -20,20 +20,7 @@ public class SnowflakeAlgorithm : MonoBehaviour
         Debug.Log("SnowflakeAlgorithm Start()");
         puzzle = GetComponentInParent<PuzzleModel>().puzzle;
         pieces = GetComponentInParent<PuzzleModel>().pieces;
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-        foreach(GameObject piece in pieces){
-            Debug.Log("piece "+piece.GetComponent<PieceInfo>().name);
-=======
-=======
->>>>>>> Stashed changes
-        /*
-        foreach (GameObject piece in pieces)
-        {
-            Debug.Log("piece " + piece.GetComponent<PieceInfo>().name);
->>>>>>> Stashed changes
-        }
-        */
+
         areaOfPieces = areaSorting.GetAreaOfPieces(pieces);
         lengthsOfPieces = lengthsAndAnglesSorting.GetLengthsOfPieces(pieces);
         anglesOfPieces = lengthsAndAnglesSorting.GetAnglesOfPieces(pieces);
@@ -42,19 +29,6 @@ public class SnowflakeAlgorithm : MonoBehaviour
         piecesWithIdenticalArea = areaSorting.FindPiecesWithIdenticalArea(areaOfPieces);
 
         //check angles and side lengths
-<<<<<<< Updated upstream
-        if(piecesWithIdenticalArea.Count != 0){
-            Debug.Log("Number of pairs with identical areas: "+ piecesWithIdenticalArea.Count);
-            
-            while(piecesWithIdenticalArea.Count != 0){
-                if(DetermineSnowflakeismRoundTwo(piecesWithIdenticalArea[0]) == false){
-                   piecesWithIdenticalArea.Remove(piecesWithIdenticalArea[0]);
-                   Debug.Log("removed a pair of pieces, pairs left to compare: "+piecesWithIdenticalArea.Count);
-               }else{
-                   Debug.Log("Pieces "+ piecesWithIdenticalArea[0]+" have identical sideslengths or angles");
-                   break;
-               }
-=======
         if (piecesWithIdenticalArea.Count != 0)
         {
             //Debug.Log("Number of pairs with identical areas: " + piecesWithIdenticalArea.Count);
@@ -71,7 +45,6 @@ public class SnowflakeAlgorithm : MonoBehaviour
                     //Debug.Log("Pieces " + piecesWithIdenticalArea[0] + " have identical sideslengths or angles");
                     break;
                 }
->>>>>>> Stashed changes
             }
         }
         //output result of snowflakeism
@@ -209,31 +182,6 @@ public class SnowflakeAlgorithm : MonoBehaviour
             sidesA = sidesB;
             sidesB = temp;
         }
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-        
-=======
-        /*
->>>>>>> Stashed changes
-=======
-        /*
->>>>>>> Stashed changes
-        Debug.Log("sides lists:");
-        foreach(float side in sidesA){
-            Debug.Log("A: "+side);
-        }
-        foreach(float side in sidesB){
-            Debug.Log("B: "+side);
-        }
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-        
-=======
-        */
->>>>>>> Stashed changes
-=======
-        */
->>>>>>> Stashed changes
 
         List<int> indicesOfIdenticalAnglesInA = new List<int>();
         int numberOfIdenticalAnglesInA = 0; int n = 0;
@@ -245,27 +193,10 @@ public class SnowflakeAlgorithm : MonoBehaviour
             n++;
         }
 
-<<<<<<< Updated upstream
-        while(indicesOfIdenticalAnglesInA.Count > 0){
-            Debug.Log("index: "+indicesOfIdenticalAnglesInA[0]);
-=======
-        while (indicesOfIdenticalAnglesInA.Count > 0)
-        {
-<<<<<<< Updated upstream
-            //Debug.Log("While at 112");
-            //Debug.Log("index: " + indicesOfIdenticalAnglesInA[0]);
->>>>>>> Stashed changes
-=======
-            //Debug.Log("index: " + indicesOfIdenticalAnglesInA[0]);
->>>>>>> Stashed changes
             float[] tempAngles = anglesA;
             float[] tempSides = sidesA;
             tempAngles = alignArray(anglesA, indicesOfIdenticalAnglesInA[0]);
             tempSides = alignArray(sidesA, indicesOfIdenticalAnglesInA[0]);
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
             /*
             Debug.Log("SIDES IN A:");
             foreach(float side in tempSides){
@@ -275,16 +206,9 @@ public class SnowflakeAlgorithm : MonoBehaviour
             foreach(float side in sidesB){
                 Debug.Log(side+"; ");
             }
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-            if(IdenticalAnglesLists(tempAngles, anglesB, tempSides, sidesB)){
-=======
-=======
->>>>>>> Stashed changes
             */
             if (IdenticalAnglesLists(tempAngles, anglesB, tempSides, sidesB))
             {
->>>>>>> Stashed changes
                 areIdentical = true; break;
             }else{
                 indicesOfIdenticalAnglesInA.Remove(indicesOfIdenticalAnglesInA[0]);
@@ -292,6 +216,7 @@ public class SnowflakeAlgorithm : MonoBehaviour
         }
         return areIdentical;
     }
+
     float[] alignArray(float[] arrayToAlign, int newStart){
         float[] aligned = new float[arrayToAlign.Length];
         for(int i = 0; i < arrayToAlign.Length; i++){
@@ -303,40 +228,19 @@ public class SnowflakeAlgorithm : MonoBehaviour
         }
         return aligned;
     }
+
     bool IdenticalAnglesLists(float[] shortListAngles, float[] longListAngles, float[] shortListSides, float[] longListSides)
     {
         float carryA =0; float carryB =0; 
         int j = 0;
         for(int i = 0; i<shortListAngles.Length; i++){
-            //Debug.Log("Angle in A: "+ shortListAngles[i]+", Angle in B: "+ longListAngles[j]);
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-            Debug.Log("i = "+i+" , j = "+j);
-=======
-            //Debug.Log("i = " + i + " , j = " + j);
->>>>>>> Stashed changes
-=======
-            //Debug.Log("i = " + i + " , j = " + j);
->>>>>>> Stashed changes
             //if angles are not identical
             if(!(longListAngles[j] >= shortListAngles[i]-0.01 && longListAngles[j] <= shortListAngles[i]+0.01)){
                 //Debug.Log("angles not identical:");
                 //Debug.Log("A: "+shortListAngles[i]);
                 //Debug.Log("B: "+longListAngles[j]);
                 //if angleA is 180
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-                if((shortListAngles[i] <= 180.01 && shortListAngles[i] >= 179.99) && !(shortListAngles[j] <= 180.01 && shortListAngles[j] >= 179.99)){
-                    Debug.Log("caught 180 degree angle in A");
-                    if(i != 0){
-                        carryA = shortListSides[(shortListSides.Length-1)];
-                    }else{
-                        carryA = shortListSides[i-1];
-=======
-                if ((shortListAngles[i] <= 180.01 && shortListAngles[i] >= 179.99) && !(shortListAngles[j] <= 180.01 && shortListAngles[j] >= 179.99))
-=======
                 if ((shortListAngles[i] <= 180.01 && shortListAngles[i] >= 179.99) && !(longListAngles[j] <= 180.01 && longListAngles[j] >= 179.99))
->>>>>>> Stashed changes
                 {
                     //Debug.Log("caught 180 degree angle in A");
                     if (i != 0)
@@ -346,24 +250,11 @@ public class SnowflakeAlgorithm : MonoBehaviour
                     else
                     {
                         carryA = shortListSides[i - 1];
->>>>>>> Stashed changes
                     }
                     j--; continue;
                 }
                 //if angleB is 180
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-                else if(!(shortListAngles[i] <= 180.01 && shortListAngles[i] >= 179.99) && (shortListAngles[j] <= 180.01 && shortListAngles[j] >= 179.99)){
-                    Debug.Log("caught 180 degree angle in B");
-                    if(j != 0){
-                        carryB = longListSides[(longListSides.Length-1)];
-                    }else{
-                        carryB = longListSides[j-1];
-=======
-                else if (!(shortListAngles[i] <= 180.01 && shortListAngles[i] >= 179.99) && (shortListAngles[j] <= 180.01 && shortListAngles[j] >= 179.99))
-=======
                 else if (!(shortListAngles[i] <= 180.01 && shortListAngles[i] >= 179.99) && (longListAngles[j] <= 180.01 && longListAngles[j] >= 179.99))
->>>>>>> Stashed changes
                 {
                     //Debug.Log("caught 180 degree angle in B");
                     if (j != 0)
@@ -373,7 +264,6 @@ public class SnowflakeAlgorithm : MonoBehaviour
                     else
                     {
                         carryB = longListSides[j - 1];
->>>>>>> Stashed changes
                     }
                     i--; continue;
                 } else{
@@ -382,17 +272,9 @@ public class SnowflakeAlgorithm : MonoBehaviour
                 }
             }
             //if angles are identical, check sides as well
-<<<<<<< Updated upstream
-            if((longListAngles[j] >= shortListAngles[i]-0.01 && longListAngles[j] <= shortListAngles[i]+0.01)){
-                Debug.Log("Found identical angles: (A, B) = "+"("+shortListAngles[i]+", "+longListAngles[j]+")");
-=======
             if ((longListAngles[j] >= shortListAngles[i] - 0.01 && longListAngles[j] <= shortListAngles[i] + 0.01))
             {
                 //Debug.Log("Found identical angles: (A, B) = " + "(" + shortListAngles[i] + ", " + longListAngles[j] + ")");
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
                 bool identicalSides = IdenticalSidesLists(shortListSides, longListSides, i, j, carryA, carryB);
                 if(!identicalSides){
                     return false;
@@ -406,18 +288,12 @@ public class SnowflakeAlgorithm : MonoBehaviour
 
         //if we get to the end and the longList is still not through,
         //we need to check if the remaining angles are all 180. 
-<<<<<<< Updated upstream
-        if(longListAngles.Length-1 > j){
-            while(j<longListAngles.Length){    
-                if(!(longListAngles[j] <= 180.01 && longListAngles[j] >= 179.99)){
-=======
         if (longListAngles.Length - 1 > j)
         {
             while (j < longListAngles.Length)
             {
                 if (!(longListAngles[j] <= 180.01 && longListAngles[j] >= 179.99))
                 {
->>>>>>> Stashed changes
                     return false;
                 }
                 j++;
@@ -426,44 +302,17 @@ public class SnowflakeAlgorithm : MonoBehaviour
         return true;
     }
 
-<<<<<<< Updated upstream
-    bool IdenticalSidesLists(float[] shortList, float[] longList, int i, int j, float carryA, float carryB){
-        Debug.Log("checking sides now!!!! i: "+i+" , j: "+j);
-        Debug.Log("SideA = "+shortList[i] +" + "+ carryA);
-        Debug.Log("SideB = "+longList[i] +" + "+ carryB);
-=======
+
     bool IdenticalSidesLists(float[] shortList, float[] longList, int i, int j, float carryA, float carryB)
     {
-<<<<<<< Updated upstream
-        //Debug.Log("checking sides now!!!! i: " + i + " , j: " + j);
-        //Debug.Log("SideA = " + shortList[i] + " + " + carryA);
-        //Debug.Log("SideB = " + longList[i] + " + " + carryB);
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
         float sideA = shortList[i] + carryA;
         float sideB = longList[j] + carryB;
         if(sideA >= sideB-0.01 && sideA <= sideB+0.01){
             return true;
-<<<<<<< Updated upstream
-        }else{
-            Debug.Log("sides not identical:");
-                Debug.Log("A: "+ sideA);
-                Debug.Log("B: "+ sideB);
-=======
-        }
-        else
-        {
-            //Debug.Log("sides not identical:");
-            //Debug.Log("A: " + sideA);
-            //Debug.Log("B: " + sideB);
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
         }
         return false;
     }
+    
     void DetermineReasonForFailure()
     {
         if (resultAndMessage.Item2.Equals("area"))

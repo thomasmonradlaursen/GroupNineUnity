@@ -71,11 +71,7 @@ public class Translation : MonoBehaviour
         }
         mesh.SetVertices(translatedVertices);
         lineRenderer.SetPositions(translatedVertices);
-<<<<<<< Updated upstream
-        GetComponent<PieceInfo>().vertices = translatedVertices;    //her
-=======
         GetComponent<PieceInfo>().vertices = translatedVertices;
->>>>>>> Stashed changes
         GetComponentInParent<MeshCollider>().sharedMesh = mesh;
     }
     public void CalculateCentroidAfterTranslation()
