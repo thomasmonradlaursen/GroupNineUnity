@@ -6,7 +6,7 @@ public class PointGenerator : MonoBehaviour
 {
     public List<Vector3> GenerateRandomPoints(int numberOfPieces, Vector2 boardSize)
     {
-        int numberOfDots = CalculateDotsFromPieces(GetComponent<DivisionModel>().numberOfPieces);
+        int numberOfDots = CalculateDotsFromPieces(numberOfPieces);
         List<Vector3> randomPoints = new List<Vector3>();
         for (int dotNumber = 0; dotNumber < numberOfDots; dotNumber++)
         {
