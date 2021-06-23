@@ -140,7 +140,7 @@ public class AutoSolveCleverVersion : MonoBehaviour
             currentPoint = pieceToRemove.currentPoint;
 
             placedPieces.Remove(pieceToRemove);
-            AutoTranslate(lowerLeftCorner);
+            //AutoTranslate(lowerLeftCorner);
             pieces.Add(piece);
             
             Debug.Log("Removed "+piece.GetComponent<PieceInfo>().name);
@@ -230,8 +230,7 @@ public class AutoSolveCleverVersion : MonoBehaviour
         float rotationAngle = CalculateRotationAngle(pointToBeAligned);
         
         AutoRotate(rotationAngle);
-    }
-    
+    }   
     void AutoTranslate(Vector3 displacement){
         Mesh meshForActivePiece = activePiece.GetComponent<MeshFilter>().mesh;
         LineRenderer lineRenderer = activePiece.GetComponent<LineRenderer>();
@@ -340,6 +339,7 @@ public class AutoSolveCleverVersion : MonoBehaviour
                     && testedPieces[j].column == currentColumn){
                     potentialPieces.Remove(potentialPieces[i]);
                     i--;
+                    break;
                 }
             }
         }

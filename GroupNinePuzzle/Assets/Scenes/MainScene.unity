@@ -1289,7 +1289,7 @@ MonoBehaviour:
     name: 
     nPieces: 0
     pieces: []
-  fileName: checkIdentical.json
+  fileName: puzzle_12_auto.json
   locationOfFile: Assets/ExamFiles/
   pieces: []
   generateRandom: 0
@@ -1949,7 +1949,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 005e8e16b05264fb897abe6fc66dc044, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pieces: []
 --- !u!1 &367730337
 GameObject:
   m_ObjectHideFlags: 0
