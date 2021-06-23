@@ -14,6 +14,8 @@ public class AutoSolveCleverVersion : MonoBehaviour
     Vector3 upperLeftCorner; Vector3 upperRightCorner; Vector3 lowerRightCorner; Vector3 lowerLeftCorner;
     Vector3 currentPoint; Vector3 nextPoint; GameObject activePiece; int currentRow; int currentColumn;
     
+    //SKURKEN ER I FINDPOTENTIALPIECES OG / ELLER BACKTRACKING. måske
+
     void FixedUpdate()
     {
         if (Input.GetKeyDown(KeyCode.A))
