@@ -27,7 +27,6 @@ public class MagneticTouchAlgorithm : MonoBehaviour
                 pieces = GetComponentInParent<PuzzleModel>().pieces;
             }
             FindCandidatesForSnap(GetComponentInParent<PuzzleModel>().selectedObject);
-            // LogPossibleSnaps();
             if (possibleSnaps.Item2.Count > 0)
             {
                 SnapPiecesTogether();
@@ -54,13 +53,6 @@ public class MagneticTouchAlgorithm : MonoBehaviour
 
         var test1 = CalculateConstantsForLineThroughTwoVertices(snapInformation.PrimaryVertexInSelectedPiece, snapInformation.SecondaryVertexInSelectedPiece);
         var test2 = CalculateConstantsForLineThroughTwoVertices(snapInformation.PrimaryVertexInPieceToSnapTo, snapInformation.SecondaryVertexInPieceToSnapTo);
-        // Debug.Log("line selected: " + test1.Item1 + "*x + " + test1.Item2);
-        // Debug.Log("line to snap to: " + test2.Item1 + "*x + " + test2.Item2);
-        // Debug.Log("selected Point1: " + snapInformation.PrimaryVertexInSelectedPiece);
-        // Debug.Log("selected Point2: " + snapInformation.SecondaryVertexInSelectedPiece);
-        // Debug.Log("snap to Point1: " + snapInformation.PrimaryVertexInPieceToSnapTo);
-        // Debug.Log("snap to Point2: " + snapInformation.SecondaryVertexInPieceToSnapTo);
-
 
         if (rotation > 0.35 || rotation < -0.35)
         {
@@ -141,11 +133,6 @@ public class MagneticTouchAlgorithm : MonoBehaviour
                     printString = printString + possibleSnaps.Item2[index].name + ", ";
                 }
             }
-            // Debug.Log(possibleSnaps.Item1.name + " can possibly snap to the following pieces: " + printString);
-        }
-        else
-        {
-            // Debug.Log(possibleSnaps.Item1.name + " cannot snap to any other pieces at the moment.");
         }
     }
     #endregion
@@ -259,10 +246,8 @@ public class MagneticTouchAlgorithm : MonoBehaviour
             // If the distance is this small it's within the acceptable uncertainty of being on the border of the other piece
             if (distance < 0.05f)
             {
-                // Debug.Log("distance smaller than 0.05: " + distance);
                 return false;
             }
-            // Debug.Log("Distance greater than 0.05: " + distance);
         }
 
         for (int i = 0; i < containerPieceVertices.Length; i++)
@@ -273,23 +258,19 @@ public class MagneticTouchAlgorithm : MonoBehaviour
             var projectionOntoLine = CalculateRightAngledProjectionFromPointToLine(vertexToCheck, vertex1InLine, vertex2InLine);
             var intersectionWithLine = vertex1InLine + projectionOntoLine;
 
-            // Debug.Log("intersectionWithLine: " + intersectionWithLine);
             if (!IsIntersectionPointInLineSegment(intersectionWithLine, vertex1InLine, vertex2InLine, 1, 0.1f))
             {
                 continue;
             }
-            // Debug.Log("IsIntersectionPointInLineSegment: true");
 
             if (!IsPointOnInsideOfLine(vertexToCheck, intersectionWithLine, vertex1InLine, vertex2InLine))
             {
                 continue;
             }
-            // Debug.Log("IsPointOnInsideOfLine: true");
 
             var lineFromPointToIntersection = new List<(float, float)>() { CalculateConstantsForLineThroughTwoVertices(vertexToCheck, intersectionWithLine) };
             var linesInPiece = GetLinesInPiece(containerPieceVertices);
             var verticesIntersectionLine = new Vector3[] { vertexToCheck, intersectionWithLine };
-            // Debug.Log("lineFromPointToIntersection: " + lineFromPointToIntersection[0]);
 
             if (AnyIntersectionsBetweenLines(verticesIntersectionLine, containerPieceVertices, lineFromPointToIntersection, linesInPiece, -0.05f, 5))
             { // any intersections between line from point to intersection point and lines in container piece
@@ -298,13 +279,6 @@ public class MagneticTouchAlgorithm : MonoBehaviour
 
             if (AnyIntersectionsBetweenLineAndVertices(verticesIntersectionLine, containerPieceVertices, lineFromPointToIntersection[0]))
             { // any intersections between line from point to intersection point and vertices in container piece
-              // Debug.Log("AnyIntersectionsBetweenPoints: false");
-              // Debug.Log("vertexToCheck: " + vertexToCheck);
-              // Debug.Log("index of containerpiece vertice: " + i);
-              // Debug.Log("vertex1InLine: " + vertex1InLine);
-              // Debug.Log("vertex2InLine: " + vertex2InLine);
-              // Debug.Log("projectionOntoLine: " + projectionOntoLine);
-              // Debug.Log("intersectionWithLine: " + intersectionWithLine);
                 continue;
             }
 
@@ -373,10 +347,6 @@ public class MagneticTouchAlgorithm : MonoBehaviour
                 if (RoundToXDecimals(verticesLineSegment1[0].x, 1) == RoundToXDecimals(vertex.x, 1))
                 {
                     Debug.Log("Intersection between line and vertice. Vertical line.");
-                    // Debug.Log("verticesLine: " + verticesLineSegment1[0]);
-                    // Debug.Log("verticesLine: " + verticesLineSegment1[1]);
-                    // Debug.Log("verticesPiece: " + verticesPiece[idx]);
-                    // Debug.Log("verticesPiece: " + verticesPiece[GetWrappingIndex(idx + 1, verticesPiece.Length)]);
                     return true;
                 }
             }
@@ -385,18 +355,9 @@ public class MagneticTouchAlgorithm : MonoBehaviour
             var difference = Mathf.Abs(vertex.y - yValueForXOnLine);
             var intersection = difference < precision;
 
-            // Debug.Log("yValueForXOnLine: " + yValueForXOnLine);
-            // Debug.Log("difference: " + difference);
-            // Debug.Log("intersection: " + intersection);
-
-
             if (intersection)
             {
                 Debug.Log("Intersection between line and vertice.");
-                // Debug.Log("verticesLine: " + verticesLineSegment1[0]);
-                // Debug.Log("verticesLine: " + verticesLineSegment1[1]);
-                // Debug.Log("verticesPiece: " + verticesPiece[idx]);
-                // Debug.Log("verticesPiece: " + verticesPiece[GetWrappingIndex(idx + 1, verticesPiece.Length)]);
                 return true;
             }
 
@@ -502,14 +463,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
 
         var linesInPiece = GetLinesInPiece(pieceVertices);
         var linesInBorder = GetLinesInPiece(cornerVertices);
-
-        // Removed this check because they always intersect in current implementation. It's not that important either.
-        // if (AnyIntersectionsBetweenLines(pieceVertices, cornerVertices, linesInPiece, linesInBorder, precision: 0.075f))
-        // {
-        //     Debug.Log("Piece overlaps with border.");
-        //     return;
-        // }
-
+        
         TranslateAndRotatePiece(selectedPiece, displacement, rotation, indexOfVertexToSnapToCorner);
     }
 

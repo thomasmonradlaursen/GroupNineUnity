@@ -31,27 +31,26 @@ public class SnowflakeAlgorithm : MonoBehaviour
         //check angles and side lengths
         if (piecesWithIdenticalArea.Count != 0)
         {
-            //Debug.Log("Number of pairs with identical areas: " + piecesWithIdenticalArea.Count);
-
             while (piecesWithIdenticalArea.Count != 0)
             {
                 if (DetermineSnowflakeismRoundTwo(piecesWithIdenticalArea[0]) == false)
                 {
                     piecesWithIdenticalArea.Remove(piecesWithIdenticalArea[0]);
-                    //Debug.Log("removed a pair of pieces, pairs left to compare: " + piecesWithIdenticalArea.Count);
                 }
                 else
                 {
-                    //Debug.Log("Pieces " + piecesWithIdenticalArea[0] + " have identical sideslengths or angles");
                     break;
                 }
             }
         }
         //output result of snowflakeism
-        if(piecesWithIdenticalArea.Count != 0){
+        if (piecesWithIdenticalArea.Count != 0)
+        {
             Debug.Log("This puzzle contains identical pieces");
             return false;
-        }else{
+        }
+        else
+        {
             Debug.Log("This puzzle has unique pieces");
             return true;
         }
@@ -65,55 +64,56 @@ public class SnowflakeAlgorithm : MonoBehaviour
         }
     }
 
-    bool DetermineSnowflakeismByAnglesAndSides(Vector2 piecesToCompare)          //return true if identical
+    bool DetermineSnowflakeismByAnglesAndSides(Vector2 piecesToCompare) // return true if identical
     {
         bool areIdentical = true;
-        float[] sidesA = lengthsOfPieces[(int) piecesToCompare[0]];
-        float[] sidesB = lengthsOfPieces[(int) piecesToCompare[1]];
+        float[] sidesA = lengthsOfPieces[(int)piecesToCompare[0]];
+        float[] sidesB = lengthsOfPieces[(int)piecesToCompare[1]];
 
-        float[] anglesA = anglesOfPieces[(int) piecesToCompare[0]];
-        float[] anglesB = anglesOfPieces[(int) piecesToCompare[1]];
+        float[] anglesA = anglesOfPieces[(int)piecesToCompare[0]];
+        float[] anglesB = anglesOfPieces[(int)piecesToCompare[1]];
 
         List<int> indicesOfIdenticalAnglesInA = new List<int>();
         int numberOfIdenticalAnglesInA = 0; int n = 0;
-        foreach(float angle in anglesA){
-            if(angle > anglesA[0]-0.01 && angle < anglesA[0]+0.01){
+        foreach (float angle in anglesA)
+        {
+            if (angle > anglesA[0] - 0.01 && angle < anglesA[0] + 0.01)
+            {
                 numberOfIdenticalAnglesInA++;
                 indicesOfIdenticalAnglesInA.Add(n);
                 n++;
             }
         }
-        /*
-        foreach(float side in sidesA){
-            Debug.Log("A: side "+n+": "+side);
-        }
-        foreach(float side in sidesB){
-            Debug.Log("B: side "+n+": "+side);
-        }
-        */
         int index = 0;
-        while(index < numberOfIdenticalAnglesInA){
+        while (index < numberOfIdenticalAnglesInA)
+        {
             bool collision = false;
             int collisionPoint = indicesOfIdenticalAnglesInA[index];
             float[] anglesAtemp = alignArray(anglesA, index);
             float[] sidesAtemp = alignArray(sidesA, index);
 
-            for(int j = 0; j<anglesB.Length; j++){      //aligning arrays, start
-                if(anglesAtemp[0] == anglesB[j]){
+            for (int j = 0; j < anglesB.Length; j++)
+            { // aligning arrays, start
+                if (anglesAtemp[0] == anglesB[j])
+                {
                     collision = true;
                     collisionPoint = j;
                     break;
                 }
             }
-            
-            if(collision == true){
+
+            if (collision == true)
+            {
                 sidesB = alignArray(sidesB, collisionPoint);
                 anglesB = alignArray(anglesB, collisionPoint);
                 collision = true;
                 int counter;
-                if(anglesA.Length <= anglesB.Length){
+                if (anglesA.Length <= anglesB.Length)
+                {
                     counter = anglesA.Length;
-                }else{
+                }
+                else
+                {
                     counter = anglesB.Length;
                     float[] tempAngle = anglesA;
                     float[] tempSide = sidesA;
@@ -125,58 +125,69 @@ public class SnowflakeAlgorithm : MonoBehaviour
 
                 float carryA = 0; float carryB = 0;
                 int i = 0; int j = 0;
-                while(i < counter && areIdentical == true){
-                    if(anglesA[i] == (int) 180 && anglesB[j] != (int) 180){
+                while (i < counter && areIdentical == true)
+                {
+                    if (anglesA[i] == (int)180 && anglesB[j] != (int)180)
+                    {
                         carryA += sidesA[i];
                         Debug.Log("Caught 180 angle in A");
                         i++;
                     }
-                    if(anglesB[j] == (int) 180 && anglesA[i] != (int) 180){
+                    if (anglesB[j] == (int)180 && anglesA[i] != (int)180)
+                    {
                         carryB += sidesB[j];
                         Debug.Log("Caught 180 angle in B");
                         j++;
                     }
-                    if( (anglesA[i] != anglesB[j] || carryA != carryB) && anglesA[i] != (int) 180 && anglesB[j] != (int) 180 ){
-                        
-                        Debug.Log("Piece A, angle "+i+": "+anglesA[i]);
-                        Debug.Log("Piece B, angle "+j+": "+anglesB[j]);
-                        Debug.Log("carryA: "+ carryA);
-                        Debug.Log("carryB: "+ carryB);
-                        
+                    if ((anglesA[i] != anglesB[j] || carryA != carryB) && anglesA[i] != (int)180 && anglesB[j] != (int)180)
+                    {
+
+                        Debug.Log("Piece A, angle " + i + ": " + anglesA[i]);
+                        Debug.Log("Piece B, angle " + j + ": " + anglesB[j]);
+                        Debug.Log("carryA: " + carryA);
+                        Debug.Log("carryB: " + carryB);
+
                         collision = false;
                         areIdentical = false;
                     }
-                
+
                     carryA += sidesA[i];
                     carryB += sidesB[j];
                     j++;
                     i++;
-                } 
-                if(j < anglesB.Length && areIdentical == true){     //if we're not through the second angle array when the first is empty
-                    while(j<anglesB.Length){    //we need to check if the remaining angles are all 180. 
-                        if(anglesB[j] != 180){
+                }
+                if (j < anglesB.Length && areIdentical == true)
+                {     //if we're not through the second angle array when the first is empty
+                    while (j < anglesB.Length)
+                    {    //we need to check if the remaining angles are all 180. 
+                        if (anglesB[j] != 180)
+                        {
                             areIdentical = false;
                         }
                         j++;
                     }
-                }else{
-                areIdentical = false;
                 }
-            } 
+                else
+                {
+                    areIdentical = false;
+                }
+            }
         }    //end of outer loop
         return areIdentical;
     }
 
-    bool DetermineSnowflakeismRoundTwo(Vector2 piecesToCompare){
+    bool DetermineSnowflakeismRoundTwo(Vector2 piecesToCompare)
+    {
         bool areIdentical = false;
-        float[] sidesA = lengthsOfPieces[(int) piecesToCompare[0]];
-        float[] sidesB = lengthsOfPieces[(int) piecesToCompare[1]];
+        float[] sidesA = lengthsOfPieces[(int)piecesToCompare[0]];
+        float[] sidesB = lengthsOfPieces[(int)piecesToCompare[1]];
 
-        float[] anglesA = anglesOfPieces[(int) piecesToCompare[0]];
-        float[] anglesB = anglesOfPieces[(int) piecesToCompare[1]];
-        
+        float[] anglesA = anglesOfPieces[(int)piecesToCompare[0]];
+        float[] anglesB = anglesOfPieces[(int)piecesToCompare[1]];
+
         //make sure A represents the "larger" piece
-        if(anglesA.Length > anglesB.Length){
+        if (anglesA.Length > anglesB.Length)
+        {
             float[] temp = anglesA;
             anglesA = anglesB;
             anglesB = temp;
@@ -188,42 +199,40 @@ public class SnowflakeAlgorithm : MonoBehaviour
         //find all angles in A that match the first angle in A. 
         List<int> indicesOfIdenticalAnglesInA = new List<int>();
         int numberOfIdenticalAnglesInA = 0; int n = 0;
-        foreach(float angle in anglesA){
-            if(angle > anglesA[0]-0.01 && angle < anglesA[0]+0.01){
+        foreach (float angle in anglesA)
+        {
+            if (angle > anglesA[0] - 0.01 && angle < anglesA[0] + 0.01)
+            {
                 numberOfIdenticalAnglesInA++;
                 indicesOfIdenticalAnglesInA.Add(n);
             }
             n++;
         }
-        while(indicesOfIdenticalAnglesInA.Count > 0){
+        while (indicesOfIdenticalAnglesInA.Count > 0)
+        {
             float[] tempAngles = anglesA;
             float[] tempSides = sidesA;
             tempAngles = alignArray(anglesA, indicesOfIdenticalAnglesInA[0]);
             tempSides = alignArray(sidesA, indicesOfIdenticalAnglesInA[0]);
-            /*
-            Debug.Log("SIDES IN A:");
-            foreach(float side in tempSides){
-                Debug.Log(side+"; ");
-            }
-            Debug.Log("SIDES IN B:");
-            foreach(float side in sidesB){
-                Debug.Log(side+"; ");
-            }
-            */
             if (IdenticalAnglesLists(tempAngles, anglesB, tempSides, sidesB))
             {
                 areIdentical = true; break;
-            }else{
+            }
+            else
+            {
                 indicesOfIdenticalAnglesInA.Remove(indicesOfIdenticalAnglesInA[0]);
             }
         }
         return areIdentical;
     }
 
-    float[] alignArray(float[] arrayToAlign, int newStart){
+    float[] alignArray(float[] arrayToAlign, int newStart)
+    {
         float[] aligned = new float[arrayToAlign.Length];
-        for(int i = 0; i < arrayToAlign.Length; i++){
-            if(newStart >= arrayToAlign.Length){
+        for (int i = 0; i < arrayToAlign.Length; i++)
+        {
+            if (newStart >= arrayToAlign.Length)
+            {
                 newStart = 0;
             }
             aligned[i] = arrayToAlign[newStart];
@@ -234,18 +243,16 @@ public class SnowflakeAlgorithm : MonoBehaviour
 
     bool IdenticalAnglesLists(float[] shortListAngles, float[] longListAngles, float[] shortListSides, float[] longListSides)
     {
-        float carryA =0; float carryB =0; 
+        float carryA = 0; float carryB = 0;
         int j = 0;
-        for(int i = 0; i<shortListAngles.Length; i++){
+        for (int i = 0; i < shortListAngles.Length; i++)
+        {
             //if angles are not identical
-            if(!(longListAngles[j] >= shortListAngles[i]-0.01 && longListAngles[j] <= shortListAngles[i]+0.01)){
-                //Debug.Log("angles not identical:");
-                //Debug.Log("A: "+shortListAngles[i]);
-                //Debug.Log("B: "+longListAngles[j]);
+            if (!(longListAngles[j] >= shortListAngles[i] - 0.01 && longListAngles[j] <= shortListAngles[i] + 0.01))
+            {
                 //if angleA is 180
                 if ((shortListAngles[i] <= 180.01 && shortListAngles[i] >= 179.99) && !(longListAngles[j] <= 180.01 && longListAngles[j] >= 179.99))
                 {
-                    //Debug.Log("caught 180 degree angle in A");
                     if (i != 0)
                     {
                         carryA = shortListSides[(shortListSides.Length - 1)];
@@ -259,7 +266,6 @@ public class SnowflakeAlgorithm : MonoBehaviour
                 //if angleB is 180
                 else if (!(shortListAngles[i] <= 180.01 && shortListAngles[i] >= 179.99) && (longListAngles[j] <= 180.01 && longListAngles[j] >= 179.99))
                 {
-                    //Debug.Log("caught 180 degree angle in B");
                     if (j != 0)
                     {
                         carryB = longListSides[(longListSides.Length - 1)];
@@ -269,25 +275,28 @@ public class SnowflakeAlgorithm : MonoBehaviour
                         carryB = longListSides[j - 1];
                     }
                     i--; continue;
-                } else{
-                    //Debug.Log("angles not identical and neither are 180");
+                }
+                else
+                {
                     return false;
                 }
             }
             //if angles are identical, check sides as well
             if ((longListAngles[j] >= shortListAngles[i] - 0.01 && longListAngles[j] <= shortListAngles[i] + 0.01))
             {
-                //Debug.Log("Found identical angles: (A, B) = " + "(" + shortListAngles[i] + ", " + longListAngles[j] + ")");
                 bool identicalSides = IdenticalSidesLists(shortListSides, longListSides, i, j, carryA, carryB);
-                if(!identicalSides){
+                if (!identicalSides)
+                {
                     return false;
-                } else{
+                }
+                else
+                {
                     carryA = 0;
                     carryB = 0;
                 }
             }
             j++;
-        }    
+        }
 
         //if we get to the end and the longList is still not through,
         //we need to check if the remaining angles are all 180. 
@@ -310,7 +319,8 @@ public class SnowflakeAlgorithm : MonoBehaviour
     {
         float sideA = shortList[i] + carryA;
         float sideB = longList[j] + carryB;
-        if(sideA >= sideB-0.01 && sideA <= sideB+0.01){
+        if (sideA >= sideB - 0.01 && sideA <= sideB + 0.01)
+        {
             return true;
         }
         return false;

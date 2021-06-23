@@ -67,9 +67,7 @@ public class FitCameraToPuzzle : MonoBehaviour
         var highestYValueTotal = highestYValueOfPieces > shape[2].coord.y ? highestYValueOfPieces : shape[2].coord.y;
 
         sceneHeight = (highestYValueTotal - lowestYValueTotal) * 1.3f;
-        // Debug.Log("height: " + sceneHeight);
         sceneWidth = (highestXValueTotal - lowestXValueTotal) * 1.3f;
-        // Debug.Log("width: " + sceneWidth);
 
         float unitsPerPixelWidth = sceneWidth / Screen.width;
         float unitsPerPixelHeight = sceneHeight / Screen.height;
@@ -78,13 +76,11 @@ public class FitCameraToPuzzle : MonoBehaviour
         {
             float desiredHalfHeight = 0.5f * unitsPerPixelWidth * Screen.height;
             _camera.orthographicSize = desiredHalfHeight;
-            // Debug.Log("width > height");
         }
         else
         {
             float desiredHalfHeight = 0.5f * unitsPerPixelHeight * Screen.height;
             _camera.orthographicSize = desiredHalfHeight;
-            // Debug.Log("height > width");
         }
 
         var newCameraPosition = new Vector3(newCenterOfBoardX, newCenterOfBoardY, -10);
