@@ -49,6 +49,7 @@ public class MagneticTouchCalculations
 
         return radiansToRotate;
     }
+    
     public static void TranslateAndRotatePiece(GameObject selectedPiece, Vector3 displacement, float rotationAngle, int indexOfVertexToRotateAbout)
     {
         Mesh selectedPieceMesh = selectedPiece.GetComponent<MeshFilter>().mesh;
@@ -126,14 +127,6 @@ public class MagneticTouchCalculations
         return ((minMaxX.Item1 - margin, minMaxX.Item2 + margin), (minMaxY.Item1 - margin, minMaxY.Item2 + margin));
     }
 
-    public static Vector3 CalculateRightAngledProjectionFromPointToLine(Vector3 vertexToCheck, Vector3 vertex1InLine, Vector3 vertex2InLine)
-    {
-        var line = vertex2InLine - vertex1InLine;
-        var translatedVertice = vertexToCheck - vertex1InLine;
-        var projection = (Vector3.Dot(line, translatedVertice) / Vector3.Dot(line, line)) * line;
-        return projection;
-    }
-
     //Item1 is slope, Item2 is intersection with Y-axis
     public static (float, float) CalculateConstantsForLineThroughTwoVertices(Vector3 vertex1, Vector3 vertex2)
     {
@@ -154,51 +147,24 @@ public class MagneticTouchCalculations
         return lineConstants;
     }
 
-    public static bool IsIntersectionPointInLineSegment(Vector3 intersectionPoint, Vector3 point1InLine, Vector3 point2InLine, int decimals, float precision)
+    public static bool IsPointInPiece(Vector3 vertexToCheck, Vector3[] vertices, int[] triangles)
     {
-        var result = IsValueInInterval(intersectionPoint.x, point1InLine.x, point2InLine.x, precision, decimals) || IsValueInInterval(intersectionPoint.x, point2InLine.x, point1InLine.x, precision, decimals);
-        return result;
-    }
-
-    public static bool IsPointOnInsideOfLine(Vector3 vertexToCheck, Vector3 intersectionPoint, Vector3 vertex1InLine, Vector3 vertex2InLine)
-    {
-
-        var diffOfYValuesForVertexAndPointOnLine = vertexToCheck.y - intersectionPoint.y;
-
-        var diffOfXValuesForPointsOnLine = vertex2InLine.x - vertex1InLine.x;
-        var diffOfYValuesForPointsOnLine = vertex2InLine.y - vertex1InLine.y;
-
-        if (RoundToXDecimals(diffOfYValuesForVertexAndPointOnLine, 2) == 0.00f)
-        { // point is on the line
-            return false;
-        }
-
-        if (diffOfXValuesForPointsOnLine > -0.05 && diffOfXValuesForPointsOnLine < 0.05
-            && (diffOfYValuesForPointsOnLine > 0.05 || diffOfYValuesForPointsOnLine < -0.05))
-        { // vertical line
-
-            if (diffOfYValuesForPointsOnLine > 0 && vertexToCheck.x - vertex1InLine.x < 0)
-            { // VertexToCheck is to the left of the line and therefore on the inside
+        for (int i = 0; i < triangles.Length; i += 3)
+        {
+            var p1 = vertices[triangles[i]];
+            var p2 = vertices[triangles[i + 1]];
+            var p3 = vertices[triangles[i + 2]];
+            if (PolygonTriangulation.IsPointInTriangle(p1, p2, p3, vertexToCheck, 0.05f))
+            {
+                Debug.Log("point is in triangle.");
+                Debug.Log("point: " + vertexToCheck);
+                Debug.Log("triangle: " + p1 + " " + p2 + " " + p3);
                 return true;
             }
-            if (diffOfYValuesForPointsOnLine < 0 && vertexToCheck.x - vertex1InLine.x > 0)
-            { // VertexToCheck is to the right of the line and therefore on the outside
-                return false;
-            }
         }
+        Debug.Log("point is NOT in triangle.");
 
-
-        bool yGreaterThanYOnLine = diffOfYValuesForVertexAndPointOnLine > 0;
-        bool positiveChangeInX = diffOfXValuesForPointsOnLine > 0;
-
-        if (positiveChangeInX && yGreaterThanYOnLine || !positiveChangeInX && !yGreaterThanYOnLine)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 
     // Formula from https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line under section "Line defined by two points"
