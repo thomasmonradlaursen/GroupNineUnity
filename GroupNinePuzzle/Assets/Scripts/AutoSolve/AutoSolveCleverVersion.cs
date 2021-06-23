@@ -8,7 +8,7 @@ public class AutoSolveCleverVersion : MonoBehaviour
     MiscellaneousMath mM = new MiscellaneousMath();
     JSONPuzzle puzzle; public List<GameObject> pieces;
     List<GameObject> potentialPieces = new List<GameObject>();
-    List<Triple> placedPieces = new List<Triple>();     //(row, col, piece)
+    List<Quadruple> placedPieces = new List<Quadruple>();     //(row, col, piece)
     List<Triple> testedPieces = new List<Triple>();
     float theta; int indexOfTheta;
     Vector3 upperLeftCorner; Vector3 upperRightCorner; Vector3 lowerRightCorner; Vector3 lowerLeftCorner;
@@ -33,7 +33,7 @@ public class AutoSolveCleverVersion : MonoBehaviour
 
 
         while(placedPieces.Count < numberOfPieces){  
-            Debug.Log("***************************");
+            Debug.Log("*********************************************************");
             bool changedRows = false;
             if(currentRow == 0 && currentColumn == 0){
                 FindPotentialPieces();
@@ -46,17 +46,18 @@ public class AutoSolveCleverVersion : MonoBehaviour
                 changedRows = CheckForRowChange();
                 FindPotentialPieces();
                 if(potentialPieces.Count == 0){
+                    Debug.Log("no potential pieces were found");
                     Backtrack();
-                }else{
-                    SetActivePiece();
                 }
+                SetActivePiece();
                 PlacePiece();
             }   
             Debug.Log("row and column: ("+currentRow+", "+currentColumn+")");
-            Debug.Log("Theta: "+theta);
-            Debug.Log("Found "+potentialPieces.Count+" potential pieces.");
+            //Debug.Log("currentPoint: "+currentPoint);
+            //Debug.Log("Theta: "+theta);
+            //Debug.Log("Found "+potentialPieces.Count+" potential pieces.");
             
-            bool overlap = OverLapsBoard(); bool backtracked = false;
+            bool overlap = OverLapsBoard(); 
             while(overlap == true){
                 Debug.Log("Overlaps board!");
                 Pair temp = activePiece.GetComponent<PieceInfo>().thetaAngles[0];
@@ -76,7 +77,7 @@ public class AutoSolveCleverVersion : MonoBehaviour
                     if(potentialPieces.Count > 0){
                         SetActivePiece();
                         PlacePiece();
-                        Debug.Log("Now testing piece "+activePiece.GetComponent<PieceInfo>().name);
+                        //Debug.Log("Now testing piece "+activePiece.GetComponent<PieceInfo>().name);
                         overlap = OverLapsBoard();
                     }else{
                         break;
@@ -85,9 +86,9 @@ public class AutoSolveCleverVersion : MonoBehaviour
                 
             }
             if(overlap == false){
-            placedPieces.Add(new Triple(currentRow, currentColumn, activePiece));
+            placedPieces.Add(new Quadruple(currentRow, currentColumn, currentPoint, activePiece));
             testedPieces.Add(new Triple(currentRow, currentColumn, activePiece));
-            Debug.Log("PLACED PIECE "+ activePiece.GetComponent<PieceInfo>().name);
+            Debug.Log("PLACED "+ activePiece.GetComponent<PieceInfo>().name);
             pieces.Remove(activePiece);
             updateCurrentPoint(changedRows);
             currentColumn++;
@@ -122,34 +123,33 @@ public class AutoSolveCleverVersion : MonoBehaviour
         activePiece.GetComponent<PieceInfo>().thetaAngles.Remove(temp);
     }
     void Backtrack(){   //we reach this point when potentialPieces is empty and nothing fits
-        Debug.Log("backtracking!");
+        Debug.Log("BACKTRACKING!");
         if(placedPieces.Count == 0){
             Debug.Log("THERE ARE NO SOLUTIONS TO THIS PUZZLE!");
         }else{
-            Triple pieceToRemove = placedPieces[placedPieces.Count-1];
-            int row = pieceToRemove.row;
-            int column = pieceToRemove.column;
+            Quadruple pieceToRemove = placedPieces[placedPieces.Count-1];
+            currentRow = pieceToRemove.row;
+            currentColumn = pieceToRemove.column;
             GameObject piece = pieceToRemove.piece;
-            
+            currentPoint = pieceToRemove.currentPoint;
+
             placedPieces.Remove(pieceToRemove);
             pieces.Add(piece);
             
-            currentRow = row;
-            currentColumn = column;
-            Debug.Log("Removed piece "+piece.GetComponent<PieceInfo>().name+" , current row and column: ("+currentRow+", "+currentColumn+")");
+            Debug.Log("Removed "+piece.GetComponent<PieceInfo>().name);
             if(placedPieces.Count == 0){
-                currentPoint = upperLeftCorner;
                 nextPoint = upperRightCorner;
                 theta = 90.0f;
+                FindPotentialPieces();
             }else{
                 activePiece = placedPieces[placedPieces.Count-1].piece;
-                updateCurrentPoint(false);
                 findNextPoint();
                 CalculateNextAngle();
+                FindPotentialPieces();
             }
-            Debug.Log("Bactracked and set the active piece to be: "+activePiece.GetComponent<PieceInfo>().name);
-            Debug.Log("alos, cp is now "+currentPoint);
-            Debug.Log("and, next angle is "+theta);
+            //Debug.Log("Bactracked and set the active piece to be: "+activePiece.GetComponent<PieceInfo>().name);
+            //Debug.Log("also, cp is now "+currentPoint);
+            //Debug.Log("and, next angle is "+theta);
             
         }
         
@@ -323,21 +323,23 @@ public class AutoSolveCleverVersion : MonoBehaviour
             }
         }
         //remove previously tested pieces if all their angles have already been tried
-        for(int i = 0; i < testedPieces.Count; i++){
-            for(int j = 0; j < potentialPieces.Count; j++){
-                if(potentialPieces[j].GetComponent<PieceInfo>().name == testedPieces[i].piece.GetComponent<PieceInfo>().name
-                    && testedPieces[i].row ==currentRow 
-                    && testedPieces[i].column == currentColumn){
+        /*
+        foreach(GameObject potPiece in potentialPieces){
+            for(int i = 0; i < testedPieces.Count; i++){
+                if(potPiece.GetComponent<PieceInfo>().name == testedPieces[i].piece.GetComponent<PieceInfo>().name
+                    && testedPieces[i].row == currentRow 
+                    && testedPieces[i].column == currentColumn)
+                {
                         if(testedPieces[i].piece.GetComponent<PieceInfo>().thetaAngles.Count == 0){
-                            potentialPieces.Remove(potentialPieces[j]);
+                            potentialPieces.Remove(potPiece);
                         }else{
-                            potentialPieces.Remove(potentialPieces[j]);
-                            potentialPieces.Add(testedPieces[j].piece);
+                            potPiece.GetComponent<PieceInfo>().thetaAngles = testedPieces[i].piece.GetComponent<PieceInfo>().thetaAngles;
                         }
                     
                 }
             }
         }
+        */
     }
     List<Pair> ThetaAnglesInPiece(GameObject piece){
         
@@ -403,7 +405,7 @@ public class AutoSolveCleverVersion : MonoBehaviour
 
         }else{
             GameObject pieceAbove = new GameObject(); 
-            foreach(Triple trip in placedPieces){
+            foreach(Quadruple trip in placedPieces){
                 if(trip.row == currentRow-1 && trip.column == currentColumn){
                     pieceAbove = trip.piece;
                     //Debug.Log("found piece "+trip.piece.GetComponent<PieceInfo>().name +" above at: ("+trip.row+", "+trip.column+")");
@@ -434,8 +436,7 @@ public class AutoSolveCleverVersion : MonoBehaviour
             currentPoint = temp;
             //Debug.Log("CURRENT POINT: "+currentPoint);
         }
-    }
-    
+    }   
     void findNextPoint(){
         if(currentRow == 0){                                //case: first row
             nextPoint = upperRightCorner;
@@ -493,7 +494,6 @@ public class AutoSolveCleverVersion : MonoBehaviour
             }
         }
     }
-
      Vector3[] CentralizeVertices(Vector3 centroid, Vector3[] originalVertices)
     {
         for (int index = 0; index < originalVertices.Length; index++)
@@ -517,6 +517,18 @@ public class AutoSolveCleverVersion : MonoBehaviour
 }
 
 
+public class Quadruple {
+    public int row;
+    public int column;
+    public Vector3 currentPoint;
+    public GameObject piece;
+    public Quadruple(int row, int column, Vector3 currentPoint, GameObject piece){
+        this.row = row;
+        this.column = column;
+        this.currentPoint = currentPoint;
+        this.piece = piece;
+    }
+}
 public class Triple {
     public int row;
     public int column;
