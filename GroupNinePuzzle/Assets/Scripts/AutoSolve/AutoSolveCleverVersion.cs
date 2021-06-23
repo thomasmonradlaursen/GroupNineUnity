@@ -35,6 +35,7 @@ public class AutoSolveCleverVersion : MonoBehaviour
 
         while(placedPieces.Count < numberOfPieces){  
             Debug.Log("*********************************************************");
+            Debug.Log("row and column: ("+currentRow+", "+currentColumn+")");
             bool changedRows = false;
             if(currentRow == 0 && currentColumn == 0){
                 FindPotentialPieces();
@@ -46,6 +47,7 @@ public class AutoSolveCleverVersion : MonoBehaviour
             }else{
                 changedRows = CheckForRowChange();
                 FindPotentialPieces();
+                Debug.Log("number of potential pieces: "+potentialPieces.Count);
                 if(potentialPieces.Count == 0){
                     Debug.Log("no potential pieces were found");
                     Backtrack();
@@ -53,7 +55,7 @@ public class AutoSolveCleverVersion : MonoBehaviour
                 SetActivePiece();
                 PlacePiece();
             }   
-            Debug.Log("row and column: ("+currentRow+", "+currentColumn+")");
+            
             //Debug.Log("currentPoint: "+currentPoint);
             //Debug.Log("Theta: "+theta);
             //Debug.Log("Found "+potentialPieces.Count+" potential pieces.");
@@ -89,7 +91,6 @@ public class AutoSolveCleverVersion : MonoBehaviour
                         break;
                     }
                 }
-                
             }
             if(overlap == false){
             placedPieces.Add(new Quadruple(currentRow, currentColumn, currentPoint, activePiece));
@@ -139,6 +140,7 @@ public class AutoSolveCleverVersion : MonoBehaviour
             currentPoint = pieceToRemove.currentPoint;
 
             placedPieces.Remove(pieceToRemove);
+            AutoTranslate(lowerLeftCorner);
             pieces.Add(piece);
             
             Debug.Log("Removed "+piece.GetComponent<PieceInfo>().name);
@@ -151,11 +153,14 @@ public class AutoSolveCleverVersion : MonoBehaviour
                 findNextPoint();
                 CalculateNextAngle();
                 FindPotentialPieces();
+                Debug.Log("upon backtracking "+potentialPieces.Count+" potential pieces were found");
+                if(potentialPieces.Count == 0){
+                    Backtrack();
+                }
             }
             //Debug.Log("Bactracked and set the active piece to be: "+activePiece.GetComponent<PieceInfo>().name);
             //Debug.Log("also, cp is now "+currentPoint);
             //Debug.Log("and, next angle is "+theta);
-            
         }
         
     }
@@ -226,6 +231,7 @@ public class AutoSolveCleverVersion : MonoBehaviour
         
         AutoRotate(rotationAngle);
     }
+    
     void AutoTranslate(Vector3 displacement){
         Mesh meshForActivePiece = activePiece.GetComponent<MeshFilter>().mesh;
         LineRenderer lineRenderer = activePiece.GetComponent<LineRenderer>();
@@ -333,6 +339,7 @@ public class AutoSolveCleverVersion : MonoBehaviour
                     && testedPieces[j].row ==currentRow 
                     && testedPieces[j].column == currentColumn){
                     potentialPieces.Remove(potentialPieces[i]);
+                    i--;
                 }
             }
         }
