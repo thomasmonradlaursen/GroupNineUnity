@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using JSONPuzzleTypes;
 
-public class AutoSolve : MonoBehaviour
+public class AutoSolve: MonoBehaviour
 {
     MiscellaneousMath mM = new MiscellaneousMath();
     JSONPuzzle puzzle; public List<GameObject> pieces;
@@ -16,7 +16,7 @@ public class AutoSolve : MonoBehaviour
     
     void FixedUpdate()
     {
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.E))
         {
             AutoSolveAlt();
         }
@@ -25,64 +25,60 @@ public class AutoSolve : MonoBehaviour
         puzzle = GetComponentInParent<PuzzleModel>().puzzle;
         pieces = GetComponentInParent<PuzzleModel>().pieces;
         FindCorners();
-        
+        /*
+        Debug.Log("lower left corner: "+ lowerLeftCorner);
+        Debug.Log("Upper left corner: "+ upperLeftCorner);
+        Debug.Log("Upper right corner: "+ upperRightCorner);
+        Debug.Log("lower right corner: "+ lowerRightCorner);
+        */
         currentPoint = upperLeftCorner;     //we start in the upper left corner of the board
         nextPoint = upperRightCorner;       //and move right
         currentRow = 0; currentColumn = 0; theta = 90.0f; indexOfTheta = 0;     //starting theta is always 90 degrees
         int numberOfPieces = pieces.Count;
 
-
-        while(placedPieces.Count < numberOfPieces){  
+        while(placedPieces.Count < numberOfPieces){     
             Debug.Log("***************************");
             bool changedRows = false;
-            if(currentRow == 0 && currentColumn == 0){
-                FindPotentialPieces();
-                SetActivePiece();           //thetaangles in piece are calculated here
-                PlacePiece();
-            }else{
-                changedRows = CheckForRowChange();
-                FindPotentialPieces();
-                SetActivePiece();
-                PlacePiece();
-            }   
+            changedRows = CheckForRowChange();
             Debug.Log("row and column: ("+currentRow+", "+currentColumn+")");
             Debug.Log("Theta: "+theta);
             Debug.Log("Index of Theta: "+indexOfTheta);
+            FindPotentialPieces();
             Debug.Log("Found "+potentialPieces.Count+" potential pieces.");
-            
+            SetActivePiece();
+            PlacePiece();
+
             bool overlap = OverLapsBoard();
-            while(overlap == true){
+            while(overlap == true && activePiece.GetComponent<PieceInfo>().thetaAngles.Count > 0){
                 Debug.Log("Overlaps board!");
                 Pair temp = activePiece.GetComponent<PieceInfo>().thetaAngles[0];
                 activePiece.GetComponent<PieceInfo>().thetaAngles.Remove(temp);
-                //if piece holds more angles matching theta
-                //we test the next angle
-                if(activePiece.GetComponent<PieceInfo>().thetaAngles.Count > 0){   
-                    indexOfTheta = activePiece.GetComponent<PieceInfo>().thetaAngles[0].index;     
-                    PlacePiece();
-                    overlap = OverLapsBoard();
-                    continue;
-                //if the piece only had one theta angle
-                //we'll remove this piece as the active and move on to other potential pieces
-                }else{
-                    potentialPieces.Remove(activePiece);
-                    testedPieces.Add(new Triple(currentRow, currentColumn, activePiece));
-                    if(potentialPieces.Count > 0){
-                        SetActivePiece();
-                        PlacePiece();
-                        overlap = OverLapsBoard();
-                        continue;
-                    }else{
-                        Backtrack();
-                    }
-                }
-                
+                indexOfTheta = activePiece.GetComponent<PieceInfo>().thetaAngles[0].index;
+                PlacePiece();
+                overlap = OverLapsBoard();
             }
-           
-            placedPieces.Add(new Triple(currentRow, currentColumn, activePiece));
-            Debug.Log("PLACED PIECE "+ activePiece.GetComponent<PieceInfo>().name);
-            pieces.Remove(activePiece);
-            updateCurrentPoint(changedRows);
+            if(OverLapsBoard() == false){
+                testedPieces.Add(new Triple(currentRow, currentColumn, activePiece));
+                placedPieces.Add(new Triple(currentRow, currentColumn, activePiece));
+                Debug.Log("index of Theta: "+indexOfTheta);
+                Debug.Log("PLACED PIECE "+ activePiece.GetComponent<PieceInfo>().name);
+                pieces.Remove(activePiece);
+                potentialPieces.Remove(activePiece);
+                updateCurrentPoint(changedRows);
+                //check to see if we're at the end of a row
+                if(!(currentPoint.x >= upperRightCorner.x-0.01 && currentPoint.x <= upperRightCorner.x+0.01)){
+                    //Debug.Log("currentPoint: "+currentPoint+", upperRightCorner: "+upperRightCorner);
+                    currentColumn++;
+                    findNextPoint();
+                    CalculateNextAngle();
+                }
+            } else {
+                testedPieces.Add(new Triple(currentRow, currentColumn, activePiece));
+                potentialPieces.Remove(activePiece);
+                if(potentialPieces.Count == 0){
+                    Backtrack();
+                } 
+            }
         }
     }
     bool CheckForRowChange(){
@@ -98,15 +94,14 @@ public class AutoSolve : MonoBehaviour
                 //Debug.Log("Theta updated to be: "+theta + " by rowChange");
             return true;
         } else {
-            findNextPoint();
-            CalculateNextAngle();
             return false;
         }
     }
     void SetActivePiece(){
         activePiece = potentialPieces[0];
+        activePiece.GetComponent<PieceInfo>().thetaAngles = ThetaAnglesInPiece();
         Pair temp = activePiece.GetComponent<PieceInfo>().thetaAngles[0];
-        indexOfTheta = temp.index;
+        indexOfTheta = activePiece.GetComponent<PieceInfo>().thetaAngles[0].index;
         activePiece.GetComponent<PieceInfo>().thetaAngles.Remove(temp);
     }
     void Backtrack(){   //we reach this point when potentialPieces is empty and nothing fits
@@ -173,6 +168,7 @@ public class AutoSolve : MonoBehaviour
     }
     void PlacePiece(){
         Vector3 displacement = activePiece.GetComponent<MeshFilter>().mesh.vertices[indexOfTheta]-currentPoint;
+        //Debug.Log("Vertex of theta: "+ potentialPieces[0].GetComponent<MeshFilter>().mesh.vertices[indexOfTheta]);
         AutoTranslate(displacement);
         
         Vector3 pointToBeAligned;
@@ -183,6 +179,16 @@ public class AutoSolve : MonoBehaviour
         }
         float rotationAngle = CalculateRotationAngle(pointToBeAligned);
         
+        //Debug.Log("pointToBeAligned: " + pointToBeAligned);
+        /*
+        Debug.Log("nextPoint: " + nextPoint);
+        Debug.Log("currentPoint: " + currentPoint);
+        Debug.Log("rotationAngle, radians: " + rotationAngle+ " rotationAngle, degrees: "+(rotationAngle*180)/Mathf.PI);
+        
+        foreach(Vector3 ver in selectedPiece.GetComponent<MeshFilter>().mesh.vertices){
+            Debug.Log(ver);
+        }
+        */
         AutoRotate(rotationAngle);
     }
     void AutoTranslate(Vector3 displacement){
@@ -206,20 +212,36 @@ public class AutoSolve : MonoBehaviour
         //Debug.Log("centroid: "+ selectedPiece.GetComponent<PieceInfo>().centroid);
     }
     float CalculateRotationAngle(Vector3 pointToBeAligned){
-
+        /*
+        float angle = Vector3.SignedAngle(pointToBeAligned-currentPoint, nextPoint-currentPoint, Vector3.up);
+        Debug.Log("angle before checking sign: "+angle);
+        if(pointToBeAligned.y > currentPoint.y){
+            angle = angle*(-1);
+        }
+        */
         Vector2 vec1 = new Vector2(pointToBeAligned.x-currentPoint.x, pointToBeAligned.y-currentPoint.y);
         Vector2 vec2 = new Vector2(nextPoint.x-currentPoint.x, nextPoint.y-currentPoint.y);
         float angle = Vector2.SignedAngle(vec1, vec2);
+        Debug.Log("*************************************************************************************");
+        Debug.Log("rotation angle degrees: "+angle+"  radians: "+(Mathf.PI*angle/180.0f));
         return (Mathf.PI*angle)/180.0f;
     }
     void AutoRotate(float rotationAngle){
         Mesh meshForActivePiece = activePiece.GetComponent<MeshFilter>().mesh;
+        /*
+        Debug.Log("Input mesh for rotation ************************************")
+        foreach(Vector3 ver in meshForActivePiece.vertices){
+            Debug.Log(ver);
+        }
+        */
         LineRenderer lineRenderer = activePiece.GetComponent<LineRenderer>();
         
         Vector3[] rotatedVertices = new Vector3[meshForActivePiece.vertices.Length];
         Vector3[] originalVertices = meshForActivePiece.vertices;
         
         float area = mM.CalculateAreaFromMesh(meshForActivePiece);
+        //Vector3 centroid = mM.CalculateCentroid(meshForActivePiece.vertices, area);
+        //Debug.Log("centroid: "+ centroid);
         
         originalVertices = CentralizeVertices(currentPoint, originalVertices);
         for (int index = 0; index < originalVertices.Length; index++)
@@ -227,12 +249,27 @@ public class AutoSolve : MonoBehaviour
             rotatedVertices[index].x = originalVertices[index].x * Mathf.Cos(rotationAngle) - originalVertices[index].y * Mathf.Sin(rotationAngle);
             rotatedVertices[index].y = originalVertices[index].x * Mathf.Sin(rotationAngle) + originalVertices[index].y * Mathf.Cos(rotationAngle);
         }
+        //rotatedVertices = RestorePositionOfVertices(activePiece.GetComponent<PieceInfo>().centroid, rotatedVertices);
         rotatedVertices = RestorePositionOfVertices(currentPoint, rotatedVertices);
-
+        /*
+        Debug.Log("ouput mesh after rotation ************************************");
+        foreach(Vector3 ver in rotatedVertices){
+            Debug.Log(ver);
+        }
+        */
         activePiece.GetComponent<MeshFilter>().mesh.SetVertices(rotatedVertices);
         lineRenderer.SetPositions(rotatedVertices);
         activePiece.GetComponent<MeshCollider>().sharedMesh = activePiece.GetComponent<MeshFilter>().mesh;     
         activePiece.GetComponent<PieceInfo>().vertices = rotatedVertices;
+    }
+    void UpdateIndexOfTheta(int n){
+        while(n < activePiece.GetComponent<PieceInfo>().angles.Length){
+            if(activePiece.GetComponent<PieceInfo>().angles[n] == theta){
+                indexOfTheta = n;
+                break;
+            }
+            n++;
+        }
     }
     void CalculateNextAngle(){
         
@@ -280,36 +317,28 @@ public class AutoSolve : MonoBehaviour
             float[] angles = testPiece.GetComponent<PieceInfo>().angles;
             foreach(float angle in angles){
                 if(angle <= theta+0.01 && angle >= theta-0.01){
-                    testPiece.GetComponent<PieceInfo>().thetaAngles = ThetaAnglesInPiece(testPiece);
                     potentialPieces.Add(testPiece);
                     break;
                 }
             }
         }
-        //remove previously tested pieces if all their angles have already been tried
+        //remove previously tested pieces
         for(int i = 0; i < testedPieces.Count; i++){
             for(int j = 0; j < potentialPieces.Count; j++){
                 if(potentialPieces[j] == testedPieces[i].piece
                     && testedPieces[i].row ==currentRow 
                     && testedPieces[i].column == currentColumn){
-                        if(testedPieces[i].piece.GetComponent<PieceInfo>().thetaAngles.Count == 0){
-                            potentialPieces.Remove(potentialPieces[j]);
-                        }else{
-                            potentialPieces.Remove(potentialPieces[j]);
-                            potentialPieces.Add(testedPieces[j].piece);
-                        }
-                    
+                    potentialPieces.Remove(potentialPieces[j]);
                 }
             }
         }
     }
-    List<Pair> ThetaAnglesInPiece(GameObject piece){
-        
+    List<Pair> ThetaAnglesInPiece(){
         List<Pair> thetaAngleVertices = new List<Pair>();
         int n = 0;
-        foreach(float angle in piece.GetComponent<PieceInfo>().angles){
+        foreach(float angle in activePiece.GetComponent<PieceInfo>().angles){
             if(angle >= theta-0.01 && angle <= theta+0.01){
-                thetaAngleVertices.Add(new Pair(n, piece.GetComponent<MeshFilter>().mesh.vertices[n]));
+                thetaAngleVertices.Add(new Pair(n, activePiece.GetComponent<MeshFilter>().mesh.vertices[n]));
             }
             n++;
         }
@@ -457,6 +486,68 @@ public class AutoSolve : MonoBehaviour
             }
         }
     }
+    
+    void findNextPointAlt(){
+        if(currentRow == 0){                                //case: first row
+            nextPoint = upperRightCorner;
+        }else if(currentColumn != 0){                       //case: middle or end of a row
+            GameObject nextPieceAbove = new GameObject();
+            bool atEndOfRow = true;
+            for(int i = 0; i < placedPieces.Count; i++){
+                if(placedPieces[i].row == currentRow-1 && placedPieces[i].column == (currentColumn)){
+                    //Debug.Log("CURRENT col: "+ currentColumn);
+                    nextPieceAbove = placedPieces[i].piece;
+                    atEndOfRow = false;
+                    //Debug.Log("nextPieceAbove, name: "+placedPieces[i].piece.GetComponent<PieceInfo>().name + ", row and column: ("+placedPieces[i].row+", "+placedPieces[i].column+")");
+                    break;
+                }
+            }
+            if(atEndOfRow == false){
+                Vector3[] vertices = nextPieceAbove.GetComponent<MeshFilter>().mesh.vertices;
+                int index = 0;
+                foreach(Vector3 vertex in vertices){
+                    if(vertex == currentPoint){
+                        break;
+                    }
+                    index++;
+                }
+                if(index < vertices.Length-1){
+                    nextPoint = vertices[index+1];
+                }else{
+                    nextPoint = vertices[0];
+                }
+            }
+            
+        }else if(currentColumn == 0){                       //case: start of new row
+            GameObject pieceAbove = new GameObject();
+            for(int i = 0; i < placedPieces.Count; i++){
+                if(placedPieces[i].row == currentRow-1 && placedPieces[i].column == currentColumn){     //bug here! probably
+                    pieceAbove = placedPieces[i].piece;
+                    break;
+                }
+            }
+            Vector3[] vertices = pieceAbove.GetComponent<MeshFilter>().mesh.vertices;
+            Vector3 llc = vertices[0];
+            int n = 0; int index = 0;
+            while(n < vertices.Length){
+                if(llc.x > vertices[n].x-0.01){
+                    llc = vertices[n];
+                    index = n;
+                }
+                if(llc.x >= vertices[n].x-0.01 && llc.y > vertices[n].y-0.01){
+                    llc = vertices[n];
+                    index = n;
+                }
+                n++;
+            }
+            currentPoint = llc;
+            if(index < vertices.Length-1){
+                nextPoint = vertices[index+1];
+            }else{
+                nextPoint = vertices[0];
+            }
+        }
+    }
 
      Vector3[] CentralizeVertices(Vector3 centroid, Vector3[] originalVertices)
     {
@@ -480,7 +571,7 @@ public class AutoSolve : MonoBehaviour
 
 }
 
-
+/*
 public class Triple {
     public int row;
     public int column;
@@ -500,3 +591,4 @@ public class Pair {
         this.vertex = vertex;
     }
 }
+*/
