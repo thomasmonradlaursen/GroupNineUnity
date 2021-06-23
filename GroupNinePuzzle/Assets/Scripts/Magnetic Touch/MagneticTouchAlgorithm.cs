@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static MagneticTouchCalculations;
 
 public class MagneticTouchAlgorithm : MonoBehaviour
 {
@@ -10,7 +11,6 @@ public class MagneticTouchAlgorithm : MonoBehaviour
     private Vector3 upperLeftCorner;
     private Vector3 lowerRightCorner;
     private Vector3 upperRightCorner;
-    private float margin = 0.175f;
 
     public (GameObject, List<GameObject>) possibleSnaps = (null, new List<GameObject>()); // Item1 is selected piece and Item 2 is a list of pieces that might be possible to snap to
 
@@ -22,6 +22,10 @@ public class MagneticTouchAlgorithm : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.S)) // Snap to other piece
         {
+            if (pieces.Count == 0)
+            {
+                pieces = GetComponentInParent<PuzzleModel>().pieces;
+            }
             FindCandidatesForSnap(GetComponentInParent<PuzzleModel>().selectedObject);
             // LogPossibleSnaps();
             if (possibleSnaps.Item2.Count > 0)
@@ -40,88 +44,59 @@ public class MagneticTouchAlgorithm : MonoBehaviour
     void SnapPiecesTogether()
     {
         SnapInformation snapInformation;
-        snapInformation = GetComponentInParent<MagneticTouchCalculations>().FindPieceToSnapToAndSnapInformation(possibleSnaps);
+        snapInformation = FindPieceToSnapToAndSnapInformation(possibleSnaps);
+
         GameObject selectedPiece = GetComponentInParent<PuzzleModel>().selectedObject;
 
-        if (this.name.Equals(selectedPiece.name))
+        Vector3 displacement = CalculateDisplacementForSnapToPiece(selectedPiece, snapInformation.PieceToSnapTo, snapInformation.IndexOfPrimaryVertexInSelectedPiece, snapInformation.IndexOfPrimaryVertexInPieceToSnapTo);
+
+        float rotation = CalculateRotation(snapInformation.PrimaryVertexInSelectedPiece, snapInformation.PrimaryVertexInPieceToSnapTo, snapInformation.SecondaryVertexInSelectedPiece, snapInformation.SecondaryVertexInPieceToSnapTo);
+
+        var test1 = CalculateConstantsForLineThroughTwoVertices(snapInformation.PrimaryVertexInSelectedPiece, snapInformation.SecondaryVertexInSelectedPiece);
+        var test2 = CalculateConstantsForLineThroughTwoVertices(snapInformation.PrimaryVertexInPieceToSnapTo, snapInformation.SecondaryVertexInPieceToSnapTo);
+        // Debug.Log("line selected: " + test1.Item1 + "*x + " + test1.Item2);
+        // Debug.Log("line to snap to: " + test2.Item1 + "*x + " + test2.Item2);
+        // Debug.Log("selected Point1: " + snapInformation.PrimaryVertexInSelectedPiece);
+        // Debug.Log("selected Point2: " + snapInformation.SecondaryVertexInSelectedPiece);
+        // Debug.Log("snap to Point1: " + snapInformation.PrimaryVertexInPieceToSnapTo);
+        // Debug.Log("snap to Point2: " + snapInformation.SecondaryVertexInPieceToSnapTo);
+
+
+        if (rotation > 0.35 || rotation < -0.35)
         {
-            Vector3 displacement = GetComponentInParent<MagneticTouchCalculations>().CalculateDisplacementForSnapToPiece(selectedPiece, snapInformation.PieceToSnapTo, snapInformation.IndexOfPrimaryVertexInSelectedPiece, snapInformation.IndexOfPrimaryVertexInPieceToSnapTo);
-
-            float rotation = GetComponentInParent<MagneticTouchCalculations>().CalculateRotation(snapInformation.PrimaryVertexInSelectedPiece, snapInformation.PrimaryVertexInPieceToSnapTo, snapInformation.SecondaryVertexInSelectedPiece, snapInformation.SecondaryVertexInPieceToSnapTo);
-
-            var test1 = CalculateConstantsForLineThroughTwoVertices(snapInformation.PrimaryVertexInSelectedPiece, snapInformation.SecondaryVertexInSelectedPiece);
-            var test2 = CalculateConstantsForLineThroughTwoVertices(snapInformation.PrimaryVertexInPieceToSnapTo, snapInformation.SecondaryVertexInPieceToSnapTo);
-            // Debug.Log("line selected: " + test1.Item1 + "*x + " + test1.Item2);
-            // Debug.Log("line to snap to: " + test2.Item1 + "*x + " + test2.Item2);
-            // Debug.Log("selected Point1: " + snapInformation.PrimaryVertexInSelectedPiece);
-            // Debug.Log("selected Point2: " + snapInformation.SecondaryVertexInSelectedPiece);
-            // Debug.Log("snap to Point1: " + snapInformation.PrimaryVertexInPieceToSnapTo);
-            // Debug.Log("snap to Point2: " + snapInformation.SecondaryVertexInPieceToSnapTo);
+            Debug.Log("Angle is too big.");
+            return;
+        }
+        Vector3[] originalVertices = selectedPiece.GetComponent<MeshFilter>().mesh.vertices;
+        TranslateAndRotatePiece(selectedPiece, displacement, rotation, snapInformation.IndexOfPrimaryVertexInSelectedPiece);
 
 
-            if (rotation > 0.35 || rotation < -0.35)
+        if (CheckIfPiecesOverlap(selectedPiece, snapInformation.PieceToSnapTo))
+        {
+            Debug.Log("Cannot snap pieces together. They overlap.");
+            RestoreVertices(selectedPiece, originalVertices);
+        }
+        else
+        {
+            // Establish new connections
+            foreach (var pieceName in GetComponentInParent<PuzzleModel>().connectedPieces[snapInformation.PieceToSnapTo.name])
             {
-                Debug.Log("Angle is too big.");
-                return;
-            }
-            Vector3[] originalVertices = selectedPiece.GetComponent<MeshFilter>().mesh.vertices;
-            GetComponentInParent<MagneticTouchCalculations>().TranslateAndRotatePiece(selectedPiece, displacement, rotation, snapInformation.IndexOfPrimaryVertexInSelectedPiece);
+                GetComponentInParent<PuzzleModel>().connectedPieces[selectedPiece.name].Add(pieceName);
 
-
-            if (CheckIfPiecesOverlap(selectedPiece, snapInformation.PieceToSnapTo))
-            {
-                Debug.Log("Cannot snap pieces together. They overlap.");
-                RestoreVertices(selectedPiece, originalVertices);
-            }
-            else
-            {
-                // Establish new connections
-                foreach (var pieceName in GetComponentInParent<PuzzleModel>().connectedPieces[snapInformation.PieceToSnapTo.name])
+                if (!GetComponentInParent<PuzzleModel>().connectedPieces[pieceName].Contains(selectedPiece.name))
                 {
-                    GetComponentInParent<PuzzleModel>().connectedPieces[selectedPiece.name].Add(pieceName);
-
-                    if (!GetComponentInParent<PuzzleModel>().connectedPieces[pieceName].Contains(selectedPiece.name))
-                    {
-                        GetComponentInParent<PuzzleModel>().connectedPieces[pieceName].Add(selectedPiece.name);
-                    }
-                }
-                if (!GetComponentInParent<PuzzleModel>().connectedPieces[snapInformation.PieceToSnapTo.name].Contains(selectedPiece.name))
-                {
-                    GetComponentInParent<PuzzleModel>().connectedPieces[snapInformation.PieceToSnapTo.name].Add(selectedPiece.name);
-                }
-                GetComponentInParent<PuzzleModel>().connectedPieces[selectedPiece.name].Add(snapInformation.PieceToSnapTo.name);
-            }
-            var test4 = GetComponentInParent<PuzzleModel>();
-            var test5 = selectedPiece.name;
-            var test6 = test4.connectedPieces[selectedPiece.name];
-            foreach (var item in GetComponentInParent<PuzzleModel>().connectedPieces[selectedPiece.name])
-            {
-                foreach (var item2 in GetComponentInParent<PuzzleModel>().connectedPieces[item])
-                {
-                    // Debug.Log(item2);
+                    GetComponentInParent<PuzzleModel>().connectedPieces[pieceName].Add(selectedPiece.name);
                 }
             }
-
+            if (!GetComponentInParent<PuzzleModel>().connectedPieces[snapInformation.PieceToSnapTo.name].Contains(selectedPiece.name))
+            {
+                GetComponentInParent<PuzzleModel>().connectedPieces[snapInformation.PieceToSnapTo.name].Add(selectedPiece.name);
+            }
+            GetComponentInParent<PuzzleModel>().connectedPieces[selectedPiece.name].Add(snapInformation.PieceToSnapTo.name);
         }
     }
 
-    void RestoreVertices(GameObject piece, Vector3[] originalVertices)
-    {
-        Mesh meshForPiece = piece.GetComponent<MeshFilter>().mesh;
-        LineRenderer lineRenderer = piece.GetComponent<LineRenderer>();
-        Vector3[] translatedVertices = new Vector3[meshForPiece.vertices.Length];
 
-        meshForPiece.SetVertices(originalVertices);
-        lineRenderer.SetPositions(originalVertices);
-        piece.GetComponent<MeshCollider>().sharedMesh = meshForPiece;
-    }
-
-    ((float, float), (float, float)) ConstructBoundBox(GameObject piece)
-    {
-        (float, float) minMaxX = piece.GetComponent<PieceInfo>().GetMaximumAndMinimumXCoordinate();
-        (float, float) minMaxY = piece.GetComponent<PieceInfo>().GetMaximumAndMinimumYCoordinate();
-        return ((minMaxX.Item1 - margin, minMaxX.Item2 + margin), (minMaxY.Item1 - margin, minMaxY.Item2 + margin));
-    }
 
     void FindCandidatesForSnap(GameObject selectedPiece)
     {
@@ -130,19 +105,15 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         var boundBoxForSelectedPiece = ConstructBoundBox(selectedPiece);
         float minimumXForSelected = boundBoxForSelectedPiece.Item1.Item1;
         float maximumXForSelected = boundBoxForSelectedPiece.Item1.Item2;
-        float minimumXForCompare;
-        float maximumXForCompare;
         float minimumYForSelected = boundBoxForSelectedPiece.Item2.Item1;
         float maximumYForSelected = boundBoxForSelectedPiece.Item2.Item2;
-        float minimumYForCompare;
-        float maximumYForCompare;
         foreach (GameObject piece in pieces)
         {
             var boundBoxForNext = ConstructBoundBox(piece);
-            minimumXForCompare = boundBoxForNext.Item1.Item1;
-            maximumXForCompare = boundBoxForNext.Item1.Item2;
-            minimumYForCompare = boundBoxForNext.Item2.Item1;
-            maximumYForCompare = boundBoxForNext.Item2.Item2;
+            float minimumXForCompare = boundBoxForNext.Item1.Item1;
+            float maximumXForCompare = boundBoxForNext.Item1.Item2;
+            float minimumYForCompare = boundBoxForNext.Item2.Item1;
+            float maximumYForCompare = boundBoxForNext.Item2.Item2;
             if (minimumXForSelected < maximumXForCompare && maximumXForSelected > minimumXForCompare
                 && minimumYForSelected < maximumYForCompare && maximumYForSelected > minimumYForCompare)
             {
@@ -303,51 +274,43 @@ public class MagneticTouchAlgorithm : MonoBehaviour
             var intersectionWithLine = vertex1InLine + projectionOntoLine;
 
             // Debug.Log("intersectionWithLine: " + intersectionWithLine);
-            if (IsIntersectionPointInLineSegment(intersectionWithLine, vertex1InLine, vertex2InLine, 1, 0.1f))
+            if (!IsIntersectionPointInLineSegment(intersectionWithLine, vertex1InLine, vertex2InLine, 1, 0.1f))
             {
-                // Debug.Log("IsIntersectionPointInLineSegment: true");
-
-                if (IsPointOnInsideOfLine(vertexToCheck, intersectionWithLine, vertex1InLine, vertex2InLine))
-                {
-                    // Debug.Log("IsPointOnInsideOfLine: true");
-
-                    var lineFromPointToIntersection = new List<(float, float)>() { CalculateConstantsForLineThroughTwoVertices(vertexToCheck, intersectionWithLine) };
-                    var linesInPiece = GetLinesInPiece(containerPieceVertices);
-                    var verticesIntersectionLine = new Vector3[] { vertexToCheck, intersectionWithLine };
-                    // Debug.Log("lineFromPointToIntersection: " + lineFromPointToIntersection[0]);
-
-                    if (!AnyIntersectionsBetweenLines(verticesIntersectionLine, containerPieceVertices, lineFromPointToIntersection, linesInPiece, -0.05f, 5))
-                    { // not any intersections between line from point to intersection point and lines in container piece
-
-                        if (!AnyIntersectionsBetweenLineAndVertices(verticesIntersectionLine, containerPieceVertices, lineFromPointToIntersection[0]))
-                        { // not any intersections between line from point to intersection point and vertices in container piece
-                            // Debug.Log("AnyIntersectionsBetweenPoints: false");
-                            // Debug.Log("vertexToCheck: " + vertexToCheck);
-                            // Debug.Log("index of containerpiece vertice: " + i);
-                            // Debug.Log("vertex1InLine: " + vertex1InLine);
-                            // Debug.Log("vertex2InLine: " + vertex2InLine);
-                            // Debug.Log("projectionOntoLine: " + projectionOntoLine);
-                            // Debug.Log("intersectionWithLine: " + intersectionWithLine);
-
-                            Debug.Log("Point is in other piece: " + vertexToCheck);
-                            return true;
-                        }
-                    }
-                    else
-                    {
-                        // Debug.Log("AnyIntersectionsBetweenLines: false");
-                    }
-                }
-                else
-                {
-                    // Debug.Log("IsPointOnInsideOfLine: false");
-                }
+                continue;
             }
-            else
+            // Debug.Log("IsIntersectionPointInLineSegment: true");
+
+            if (!IsPointOnInsideOfLine(vertexToCheck, intersectionWithLine, vertex1InLine, vertex2InLine))
             {
-                // Debug.Log("IsIntersectionPointInLineSegment: false");
+                continue;
+            }
+            // Debug.Log("IsPointOnInsideOfLine: true");
+
+            var lineFromPointToIntersection = new List<(float, float)>() { CalculateConstantsForLineThroughTwoVertices(vertexToCheck, intersectionWithLine) };
+            var linesInPiece = GetLinesInPiece(containerPieceVertices);
+            var verticesIntersectionLine = new Vector3[] { vertexToCheck, intersectionWithLine };
+            // Debug.Log("lineFromPointToIntersection: " + lineFromPointToIntersection[0]);
+
+            if (AnyIntersectionsBetweenLines(verticesIntersectionLine, containerPieceVertices, lineFromPointToIntersection, linesInPiece, -0.05f, 5))
+            { // any intersections between line from point to intersection point and lines in container piece
+                continue;
             }
 
+            if (AnyIntersectionsBetweenLineAndVertices(verticesIntersectionLine, containerPieceVertices, lineFromPointToIntersection[0]))
+            { // any intersections between line from point to intersection point and vertices in container piece
+              // Debug.Log("AnyIntersectionsBetweenPoints: false");
+              // Debug.Log("vertexToCheck: " + vertexToCheck);
+              // Debug.Log("index of containerpiece vertice: " + i);
+              // Debug.Log("vertex1InLine: " + vertex1InLine);
+              // Debug.Log("vertex2InLine: " + vertex2InLine);
+              // Debug.Log("projectionOntoLine: " + projectionOntoLine);
+              // Debug.Log("intersectionWithLine: " + intersectionWithLine);
+                continue;
+            }
+
+            // This point is only reached if the four if-statements above are false
+            Debug.Log("Point is in other piece: " + vertexToCheck);
+            return true;
         }
 
         return false;
@@ -527,7 +490,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         var otherCornerOfEdgeToSnapTo = edgeInBorder.Item2;
 
         Vector3 displacement = vertexToSnapToCorner - cornerToSnapTo;
-        float rotation = GetComponentInParent<MagneticTouchCalculations>().CalculateRotation(vertexToSnapToCorner, cornerToSnapTo, vertexToMoveToBorder, otherCornerOfEdgeToSnapTo);
+        float rotation = CalculateRotation(vertexToSnapToCorner, cornerToSnapTo, vertexToMoveToBorder, otherCornerOfEdgeToSnapTo);
 
         // Angle is too big.
         // Either the rotation is not as intended or the player should try harder to place the pieces accurately
@@ -547,7 +510,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         //     return;
         // }
 
-        GetComponentInParent<MagneticTouchCalculations>().TranslateAndRotatePiece(selectedPiece, displacement, rotation, indexOfVertexToSnapToCorner);
+        TranslateAndRotatePiece(selectedPiece, displacement, rotation, indexOfVertexToSnapToCorner);
     }
 
     // Finds vertex with shortest distance to a corner of the board and information about snapping to the corner 
@@ -641,184 +604,27 @@ public class MagneticTouchAlgorithm : MonoBehaviour
 
     #endregion
 
-
-    #region Calculations
-    // Formula from https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line under section "Line defined by two points"
-    private float CalculateDistanceFromPointToLine(Vector3 point, (Vector3, Vector3) edge)
+    public SnapInformation FindPieceToSnapToAndSnapInformation((GameObject, List<GameObject>) possibleSnaps)
     {
-        var edgePoint1 = edge.Item1;
-        var edgePoint2 = edge.Item2;
+        Vector3[] verticesOfSelected = possibleSnaps.Item1.GetComponent<MeshFilter>().mesh.vertices;
+        (float, float) smallestDistance = (100000f, 100000f);
 
-        var numerator = Mathf.Abs((edgePoint2.x - edgePoint1.x) * (edgePoint1.y - point.y) - (edgePoint1.x - point.x) * (edgePoint2.y - edgePoint1.y));
-        var denominator = Mathf.Sqrt(Mathf.Pow((edgePoint2.x - edgePoint1.x), 2) + Mathf.Pow((edgePoint2.y - edgePoint1.y), 2));
+        var snapInformation = new SnapInformation();
 
-        var distance = numerator / denominator;
-        return distance;
-    }
+        foreach (GameObject candidateForSnap in possibleSnaps.Item2)
+        {
+            Vector3[] verticesOfCandicate = candidateForSnap.GetComponent<MeshFilter>().mesh.vertices;
 
-    // Wrapping index means that for example index 20 with an array of length 8 will return 4 (and it has thereby wrapped around the array twice)
-    public int GetWrappingIndex(int index, int lengthOfArray)
-    {
-        return ((index % lengthOfArray) + lengthOfArray) % lengthOfArray;
-    }
+            var snapInformationResult = CalculateSnapInformation(verticesOfSelected, verticesOfCandicate);
 
-    bool CheckIfLinesIntersectInLineSegment((float, float) line1, (float, float) line2, Vector3 point1Line1, Vector3 point2Line1, Vector3 point1Line2, Vector3 point2Line2, float precision = 0.01f, int decimals = 3)
-    {
-        if (float.IsPositiveInfinity(line1.Item1) && float.IsPositiveInfinity(line2.Item1))
-        { // slope is infinity for both lines
-            return false;
-        }
-
-        var intersectionX = 0f;
-        var intersectionY = 0f;
-
-        if (float.IsPositiveInfinity(line1.Item1))
-        { // slope is infinity if x is constant for line1
-            intersectionX = point1Line1.x;
-            intersectionY = line2.Item1 * intersectionX + line2.Item2;
-            // intersection x-value is between the two points in line segment of line 2.
-            // intersection y-value is between the two points in line segment of line 1.
-            if ((IsValueInInterval(intersectionX, point1Line2.x, point2Line2.x, precision, decimals)
-                    || IsValueInInterval(intersectionX, point2Line2.x, point1Line2.x, precision, decimals))
-                && (IsValueInInterval(intersectionY, point1Line1.y, point2Line1.y, precision, decimals)
-                    || IsValueInInterval(intersectionY, point2Line1.y, point1Line1.y, precision, decimals)))
+            if (snapInformationResult.DistanceBetweenPrimaryVertices < smallestDistance.Item1)
             {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        else if (float.IsPositiveInfinity(line2.Item1))
-        { // slope is infinity if x is constant for line2
-            intersectionX = point1Line2.x;
-            intersectionY = line1.Item1 * intersectionX + line1.Item2;
-            // intersection x-value is between the two points in line segment of line 1.
-            // intersection y-value is between the two points in line segment of line 2.
-            if ((IsValueInInterval(intersectionX, point1Line1.x, point2Line1.x, precision, decimals)
-                    || IsValueInInterval(intersectionX, point2Line1.x, point1Line1.x, precision, decimals))
-                && (IsValueInInterval(intersectionY, point1Line2.y, point2Line2.y, precision, decimals)
-                    || IsValueInInterval(intersectionY, point2Line2.y, point1Line2.y, precision, decimals)))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
+                snapInformation = snapInformationResult;
+                snapInformation.PieceToSnapTo = candidateForSnap;
             }
         }
 
-        if (RoundToXDecimals(line1.Item1, 2) == RoundToXDecimals(line2.Item1, 2))
-        { // if the slope is the same
-            return false;
-        }
-
-        intersectionX = (line2.Item2 - line1.Item2) / (line1.Item1 - line2.Item1);
-
-        // if the x-value of the intersection point is in both line segments, the two line segments intersect.
-        if ((IsValueInInterval(intersectionX, point1Line1.x, point2Line1.x, precision, decimals)
-                || IsValueInInterval(intersectionX, point2Line1.x, point1Line1.x, precision, decimals))
-            && (IsValueInInterval(intersectionX, point1Line2.x, point2Line2.x, precision, decimals)
-                || IsValueInInterval(intersectionX, point2Line2.x, point1Line2.x, precision, decimals)))
-        {
-            // Debug.Log("rounded decimal" + RoundToXDecimals(point1Line1.x, decimals));
-            return true;
-        }
-
-        return false;
-    }
-
-    // Round a float value to a given number of decimals
-    float RoundToXDecimals(float toRound, int decimals)
-    {
-        var multiplier = Mathf.Pow(10, decimals);
-        return Mathf.Round(toRound * multiplier) / multiplier;
-    }
-
-    //Item1 is slope, Item2 is intersection with Y-axis
-    (float, float) CalculateConstantsForLineThroughTwoVertices(Vector3 vertex1, Vector3 vertex2)
-    {
-        if (RoundToXDecimals(vertex2.x, 3) == RoundToXDecimals(vertex1.x, 3))
-        {
-            return (float.PositiveInfinity, float.PositiveInfinity);
-        }
-        if (RoundToXDecimals(vertex2.y, 3) == RoundToXDecimals(vertex1.y, 3))
-        {
-            return (0, vertex1.y);
-        }
-
-        float lineSlope = (vertex2.y - vertex1.y) / (vertex2.x - vertex1.x);
-        float lineIntersectionWithYAxis = vertex1.y - lineSlope * vertex1.x;
-
-        (float, float) lineConstants = (lineSlope, lineIntersectionWithYAxis);
-
-        return lineConstants;
-    }
-
-    bool IsIntersectionPointInLineSegment(Vector3 intersectionPoint, Vector3 point1InLine, Vector3 point2InLine, int decimals, float precision)
-    {
-        // Debug.Log("intersectionPoint.x: " + (RoundToXDecimals(intersectionPoint.x, decimals)));
-        // Debug.Log("point1line.x: " + (RoundToXDecimals(point1InLine.x, decimals)));
-        // Debug.Log("point2line.x: " + (RoundToXDecimals(point2InLine.x, decimals)));
-        var result = IsValueInInterval(intersectionPoint.x, point1InLine.x, point2InLine.x, precision, decimals) || IsValueInInterval(intersectionPoint.x, point2InLine.x, point1InLine.x, precision, decimals);
-        return result;
-    }
-
-    bool IsValueInInterval(float value, float intervalStart, float intervalEnd, float precision = 0.1f, int decimals = 3)
-    {
-        return RoundToXDecimals(intervalStart, decimals) < value - precision && value + precision < RoundToXDecimals(intervalEnd, decimals);
-    }
-
-    Vector3 CalculateRightAngledProjectionFromPointToLine(Vector3 vertexToCheck, Vector3 vertex1InLine, Vector3 vertex2InLine)
-    {
-        var line = vertex2InLine - vertex1InLine;
-        var translatedVertice = vertexToCheck - vertex1InLine;
-        var projection = (Vector3.Dot(line, translatedVertice) / Vector3.Dot(line, line)) * line;
-        return projection;
-    }
-
-    bool IsPointOnInsideOfLine(Vector3 vertexToCheck, Vector3 intersectionPoint, Vector3 vertex1InLine, Vector3 vertex2InLine)
-    {
-        // vertexToCheck.y has to be larger than f(vertexToCheck.x) when the vector from vertex1InLine to vertex2InLine has positive x.
-        // vertexToCheck.y has to be smaller than f(vertexToCheck.x) when the vector from vertex1InLine til vertex2InLine has negative x.
-
-        var diffOfYValuesForVertexAndPointOnLine = vertexToCheck.y - intersectionPoint.y;
-
-        var diffOfXValuesForPointsOnLine = vertex2InLine.x - vertex1InLine.x;
-        var diffOfYValuesForPointsOnLine = vertex2InLine.y - vertex1InLine.y;
-
-        if (RoundToXDecimals(diffOfYValuesForVertexAndPointOnLine, 2) == 0.00f)
-        { // point is on the line
-            return false;
-        }
-
-        if (diffOfXValuesForPointsOnLine > -0.05 && diffOfXValuesForPointsOnLine < 0.05
-            && (diffOfYValuesForPointsOnLine > 0.05 || diffOfYValuesForPointsOnLine < -0.05))
-        { // vertical line
-
-            if (diffOfYValuesForPointsOnLine > 0 && vertexToCheck.x - vertex1InLine.x < 0)
-            { // VertexToCheck is to the left of the line and therefore on the inside
-                return true;
-            }
-            if (diffOfYValuesForPointsOnLine < 0 && vertexToCheck.x - vertex1InLine.x > 0)
-            { // VertexToCheck is to the right of the line and therefore on the outside
-                return false;
-            }
-        }
-
-
-        bool yGreaterThanYOnLine = diffOfYValuesForVertexAndPointOnLine > 0;
-        bool positiveChangeInX = diffOfXValuesForPointsOnLine > 0;
-
-        if (positiveChangeInX && yGreaterThanYOnLine || !positiveChangeInX && !yGreaterThanYOnLine)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return snapInformation;
     }
 
     List<(float, float)> GetLinesInPiece(Vector3[] verticesInPiece)
@@ -834,10 +640,4 @@ public class MagneticTouchAlgorithm : MonoBehaviour
 
         return linesInPiece;
     }
-
-    #endregion
-
 }
-
-
-
