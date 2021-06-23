@@ -223,7 +223,8 @@ public class MagneticTouchCalculations
         return distance;
     }
 
-    public static bool CheckIfLinesIntersectInLineSegment((float, float) line1, (float, float) line2, Vector3 point1Line1, Vector3 point2Line1, Vector3 point1Line2, Vector3 point2Line2, float precision = 0.01f, int decimals = 3)
+    public static bool CheckIfLinesIntersectInLineSegment((float, float) line1, (float, float) line2,
+                        Vector3 point1Line1, Vector3 point2Line1, Vector3 point1Line2, Vector3 point2Line2, float precision = 0.01f, int decimals = 3)
     {
         if (float.IsPositiveInfinity(line1.Item1) && float.IsPositiveInfinity(line2.Item1))
         { // slope is infinity for both lines

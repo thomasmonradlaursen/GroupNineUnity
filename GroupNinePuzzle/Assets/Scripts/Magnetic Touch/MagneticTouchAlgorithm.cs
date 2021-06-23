@@ -6,19 +6,19 @@ using static MagneticTouchCalculations;
 public class MagneticTouchAlgorithm : MonoBehaviour
 {
     //Todo: probably move these fields somewhere else
-    public List<GameObject> pieces;
+    private List<GameObject> pieces;
     private Vector3 lowerLeftCorner;
     private Vector3 upperLeftCorner;
     private Vector3 lowerRightCorner;
     private Vector3 upperRightCorner;
 
-    public (GameObject, List<GameObject>) possibleSnaps = (null, new List<GameObject>()); // Item1 is selected piece and Item 2 is a list of pieces that might be possible to snap to
+    private (GameObject, List<GameObject>) possibleSnaps = (null, new List<GameObject>()); // Item1 is selected piece and Item 2 is a list of pieces that might be possible to snap to
 
     private void Start()
     {
         pieces = GetComponentInParent<PuzzleModel>().pieces;
     }
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         if (Input.GetKeyDown(KeyCode.S)) // Snap to other piece
         {
@@ -41,7 +41,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
     }
 
     #region Snap Pieces Together
-    void SnapPiecesTogether()
+    private void SnapPiecesTogether()
     {
         SnapInformation snapInformation;
         snapInformation = FindPieceToSnapToAndSnapInformation(possibleSnaps);
@@ -98,7 +98,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
 
 
 
-    void FindCandidatesForSnap(GameObject selectedPiece)
+    private void FindCandidatesForSnap(GameObject selectedPiece)
     {
         possibleSnaps.Item1 = selectedPiece;
         possibleSnaps.Item2.Clear();
@@ -125,7 +125,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         }
     }
 
-    void LogPossibleSnaps()
+    private void LogPossibleSnaps()
     {
         if (possibleSnaps.Item2.Count > 0)
         {
@@ -153,7 +153,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
 
     #region Check for overlaps
 
-    bool CheckIfPiecesOverlap(GameObject selectedPiece, GameObject pieceToSnapTo/*, Vector3 snapVertexSelectedPiece*/)
+    private bool CheckIfPiecesOverlap(GameObject selectedPiece, GameObject pieceToSnapTo/*, Vector3 snapVertexSelectedPiece*/)
     {
         Vector3[] verticesSelectedPiece = selectedPiece.GetComponent<MeshFilter>().mesh.vertices;
         Vector3[] verticesSnapPiece = pieceToSnapTo.GetComponent<MeshFilter>().mesh.vertices;
@@ -234,7 +234,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         return false;
     }
 
-    bool CheckIfAnyPointIsContainedInTheOtherPiece(Vector3[] pointPieceVertices, Vector3[] containerPieceVertices)
+    private bool CheckIfAnyPointIsContainedInTheOtherPiece(Vector3[] pointPieceVertices, Vector3[] containerPieceVertices)
     {
         for (int i = 0; i < pointPieceVertices.Length; i++)
         {
@@ -247,7 +247,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         return false;
     }
 
-    bool IsVertexContainedInOtherPiece(Vector3 vertexToCheck, Vector3[] containerPieceVertices)
+    private bool IsVertexContainedInOtherPiece(Vector3 vertexToCheck, Vector3[] containerPieceVertices)
     {
 
         for (int i = 0; i < containerPieceVertices.Length; i++)
@@ -318,7 +318,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
 
 
 
-    bool AnyIntersectionsBetweenLines(Vector3[] verticesPiece1, Vector3[] verticesPiece2, List<(float, float)> linesPiece1, List<(float, float)> linesPiece2, float precision = 0.03f, int decimals = 3)
+    private bool AnyIntersectionsBetweenLines(Vector3[] verticesPiece1, Vector3[] verticesPiece2, List<(float, float)> linesPiece1, List<(float, float)> linesPiece2, float precision = 0.03f, int decimals = 3)
     {
         // Check if any lines from piece1 intersects with any lines from piece2.
         // If we encounter an intersection, we return true.
@@ -357,7 +357,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
     }
 
 
-    bool AnyIntersectionsBetweenLineAndVertices(Vector3[] verticesLineSegment1, Vector3[] verticesPiece, (float, float) line, float precision = 0.1f)
+    private bool AnyIntersectionsBetweenLineAndVertices(Vector3[] verticesLineSegment1, Vector3[] verticesPiece, (float, float) line, float precision = 0.1f)
     {
         Debug.Log("line: " + line);
 
@@ -412,7 +412,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
     #region Snap to Corner
 
     // Todo: maybe move to other class?
-    void FindCorners()
+    private void FindCorners()
     {
         var form = GetComponentInParent<PuzzleModel>().puzzle.puzzle.form;
 
@@ -456,7 +456,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
     }
 
 
-    public void SnapToCorner(GameObject selectedPiece)
+    private void SnapToCorner(GameObject selectedPiece)
     {
         var cornerVertices = new Vector3[] { lowerLeftCorner, upperLeftCorner, lowerRightCorner, upperRightCorner };
         var pieceVertices = selectedPiece.GetComponent<MeshFilter>().mesh.vertices;
@@ -514,7 +514,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
     }
 
     // Finds vertex with shortest distance to a corner of the board and information about snapping to the corner 
-    public (float, int, Vector3, (Vector3, Vector3)) FindVertexToSnapToCorner(Vector3[] pieceVertices)
+    private (float, int, Vector3, (Vector3, Vector3)) FindVertexToSnapToCorner(Vector3[] pieceVertices)
     {
         float shortestDistance = 100000f;
         int indexOfVertex = -1;
@@ -565,7 +565,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         return (shortestDistance, indexOfVertex, cornerToSnapTo, neighboringCorners);
     }
 
-    public (float, int, (Vector3, Vector3)) SmallestDistanceToBorder(Vector3[] pieceVertices, Vector3 vertexToSnapToCorner, (Vector3, Vector3) borderEdge1, (Vector3, Vector3) borderEdge2)
+    private (float, int, (Vector3, Vector3)) SmallestDistanceToBorder(Vector3[] pieceVertices, Vector3 vertexToSnapToCorner, (Vector3, Vector3) borderEdge1, (Vector3, Vector3) borderEdge2)
     {
         float shortestDistance = 100000f;
         int indexOfVertex = -1;
@@ -604,7 +604,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
 
     #endregion
 
-    public SnapInformation FindPieceToSnapToAndSnapInformation((GameObject, List<GameObject>) possibleSnaps)
+    private SnapInformation FindPieceToSnapToAndSnapInformation((GameObject, List<GameObject>) possibleSnaps)
     {
         Vector3[] verticesOfSelected = possibleSnaps.Item1.GetComponent<MeshFilter>().mesh.vertices;
         (float, float) smallestDistance = (100000f, 100000f);
@@ -627,7 +627,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         return snapInformation;
     }
 
-    List<(float, float)> GetLinesInPiece(Vector3[] verticesInPiece)
+    private List<(float, float)> GetLinesInPiece(Vector3[] verticesInPiece)
     {
         var linesInPiece = new List<(float, float)>();
 
