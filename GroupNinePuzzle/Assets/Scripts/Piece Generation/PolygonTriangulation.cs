@@ -62,8 +62,6 @@ public class PolygonTriangulation
             return triangles;
         }
 
-
-
         //Step 1. Store the vertices in a list and we also need to know the next and previous vertex
         List<Vertex> vertices = new List<Vertex>();
 
@@ -75,14 +73,12 @@ public class PolygonTriangulation
         //Find the next and previous vertex
         for (int i = 0; i < vertices.Count; i++)
         {
-            int nextPos = GetWrappingIndex(i+1, vertices.Count);
-            int prevPos = GetWrappingIndex(i-1, vertices.Count);
+            int nextPos = GetWrappingIndex(i + 1, vertices.Count);
+            int prevPos = GetWrappingIndex(i - 1, vertices.Count);
 
             vertices[i].previousVertex = vertices[prevPos];
             vertices[i].nextVertex = vertices[nextPos];
         }
-
-
 
         //Step 2. Find the reflex (concave) and convex vertices, and ear vertices
         for (int i = 0; i < vertices.Count; i++)
@@ -93,20 +89,14 @@ public class PolygonTriangulation
         //Have to find the ears after we have found if the vertex is reflex or convex
         List<Vertex> earVertices = new List<Vertex>();
 
-
-        //Debug.Log("no. of vertices: " + vertices.Count);
         for (int i = 0; i < vertices.Count; i++)
         {
             IsVertexEar(vertices[i], vertices, earVertices);
         }
 
-        //Debug.Log("no. of EarVertices: " + earVertices.Count);
-
         //Step 3. Triangulate!
         while (true)
         {
-            //Debug.Log($"no. of earVertices left: {earVertices.Count}");
-            //Debug.Log($"no. of normal vertices left: {vertices.Count}");
             if (earVertices.Count == 0) break;
 
             //This means we have just one triangle left
@@ -155,8 +145,6 @@ public class PolygonTriangulation
             IsVertexEar(earVertexNext, vertices, earVertices);
         }
 
-        //Debug.Log(triangles.Count);
-
         return triangles;
     }
 
@@ -172,8 +160,6 @@ public class PolygonTriangulation
         Vector2 a = v.previousVertex.GetXY();
         Vector2 b = v.GetXY();
         Vector2 c = v.nextVertex.GetXY();
-
-        //Debug.Log($"a: {a.x}, {a.y}, b: {b.x}, {b.y}, c: {c.x}, {c.y}");
 
         if (IsTriangleOrientedClockwise(a, b, c))
         {
@@ -209,7 +195,6 @@ public class PolygonTriangulation
         //A reflex vertex can't be an ear!
         if (v.isReflex)
         {
-            //Debug.Log("Reflex");
             return;
         }
 
@@ -232,9 +217,7 @@ public class PolygonTriangulation
                 //This means inside and not on the hull
                 if (IsPointInTriangle(a, b, c, p))
                 {
-                    //Debug.Log("Point is in triangle: index " + i);
                     hasPointInside = true;
-
                     break;
                 }
             }
@@ -262,7 +245,6 @@ public class PolygonTriangulation
         //The point is within the triangle if 0 < a < 1 and 0 < b < 1 and 0 < c < 1
         if (a > 0f && a < 1f && b > 0f && b < 1f && c > 0f && c < 1f)
         {
-            // Debug.Log("a: " + a + "   b: " + b + "   c: " + c);
             isWithinTriangle = true;
         }
 
@@ -272,6 +254,4 @@ public class PolygonTriangulation
     {
         return ((index % lengthOfArray) + lengthOfArray) % lengthOfArray;
     }
-
-
 }

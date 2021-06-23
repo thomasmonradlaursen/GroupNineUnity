@@ -7,6 +7,7 @@ public class PieceController : MonoBehaviour
 {
     public void CreatePieces()
     {
+        // Select mode for mesh generation
         if (GetComponentInParent<PuzzleModel>().generateRandom)
         {
             GetComponentInChildren<MeshGenerator>().MeshesFromRandom();
@@ -15,14 +16,16 @@ public class PieceController : MonoBehaviour
         {
             GetComponentInChildren<MeshGenerator>().GenerateMeshes(GetComponentInParent<PuzzleModel>().puzzle);
         }
-        List<Mesh> meshes = GetComponentInChildren<MeshModel>().meshes;
 
         GetComponentInParent<PuzzleModel>().connectedPieces = new Dictionary<string, List<string>>();
 
         int idx = 0;
-        foreach (Mesh mesh in meshes)
+        foreach (Mesh mesh in GetComponentInChildren<MeshModel>().meshes)
         {
-            var newPiece = new GameObject("Piece " + GetComponentInParent<PuzzleModel>().puzzle.pieces[idx].piece);
+            // Create a new piece
+            GameObject newPiece = new GameObject("Piece " + GetComponentInParent<PuzzleModel>().puzzle.pieces[idx].piece);
+
+            // Add components
             newPiece.AddComponent<MeshFilter>();
             newPiece.GetComponent<MeshFilter>().mesh = mesh;
             newPiece.AddComponent<MeshRenderer>();
@@ -30,29 +33,30 @@ public class PieceController : MonoBehaviour
             newPiece.AddComponent<Translation>();
             newPiece.AddComponent<Rotation>();
             newPiece.AddComponent<PieceInfo>();
+
+            // Set relevant information
             newPiece.GetComponent<PieceInfo>().CalculateInformation();
             newPiece.GetComponent<PieceInfo>().vertices = mesh.vertices;
-            // newPiece.AddComponent<MagneticTouchAlgorithm>();
+
+            // Draw outlines
             if(GetComponentInParent<PuzzleModel>().puzzle.puzzle.form != null)
             {
-                // Stop that stash
                 PieceOutlineGenerator.GenerateOutline(newPiece, mesh.vertices, GetComponentInParent<PuzzleModel>().puzzle.puzzle.form[2].coord.x, GetComponentInParent<PuzzleModel>().puzzle.puzzle.form[2].coord.y);
             }
             else 
             {
                 PieceOutlineGenerator.GenerateOutline(newPiece, mesh.vertices, 3.0f, 3.0f);
             }
-            newPiece.transform.parent = this.transform;
 
+            // Setup materials for the piece
             var renderer = newPiece.GetComponent<MeshRenderer>();
             var materials = renderer.materials;
-            materials = new Material[]
-            {
-                new Material(Shader.Find("Sprites/Default"))
-                };
+            materials = new Material[] { new Material(Shader.Find("Sprites/Default")) };
             materials[0].color = Color.blue;
             renderer.materials = materials;
 
+            // Maintain the structure
+            newPiece.transform.parent = this.transform;
             GetComponentInParent<PuzzleModel>().pieces.Add(newPiece);
             GetComponentInParent<PuzzleModel>().connectedPieces.Add(newPiece.name, new List<string>());
 

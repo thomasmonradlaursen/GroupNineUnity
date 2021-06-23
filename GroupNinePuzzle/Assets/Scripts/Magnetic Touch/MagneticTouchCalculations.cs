@@ -13,8 +13,6 @@ public class MagneticTouchCalculations
     {
         Vector3 selectedVertex = selectedPiece.GetComponent<MeshFilter>().mesh.vertices[indexForVertexOfSelected];
         Vector3 magnetVertex = magnetPiece.GetComponent<MeshFilter>().mesh.vertices[indexForVertexOfMagnet];
-        // Debug.Log(selectedVertex);
-        // Debug.Log(magnetVertex);
         return selectedVertex - magnetVertex;
     }
 
@@ -26,20 +24,12 @@ public class MagneticTouchCalculations
         Vector3 unitVectorSelected = lineInSelected / Vector3.Magnitude(lineInSelected);
         Vector3 unitVectorInPieceToSnapTo = lineToSnapTo / Vector3.Magnitude(lineToSnapTo);
 
-        // Debug.Log("lines and rotation:");
-        // Debug.Log(lineToVertexInSelected);
-        // Debug.Log(lineToVertexInPieceToSnapTo);
-
         var radiansToRotate = 0f;
         if (unitVectorSelected != unitVectorInPieceToSnapTo)
         {
             var radiansSelected = Mathf.Atan2(unitVectorSelected.y, unitVectorSelected.x); // Angle between line and x-axis
             var radiansPieceToSnapTo = Mathf.Atan2(unitVectorInPieceToSnapTo.y, unitVectorInPieceToSnapTo.x); // Angle between line and x-axis
-            radiansToRotate = radiansPieceToSnapTo - radiansSelected; // Angle between between lines
-
-            // Debug.Log("radiansSelected " + radiansSelected * Mathf.Rad2Deg);
-            // Debug.Log("radiansPieceToSnapTo " + radiansPieceToSnapTo * Mathf.Rad2Deg);
-            // Debug.Log("Degrees to rotate: " + radiansToRotate * Mathf.Rad2Deg);
+            radiansToRotate = radiansPieceToSnapTo - radiansSelected; // Angle between between lines;
         }
 
         // We use the smallest angle possible to reach the same rotation (because we have restrictions on maximum angle size elsewhere)
@@ -64,7 +54,6 @@ public class MagneticTouchCalculations
         {
             translatedVertices[index].x = pieceVertices[index].x - displacement.x;
             translatedVertices[index].y = pieceVertices[index].y - displacement.y;
-            // Debug.Log("index: " + index + "   x: " + translatedVertices[index].x + "   y:" + translatedVertices[index].y);
         }
 
         Vector3[] rotatedVertices = new Vector3[pieceVertices.Length];
@@ -160,17 +149,12 @@ public class MagneticTouchCalculations
 
     public static bool IsIntersectionPointInLineSegment(Vector3 intersectionPoint, Vector3 point1InLine, Vector3 point2InLine, int decimals, float precision)
     {
-        // Debug.Log("intersectionPoint.x: " + (RoundToXDecimals(intersectionPoint.x, decimals)));
-        // Debug.Log("point1line.x: " + (RoundToXDecimals(point1InLine.x, decimals)));
-        // Debug.Log("point2line.x: " + (RoundToXDecimals(point2InLine.x, decimals)));
         var result = IsValueInInterval(intersectionPoint.x, point1InLine.x, point2InLine.x, precision, decimals) || IsValueInInterval(intersectionPoint.x, point2InLine.x, point1InLine.x, precision, decimals);
         return result;
     }
 
     public static bool IsPointOnInsideOfLine(Vector3 vertexToCheck, Vector3 intersectionPoint, Vector3 vertex1InLine, Vector3 vertex2InLine)
     {
-        // vertexToCheck.y has to be larger than f(vertexToCheck.x) when the vector from vertex1InLine to vertex2InLine has positive x.
-        // vertexToCheck.y has to be smaller than f(vertexToCheck.x) when the vector from vertex1InLine til vertex2InLine has negative x.
 
         var diffOfYValuesForVertexAndPointOnLine = vertexToCheck.y - intersectionPoint.y;
 

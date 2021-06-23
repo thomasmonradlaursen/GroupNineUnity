@@ -26,11 +26,9 @@ public class AreaSorting
             {
                 for (int inner = outer + 1; inner < areasOfPieces.Count; inner++)
                 {
-                    if (areasOfPieces[outer] <= areasOfPieces[inner]+0.01 && areasOfPieces[outer] >= areasOfPieces[inner] -0.01)
+                    if (areasOfPieces[outer] <= areasOfPieces[inner] + 0.01 && areasOfPieces[outer] >= areasOfPieces[inner] - 0.01)
                     {
-                        //Debug.Log("Found pair: pieces "+outer+" and "+ inner+ " have areas "+ areasOfPieces[outer]+" and "+ areasOfPieces[inner]);
-                        //piecesWithIdenticalArea.Add(new Vector2(puzzle.pieces[outer].piece, puzzle.pieces[inner].piece));
-                        piecesWithIdenticalArea.Add(new Vector2((int) outer, (int) inner));
+                        piecesWithIdenticalArea.Add(new Vector2((int)outer, (int)inner));
                     }
                 }
             }
