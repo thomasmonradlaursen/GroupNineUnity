@@ -32,7 +32,7 @@ public class PieceController : MonoBehaviour
             newPiece.AddComponent<PieceInfo>();
             newPiece.GetComponent<PieceInfo>().CalculateInformation();
             newPiece.GetComponent<PieceInfo>().vertices = mesh.vertices;
-            newPiece.AddComponent<MagneticTouchAlgorithm>();
+            // newPiece.AddComponent<MagneticTouchAlgorithm>();
             if(GetComponentInParent<PuzzleModel>().puzzle.puzzle.form != null)
             {
                 // Stop that stash
