@@ -571,7 +571,7 @@ public class AutoSolveCleverVersion : MonoBehaviour
 
 }
 
-
+/*
 public class Triple {
     public int row;
     public int column;
@@ -591,3 +591,4 @@ public class Pair {
         this.vertex = vertex;
     }
 }
+*/
