@@ -18,6 +18,7 @@ public class AutoSolveCleverVersion : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
+            Debug.Log("Autosolve started");
             AutoSolve();
         }
     }
@@ -59,18 +60,23 @@ public class AutoSolveCleverVersion : MonoBehaviour
             
             bool overlap = OverLapsBoard(); 
             while(overlap == true){
-                Debug.Log("Overlaps board!");
-                Pair temp = activePiece.GetComponent<PieceInfo>().thetaAngles[0];
-                activePiece.GetComponent<PieceInfo>().thetaAngles.Remove(temp);
+                Debug.Log("Overlap detected!");
                 //if piece holds more angles matching theta
                 //we test the next angle
-                if(activePiece.GetComponent<PieceInfo>().thetaAngles.Count > 0){   
+                if(activePiece.GetComponent<PieceInfo>().thetaAngles.Count > 1){ 
+                    Pair temp = activePiece.GetComponent<PieceInfo>().thetaAngles[0];
+                    activePiece.GetComponent<PieceInfo>().thetaAngles.Remove(temp);
                     indexOfTheta = activePiece.GetComponent<PieceInfo>().thetaAngles[0].index;     
                     PlacePiece();
                     overlap = OverLapsBoard();
                     continue;
                 //if the piece only had one theta angle
                 //we'll remove this piece as the active and move on to other potential pieces
+                }else if(activePiece.GetComponent<PieceInfo>().thetaAngles.Count == 1){
+                    Pair temp = activePiece.GetComponent<PieceInfo>().thetaAngles[0];
+                    activePiece.GetComponent<PieceInfo>().thetaAngles.Remove(temp);
+                    overlap = OverLapsBoard();
+                    continue;
                 }else{
                     potentialPieces.Remove(activePiece);
                     testedPieces.Add(new Triple(currentRow, currentColumn, activePiece));
@@ -95,7 +101,6 @@ public class AutoSolveCleverVersion : MonoBehaviour
             }else{
                 Backtrack();
             }
-            
         }
     }
     bool CheckForRowChange(){
@@ -315,34 +320,24 @@ public class AutoSolveCleverVersion : MonoBehaviour
             float[] angles = testPiece.GetComponent<PieceInfo>().angles;
             foreach(float angle in angles){
                 if(angle <= theta+0.01 && angle >= theta-0.01){
-                    //Debug.Log("Found angle "+angle+" in piece "+testPiece.GetComponent<PieceInfo>().name );
                     testPiece.GetComponent<PieceInfo>().thetaAngles = ThetaAnglesInPiece(testPiece);
                     potentialPieces.Add(testPiece);
                     break;
                 }
             }
         }
-        //remove previously tested pieces if all their angles have already been tried
-        /*
-        foreach(GameObject potPiece in potentialPieces){
-            for(int i = 0; i < testedPieces.Count; i++){
-                if(potPiece.GetComponent<PieceInfo>().name == testedPieces[i].piece.GetComponent<PieceInfo>().name
-                    && testedPieces[i].row == currentRow 
-                    && testedPieces[i].column == currentColumn)
-                {
-                        if(testedPieces[i].piece.GetComponent<PieceInfo>().thetaAngles.Count == 0){
-                            potentialPieces.Remove(potPiece);
-                        }else{
-                            potPiece.GetComponent<PieceInfo>().thetaAngles = testedPieces[i].piece.GetComponent<PieceInfo>().thetaAngles;
-                        }
-                    
+        //remove previously tested pieces
+        for(int i = 0; i < potentialPieces.Count; i++){
+            for(int j = 0; j < testedPieces.Count; j++){
+                if(potentialPieces[i] == testedPieces[j].piece
+                    && testedPieces[j].row ==currentRow 
+                    && testedPieces[j].column == currentColumn){
+                    potentialPieces.Remove(potentialPieces[i]);
                 }
             }
         }
-        */
     }
     List<Pair> ThetaAnglesInPiece(GameObject piece){
-        
         List<Pair> thetaAngleVertices = new List<Pair>();
         int n = 0;
         foreach(float angle in piece.GetComponent<PieceInfo>().angles){
