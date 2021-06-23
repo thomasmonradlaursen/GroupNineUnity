@@ -140,7 +140,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
 
     #region Check for overlaps
 
-    private bool CheckIfPiecesOverlap(GameObject selectedPiece, GameObject pieceToSnapTo/*, Vector3 snapVertexSelectedPiece*/)
+    private bool CheckIfPiecesOverlap(GameObject selectedPiece, GameObject pieceToSnapTo)
     {
         Vector3[] verticesSelectedPiece = selectedPiece.GetComponent<MeshFilter>().mesh.vertices;
         Vector3[] verticesSnapPiece = pieceToSnapTo.GetComponent<MeshFilter>().mesh.vertices;
@@ -157,21 +157,21 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         var linesInSelectedPiece = GetLinesInPiece(verticesSelectedPiece);
         var linesInSnapPiece = GetLinesInPiece(verticesSnapPiece);
 
-        if (AnyIntersectionsBetweenLines(verticesSelectedPiece, verticesSnapPiece, linesInSelectedPiece, linesInSnapPiece, precision: 0.1f, decimals: 3))
+        if (AnyIntersectionsBetweenLines(verticesSelectedPiece, verticesSnapPiece, linesInSelectedPiece, linesInSnapPiece))
         {
             Debug.Log("Overlap with piece (first): " + pieceToSnapTo.name);
             return true;
         }
 
         Debug.Log("container piece is snap piece");
-        if (CheckIfAnyPointIsContainedInTheOtherPiece(verticesSelectedPiece, verticesSnapPiece))
+        if (CheckIfAnyPointIsContainedInTheOtherPiece(verticesSelectedPiece, verticesSnapPiece, meshTrianglesSnapPiece))
         {
             Debug.Log("Overlap with piece (first): " + pieceToSnapTo.name);
             return true;
         }
 
         Debug.Log("container piece is selected piece");
-        if (CheckIfAnyPointIsContainedInTheOtherPiece(verticesSnapPiece, verticesSelectedPiece))
+        if (CheckIfAnyPointIsContainedInTheOtherPiece(verticesSnapPiece, verticesSelectedPiece, meshTrianglesSelected))
         {
             Debug.Log("Overlap with piece (first): " + pieceToSnapTo.name);
             return true;
@@ -206,14 +206,14 @@ public class MagneticTouchAlgorithm : MonoBehaviour
             }
 
             Debug.Log("container piece is connected piece");
-            if (CheckIfAnyPointIsContainedInTheOtherPiece(verticesSelectedPiece, verticesConnectedPiece))
+            if (CheckIfAnyPointIsContainedInTheOtherPiece(verticesSelectedPiece, verticesConnectedPiece, meshTrianglesConnected))
             {
                 Debug.Log("Overlap with connected piece: " + connectedPiece.name);
                 return true;
             }
 
             Debug.Log("container piece is selected piece");
-            if (CheckIfAnyPointIsContainedInTheOtherPiece(verticesConnectedPiece, verticesSelectedPiece))
+            if (CheckIfAnyPointIsContainedInTheOtherPiece(verticesConnectedPiece, verticesSelectedPiece, meshTrianglesSelected))
             {
                 Debug.Log("Overlap with connected piece: " + connectedPiece.name);
                 return true;
@@ -225,11 +225,12 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         return false;
     }
 
-    private bool CheckIfAnyPointIsContainedInTheOtherPiece(Vector3[] pointPieceVertices, Vector3[] containerPieceVertices)
+    private bool CheckIfAnyPointIsContainedInTheOtherPiece(Vector3[] pointPieceVertices, Vector3[] containerPieceVertices, int[] triangles)
     {
         for (int i = 0; i < pointPieceVertices.Length; i++)
         {
-            if (IsVertexContainedInOtherPiece(pointPieceVertices[i], containerPieceVertices))
+            // if (IsVertexContainedInOtherPiece(pointPieceVertices[i], containerPieceVertices, triangles))
+            if (IsPointInPiece(pointPieceVertices[i], containerPieceVertices, triangles))
             {
                 return true;
             }
@@ -238,76 +239,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         return false;
     }
 
-    private bool IsVertexContainedInOtherPiece(Vector3 vertexToCheck, Vector3[] containerPieceVertices)
-    {
-
-        for (int i = 0; i < containerPieceVertices.Length; i++)
-        {
-            var vertex1InLine = containerPieceVertices[i];
-            var vertex2InLine = containerPieceVertices[GetWrappingIndex(i + 1, containerPieceVertices.Length)];
-
-            var distance = CalculateDistanceFromPointToLine(vertexToCheck, (vertex1InLine, vertex2InLine));
-            // If the distance is this small it's within the acceptable uncertainty of being on the border of the other piece
-            if (distance < 0.05f)
-            {
-                return false;
-            }
-        }
-
-        for (int i = 0; i < containerPieceVertices.Length; i++)
-        {
-            var vertex1InLine = containerPieceVertices[i];
-            var vertex2InLine = containerPieceVertices[GetWrappingIndex(i + 1, containerPieceVertices.Length)];
-
-            var projectionOntoLine = CalculateRightAngledProjectionFromPointToLine(vertexToCheck, vertex1InLine, vertex2InLine);
-            var intersectionWithLine = vertex1InLine + projectionOntoLine;
-
-            if (!IsIntersectionPointInLineSegment(intersectionWithLine, vertex1InLine, vertex2InLine, 1, 0.1f))
-            {
-                continue;
-            }
-            Debug.Log("IsIntersectionPointInLineSegment: true");
-
-            if (!IsPointOnInsideOfLine(vertexToCheck, intersectionWithLine, vertex1InLine, vertex2InLine))
-            {
-                continue;
-            }
-            var verticesIntersectionLine = new Vector3[] { vertexToCheck, intersectionWithLine };
-
-            if (AnyIntersectionsBetweenLines(verticesIntersectionLine, containerPieceVertices, lineFromPointToIntersection, linesInPiece, -0.05f, 5))
-            { // any intersections between line from point to intersection point and lines in container piece
-                Debug.Log("Intersection between lines");
-                
-                continue;
-            }
-
-            if (AnyIntersectionsBetweenLineAndVertices(verticesIntersectionLine, containerPieceVertices, lineFromPointToIntersection[0]))
-            { // any intersections between line from point to intersection point and vertices in container piece
-              
-              Debug.Log("Intersection between perpendicular line and vertices");
-              
-              
-              // Debug.Log("AnyIntersectionsBetweenPoints: false");
-              // Debug.Log("vertexToCheck: " + vertexToCheck);
-              // Debug.Log("index of containerpiece vertice: " + i);
-              // Debug.Log("vertex1InLine: " + vertex1InLine);
-              // Debug.Log("vertex2InLine: " + vertex2InLine);
-              // Debug.Log("projectionOntoLine: " + projectionOntoLine);
-              // Debug.Log("intersectionWithLine: " + intersectionWithLine);
-                continue;
-            }
-
-            // This point is only reached if the four if-statements above are false
-            Debug.Log("Point is in other piece: " + vertexToCheck);
-            return true;
-        }
-
-        return false;
-    }
-
-
-
-    private bool AnyIntersectionsBetweenLines(Vector3[] verticesPiece1, Vector3[] verticesPiece2, List<(float, float)> linesPiece1, List<(float, float)> linesPiece2, float precision = 0.03f, int decimals = 3)
+    private bool AnyIntersectionsBetweenLines(Vector3[] verticesPiece1, Vector3[] verticesPiece2, List<(float, float)> linesPiece1, List<(float, float)> linesPiece2)
     {
         // Check if any lines from piece1 intersects with any lines from piece2.
         // If we encounter an intersection, we return true.
@@ -322,9 +254,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
                         verticesPiece1[idx1],
                         verticesPiece1[GetWrappingIndex(idx1 + 1, verticesPiece1.Length)],
                         verticesPiece2[idx2],
-                        verticesPiece2[GetWrappingIndex(idx2 + 1, verticesPiece2.Length)],
-                        precision,
-                        decimals
+                        verticesPiece2[GetWrappingIndex(idx2 + 1, verticesPiece2.Length)]
                         );
                 if (linesIntersect)
                 {
@@ -340,44 +270,6 @@ public class MagneticTouchAlgorithm : MonoBehaviour
             }
 
             idx1++;
-        }
-
-        return false;
-    }
-
-
-    private bool AnyIntersectionsBetweenLineAndVertices(Vector3[] verticesLineSegment1, Vector3[] verticesPiece, (float, float) line, float precision = 0.1f)
-    {
-        Debug.Log("line: " + line);
-
-        // Check if any vertices from the piece intersects with the line segment.
-        // If we encounter an intersection, we return true.
-        var idx = 0;
-        foreach (var vertex in verticesPiece)
-        {
-            Debug.Log("vertex: " + idx + "     " + verticesPiece[idx]);
-
-            if (float.IsPositiveInfinity(line.Item1))
-            { // vertical line
-                Debug.Log("Is seen as infinity.");
-                if (RoundToXDecimals(verticesLineSegment1[0].x, 1) == RoundToXDecimals(vertex.x, 1))
-                {
-                    Debug.Log("Intersection between line and vertice. Vertical line.");
-                    return true;
-                }
-            }
-
-            var yValueForXOnLine = line.Item1 * vertex.x + line.Item2;
-            var difference = Mathf.Abs(vertex.y - yValueForXOnLine);
-            var intersection = difference < precision;
-
-            if (intersection)
-            {
-                Debug.Log("Intersection between line and vertice.");
-                return true;
-            }
-
-            idx++;
         }
 
         return false;
@@ -479,7 +371,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
 
         var linesInPiece = GetLinesInPiece(pieceVertices);
         var linesInBorder = GetLinesInPiece(cornerVertices);
-        
+
         TranslateAndRotatePiece(selectedPiece, displacement, rotation, indexOfVertexToSnapToCorner);
     }
 
@@ -604,8 +496,9 @@ public class MagneticTouchAlgorithm : MonoBehaviour
     private List<(float, float)> GetLinesInPiece(Vector3[] verticesInPiece, List<int> indexesOfStartingVerticesToExclude = null)
     {
         var linesInPiece = new List<(float, float)>();
-        
-        if(indexesOfStartingVerticesToExclude == null){
+
+        if (indexesOfStartingVerticesToExclude == null)
+        {
             indexesOfStartingVerticesToExclude = new List<int>();
         }
 

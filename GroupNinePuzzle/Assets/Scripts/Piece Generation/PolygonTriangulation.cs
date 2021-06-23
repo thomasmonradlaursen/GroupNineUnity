@@ -231,7 +231,7 @@ public class PolygonTriangulation
 
     //From http://totologic.blogspot.se/2014/01/accurate-point-in-triangle-test.html
     //p is the testpoint, and the other points are corners in the triangle
-    public static bool IsPointInTriangle(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p)
+    public static bool IsPointInTriangle(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p, float precision = 0f)
     {
         bool isWithinTriangle = false;
 
@@ -243,7 +243,7 @@ public class PolygonTriangulation
         float c = 1 - a - b;
 
         //The point is within the triangle if 0 < a < 1 and 0 < b < 1 and 0 < c < 1
-        if (a > 0f && a < 1f && b > 0f && b < 1f && c > 0f && c < 1f)
+        if (a > 0f + precision && a < 1f - precision && b > 0f + precision && b < 1f - precision && c > 0f + precision && c < 1f - precision)
         {
             isWithinTriangle = true;
         }
