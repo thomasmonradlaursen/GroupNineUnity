@@ -16,10 +16,10 @@ public class MagneticTouchCalculations
         return selectedVertex - magnetVertex;
     }
 
-    public static float CalculateRotation(Vector3 primaryVertexInSelected, Vector3 primaryVertexToSnapTo, Vector3 previousVertexInSelected, Vector3 previousVertexToSnapTo)
+    public static float CalculateRotation(Vector3 primaryVertexInSelected, Vector3 primaryVertexToSnapTo, Vector3 secondaryVertexInSelected, Vector3 secondaryVertexToSnapTo)
     {
-        Vector3 lineInSelected = previousVertexInSelected - primaryVertexInSelected;
-        Vector3 lineToSnapTo = previousVertexToSnapTo - primaryVertexToSnapTo;
+        Vector3 lineInSelected = secondaryVertexInSelected - primaryVertexInSelected;
+        Vector3 lineToSnapTo = secondaryVertexToSnapTo - primaryVertexToSnapTo;
 
         Vector3 unitVectorSelected = lineInSelected / Vector3.Magnitude(lineInSelected);
         Vector3 unitVectorInPieceToSnapTo = lineToSnapTo / Vector3.Magnitude(lineToSnapTo);
@@ -29,13 +29,20 @@ public class MagneticTouchCalculations
         {
             var radiansSelected = Mathf.Atan2(unitVectorSelected.y, unitVectorSelected.x); // Angle between line and x-axis
             var radiansPieceToSnapTo = Mathf.Atan2(unitVectorInPieceToSnapTo.y, unitVectorInPieceToSnapTo.x); // Angle between line and x-axis
-            radiansToRotate = radiansPieceToSnapTo - radiansSelected; // Angle between between lines;
+            radiansToRotate = radiansPieceToSnapTo - radiansSelected; // Angle between between lines
+
+            // Debug.Log("degrees Selected " + radiansSelected * Mathf.Rad2Deg);
+            // Debug.Log("degrees PieceToSnapTo " + radiansPieceToSnapTo * Mathf.Rad2Deg);
+            // Debug.Log("Degrees to rotate: direct calculation " + radiansToRotate * Mathf.Rad2Deg);
         }
 
-        // We use the smallest angle possible to reach the same rotation (because we have restrictions on maximum angle size elsewhere)
+        // We use the smallest angle possible to reach the same rotation (because we compare angles when deciding which edges to snap together)
         if (Mathf.Abs(radiansToRotate) > Mathf.PI)
         {
-            radiansToRotate = (Mathf.Sign(radiansToRotate) * (-1)) * (Mathf.Abs(radiansToRotate) - Mathf.PI * 2);
+            Debug.Log("Degrees to rotate: direct calculation " + radiansToRotate * Mathf.Rad2Deg);
+            // subtraction with 2*Pi will be negative, so we multiply by the initial sign of radiansToRotate to 
+            // get the right sign of the new value for radiansToRotate.
+            radiansToRotate = Mathf.Sign(radiansToRotate) * (Mathf.Abs(radiansToRotate) - Mathf.PI * 2);
         }
         Debug.Log("Degrees to rotate: " + radiansToRotate * Mathf.Rad2Deg);
 
@@ -297,7 +304,7 @@ public class MagneticTouchCalculations
     {
         SnapInformation snapInformation = new SnapInformation();
         snapInformation.DistanceBetweenPrimaryVertices = 100000f;
-        snapInformation.DistanceBetweenSecondaryVertices = 100000f;
+        snapInformation.AngleBetweenEdges = 100000f;
 
         for (int i = 0; i < piece1.Length; i++) // Iterate through piece 1
         {
@@ -312,7 +319,13 @@ public class MagneticTouchCalculations
                 var nextVertex_piece2 = piece2[GetWrappingIndex(k - 1, piece2.Length)]; // - because the same thing.
 
                 var distBetweenVertices = Vector3.Distance(vertex_piece1, vertex_piece2);
-                if (distBetweenVertices < snapInformation.DistanceBetweenPrimaryVertices)
+                var rotationPreviousVertices = CalculateRotation(vertex_piece1, vertex_piece2, previousVertex_piece1, previousVertex_piece2);
+                var rotationNextVertices = CalculateRotation(vertex_piece1, vertex_piece2, nextVertex_piece1, nextVertex_piece2);
+
+                if (RoundToXDecimals(distBetweenVertices, 2) < RoundToXDecimals(snapInformation.DistanceBetweenPrimaryVertices, 2)
+                    || (RoundToXDecimals(distBetweenVertices, 2) == RoundToXDecimals(snapInformation.DistanceBetweenPrimaryVertices, 2)
+                        && (Mathf.Abs(rotationNextVertices) < Mathf.Abs(snapInformation.AngleBetweenEdges)
+                            || Mathf.Abs(rotationPreviousVertices) < Mathf.Abs(snapInformation.AngleBetweenEdges))))
                 {
                     snapInformation.DistanceBetweenPrimaryVertices = distBetweenVertices;
 
@@ -322,24 +335,10 @@ public class MagneticTouchCalculations
                     snapInformation.IndexOfPrimaryVertexInSelectedPiece = i;
                     snapInformation.IndexOfPrimaryVertexInPieceToSnapTo = k;
 
-                    var distPreviousVertices = Vector3.Distance(previousVertex_piece1, previousVertex_piece2);
-                    var distNextVertices = Vector3.Distance(nextVertex_piece1, nextVertex_piece2);
 
-                    if (distPreviousVertices <= distNextVertices)
+                    if (Mathf.Abs(rotationNextVertices) <= Mathf.Abs(rotationPreviousVertices)) // decide whether to use edges to next vertices or previous vertices
                     {
-                        snapInformation.DistanceBetweenSecondaryVertices = distPreviousVertices;
-
-                        snapInformation.SecondaryVertexInSelectedPiece = previousVertex_piece1;
-                        snapInformation.SecondaryVertexInPieceToSnapTo = previousVertex_piece2;
-
-                        snapInformation.IndexOfSecondaryVertexInSelectedPiece = GetWrappingIndex(i - 1, piece1.Length);
-                        snapInformation.IndexOfSecondaryVertexInPieceToSnapTo = GetWrappingIndex(k + 1, piece2.Length);
-
-                        snapInformation.SecondaryVerticeIsPreviousVertice = true;
-                    }
-                    else
-                    {
-                        snapInformation.DistanceBetweenSecondaryVertices = distNextVertices;
+                        snapInformation.AngleBetweenEdges = rotationNextVertices;
 
                         snapInformation.SecondaryVertexInSelectedPiece = nextVertex_piece1;
                         snapInformation.SecondaryVertexInPieceToSnapTo = nextVertex_piece2;
@@ -348,6 +347,18 @@ public class MagneticTouchCalculations
                         snapInformation.IndexOfSecondaryVertexInPieceToSnapTo = GetWrappingIndex(k - 1, piece2.Length);
 
                         snapInformation.SecondaryVerticeIsPreviousVertice = false;
+                    }
+                    else
+                    {
+                        snapInformation.AngleBetweenEdges = rotationPreviousVertices;
+
+                        snapInformation.SecondaryVertexInSelectedPiece = previousVertex_piece1;
+                        snapInformation.SecondaryVertexInPieceToSnapTo = previousVertex_piece2;
+
+                        snapInformation.IndexOfSecondaryVertexInSelectedPiece = GetWrappingIndex(i - 1, piece1.Length);
+                        snapInformation.IndexOfSecondaryVertexInPieceToSnapTo = GetWrappingIndex(k + 1, piece2.Length);
+
+                        snapInformation.SecondaryVerticeIsPreviousVertice = true;
                     }
                 }
             }

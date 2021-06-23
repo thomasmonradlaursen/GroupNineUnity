@@ -54,11 +54,11 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         var test1 = CalculateConstantsForLineThroughTwoVertices(snapInformation.PrimaryVertexInSelectedPiece, snapInformation.SecondaryVertexInSelectedPiece);
         var test2 = CalculateConstantsForLineThroughTwoVertices(snapInformation.PrimaryVertexInPieceToSnapTo, snapInformation.SecondaryVertexInPieceToSnapTo);
 
-        if (rotation > 0.35 || rotation < -0.35)
-        {
-            Debug.Log("Angle is too big.");
-            return;
-        }
+        // if (rotation > 0.35 || rotation < -0.35)
+        // {
+        //     Debug.Log("Angle is too big.");
+        //     return;
+        // }
         Vector3[] originalVertices = selectedPiece.GetComponent<MeshFilter>().mesh.vertices;
         TranslateAndRotatePiece(selectedPiece, displacement, rotation, snapInformation.IndexOfPrimaryVertexInSelectedPiece);
 
@@ -147,6 +147,10 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         var meshTrianglesSelected = selectedPiece.GetComponent<MeshFilter>().mesh.triangles;
         var meshTrianglesSnapPiece = pieceToSnapTo.GetComponent<MeshFilter>().mesh.triangles;
 
+        //     Debug.Log("Vertices in selected piece");
+        // foreach(var vertex in verticesSelectedPiece){
+        //     Debug.Log(vertex);
+        // }
 
         #region Check for overlap with piece we are trying to snap to
 
@@ -163,14 +167,14 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         if (CheckIfAnyPointIsContainedInTheOtherPiece(verticesSelectedPiece, verticesSnapPiece))
         {
             Debug.Log("Overlap with piece (first): " + pieceToSnapTo.name);
-            return false;
+            return true;
         }
 
         Debug.Log("container piece is selected piece");
         if (CheckIfAnyPointIsContainedInTheOtherPiece(verticesSnapPiece, verticesSelectedPiece))
         {
             Debug.Log("Overlap with piece (first): " + pieceToSnapTo.name);
-            return false;
+            return true;
         }
 
         #endregion
@@ -262,23 +266,34 @@ public class MagneticTouchAlgorithm : MonoBehaviour
             {
                 continue;
             }
+            Debug.Log("IsIntersectionPointInLineSegment: true");
 
             if (!IsPointOnInsideOfLine(vertexToCheck, intersectionWithLine, vertex1InLine, vertex2InLine))
             {
                 continue;
             }
-
-            var lineFromPointToIntersection = new List<(float, float)>() { CalculateConstantsForLineThroughTwoVertices(vertexToCheck, intersectionWithLine) };
-            var linesInPiece = GetLinesInPiece(containerPieceVertices);
             var verticesIntersectionLine = new Vector3[] { vertexToCheck, intersectionWithLine };
 
             if (AnyIntersectionsBetweenLines(verticesIntersectionLine, containerPieceVertices, lineFromPointToIntersection, linesInPiece, -0.05f, 5))
             { // any intersections between line from point to intersection point and lines in container piece
+                Debug.Log("Intersection between lines");
+                
                 continue;
             }
 
             if (AnyIntersectionsBetweenLineAndVertices(verticesIntersectionLine, containerPieceVertices, lineFromPointToIntersection[0]))
             { // any intersections between line from point to intersection point and vertices in container piece
+              
+              Debug.Log("Intersection between perpendicular line and vertices");
+              
+              
+              // Debug.Log("AnyIntersectionsBetweenPoints: false");
+              // Debug.Log("vertexToCheck: " + vertexToCheck);
+              // Debug.Log("index of containerpiece vertice: " + i);
+              // Debug.Log("vertex1InLine: " + vertex1InLine);
+              // Debug.Log("vertex2InLine: " + vertex2InLine);
+              // Debug.Log("projectionOntoLine: " + projectionOntoLine);
+              // Debug.Log("intersectionWithLine: " + intersectionWithLine);
                 continue;
             }
 
@@ -344,6 +359,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
 
             if (float.IsPositiveInfinity(line.Item1))
             { // vertical line
+                Debug.Log("Is seen as infinity.");
                 if (RoundToXDecimals(verticesLineSegment1[0].x, 1) == RoundToXDecimals(vertex.x, 1))
                 {
                     Debug.Log("Intersection between line and vertice. Vertical line.");
@@ -453,13 +469,13 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         Vector3 displacement = vertexToSnapToCorner - cornerToSnapTo;
         float rotation = CalculateRotation(vertexToSnapToCorner, cornerToSnapTo, vertexToMoveToBorder, otherCornerOfEdgeToSnapTo);
 
-        // Angle is too big.
-        // Either the rotation is not as intended or the player should try harder to place the pieces accurately
-        if (rotation > 0.35 || rotation < -0.35)
-        {
-            Debug.Log("Angle is too big.");
-            return;
-        }
+        // // Angle is too big.
+        // // Either the rotation is not as intended or the player should try harder to place the pieces accurately
+        // if (rotation > 0.35 || rotation < -0.35)
+        // {
+        //     Debug.Log("Angle is too big.");
+        //     return;
+        // }
 
         var linesInPiece = GetLinesInPiece(pieceVertices);
         var linesInBorder = GetLinesInPiece(cornerVertices);
@@ -561,7 +577,8 @@ public class MagneticTouchAlgorithm : MonoBehaviour
     private SnapInformation FindPieceToSnapToAndSnapInformation((GameObject, List<GameObject>) possibleSnaps)
     {
         Vector3[] verticesOfSelected = possibleSnaps.Item1.GetComponent<MeshFilter>().mesh.vertices;
-        (float, float) smallestDistance = (100000f, 100000f);
+        float smallestDistance = 100000f;
+        float smallestAngleForVertexWithSmallestDistance = 100000f;
 
         var snapInformation = new SnapInformation();
 
@@ -571,22 +588,31 @@ public class MagneticTouchAlgorithm : MonoBehaviour
 
             var snapInformationResult = CalculateSnapInformation(verticesOfSelected, verticesOfCandicate);
 
-            if (snapInformationResult.DistanceBetweenPrimaryVertices < smallestDistance.Item1)
+            if (RoundToXDecimals(snapInformationResult.DistanceBetweenPrimaryVertices, 2) < RoundToXDecimals(smallestDistance, 2)
+                || (RoundToXDecimals(snapInformationResult.DistanceBetweenPrimaryVertices, 2) == RoundToXDecimals(smallestDistance, 2)
+                    && Mathf.Abs(snapInformationResult.AngleBetweenEdges) < Mathf.Abs(smallestAngleForVertexWithSmallestDistance)))
             {
                 snapInformation = snapInformationResult;
                 snapInformation.PieceToSnapTo = candidateForSnap;
+                smallestDistance = snapInformationResult.DistanceBetweenPrimaryVertices;
             }
         }
 
         return snapInformation;
     }
 
-    private List<(float, float)> GetLinesInPiece(Vector3[] verticesInPiece)
+    private List<(float, float)> GetLinesInPiece(Vector3[] verticesInPiece, List<int> indexesOfStartingVerticesToExclude = null)
     {
         var linesInPiece = new List<(float, float)>();
+        
+        if(indexesOfStartingVerticesToExclude == null){
+            indexesOfStartingVerticesToExclude = new List<int>();
+        }
 
         for (int i = 0; i < verticesInPiece.Length; i++)
         {
+            if (indexesOfStartingVerticesToExclude.Contains(i)) continue;
+
             var vertex_i = verticesInPiece[i];
             var vertex_i_plus_1 = verticesInPiece[GetWrappingIndex(i + 1, verticesInPiece.Length)];
             linesInPiece.Add(CalculateConstantsForLineThroughTwoVertices(vertex_i, vertex_i_plus_1));
