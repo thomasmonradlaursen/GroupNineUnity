@@ -10,7 +10,7 @@ public class SnapInformation
     public GameObject PieceToSnapTo { get; set; }
 
     public float DistanceBetweenPrimaryVertices { get; set; }
-    public float DistanceBetweenSecondaryVertices { get; set; }
+    public float AngleBetweenEdges { get; set; }
 
     public Vector3 PrimaryVertexInSelectedPiece { get; set; }
     public Vector3 PrimaryVertexInPieceToSnapTo { get; set; }
@@ -24,9 +24,8 @@ public class SnapInformation
     public bool SecondaryVerticeIsPreviousVertice { get; set; }
     public void DebugLogInformation()
     {
-
         Debug.Log("DistanceBetweenPrimaryVertices: " + DistanceBetweenPrimaryVertices);
-        Debug.Log("DistanceBetweenPreviousVertices: " + DistanceBetweenSecondaryVertices);
+        Debug.Log("AngleBetweenEdges: " + AngleBetweenEdges);
         Debug.Log("PrimaryVertexInSelectedPiece: " + PrimaryVertexInSelectedPiece);
         Debug.Log("PrimaryVertexInPieceToSnapTo: " + PrimaryVertexInPieceToSnapTo);
         Debug.Log("PreviousVertexInSelectedPiece: " + SecondaryVertexInSelectedPiece);
