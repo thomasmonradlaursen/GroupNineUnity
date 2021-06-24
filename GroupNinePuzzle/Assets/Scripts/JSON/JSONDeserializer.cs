@@ -1,3 +1,5 @@
+//Main contributors: Thomas Monrad Laursen and Louise N Kolborg
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
