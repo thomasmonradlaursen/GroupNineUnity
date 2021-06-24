@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//Author: Thomas Monrad Laursen
 public class Circumscribed
 {
     float DeterminantOf3DMatrix(float[,] matrix)

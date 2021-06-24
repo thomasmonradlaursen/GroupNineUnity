@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+// Author: Thomas Monrad Laursen
+
 public class ButtonController : MonoBehaviour
 {
     public void QuitProgram()

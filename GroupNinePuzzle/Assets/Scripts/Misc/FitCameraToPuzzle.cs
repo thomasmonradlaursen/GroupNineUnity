@@ -4,6 +4,9 @@ using UnityEngine;
 
 // Below code is based on https://gamedev.stackexchange.com/questions/167317/scale-camera-to-fit-screen-size-unity
 // [ExecuteInEditMode]
+
+//Author: Gustav Nilsson Pedersen
+
 [RequireComponent(typeof(Camera))]
 public class FitCameraToPuzzle : MonoBehaviour
 {

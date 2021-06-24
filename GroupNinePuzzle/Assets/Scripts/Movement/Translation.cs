@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+// Author: Thomas Monrad Laursen
+
 public class Translation : MonoBehaviour
 {
     MiscellaneousMath mM = new MiscellaneousMath();
@@ -72,6 +74,7 @@ public class Translation : MonoBehaviour
         mesh.SetVertices(translatedVertices);
         lineRenderer.SetPositions(translatedVertices);
         GetComponentInParent<MeshCollider>().sharedMesh = mesh;
+        GetComponent<PieceInfo>().vertices = translatedVertices;
     }
     public void CalculateCentroidAfterTranslation()
     {

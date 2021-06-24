@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DivisionTriangles;
 
+//Author: Thomas Monrad Laursen
 public class Triangulation : MonoBehaviour
 {
     public List<DivisionTriangle> BowyerWatsonTriangulate(List<Vector3> points)

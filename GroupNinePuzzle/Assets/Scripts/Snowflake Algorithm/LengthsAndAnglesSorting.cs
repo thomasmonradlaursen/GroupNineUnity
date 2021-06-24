@@ -1,9 +1,9 @@
-﻿//Main contributors: Thomas Monrad Laursen and Louise Noer Kolborg
-
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using JSONPuzzleTypes;
+
+// Author: Louise Noer Kolborg
 
 public class LengthsAndAnglesSorting
 {

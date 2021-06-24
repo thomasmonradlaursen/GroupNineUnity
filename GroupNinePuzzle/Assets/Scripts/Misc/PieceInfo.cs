@@ -1,8 +1,9 @@
-﻿//Main contributor: Louise N Kolborg and Gustav N Pedersen
-
+﻿
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+// Author: Gustav Nilsson Pedersen
 
 public class PieceInfo : MonoBehaviour
 {

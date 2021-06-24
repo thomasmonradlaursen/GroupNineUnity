@@ -1,8 +1,8 @@
-﻿//Main contributor: Qstav N Pedersen
-
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+//Author: Gustav Nilsson Pedersen
 
 public class MagneticTouchCalculations
 {

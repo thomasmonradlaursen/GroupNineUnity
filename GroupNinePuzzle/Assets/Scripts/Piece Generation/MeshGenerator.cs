@@ -1,12 +1,12 @@
-﻿//Main contributors: Thomas Monrad Laursen and Gustav N Pedersen
-
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using JSONPuzzleTypes;
 using UnityEditor;
 using DivisionTriangles;
+
+//Author: Gustav Nilsson Pedersen
 
 public class MeshGenerator : MonoBehaviour
 

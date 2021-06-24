@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Author: Thomas Monrad Laursen
 public class Rotation : MonoBehaviour
 {
     public Mesh mesh;

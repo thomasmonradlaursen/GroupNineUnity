@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using JSONPuzzleTypes;
 
+// Author: Gustav Nilsson Pedersen
+
 public class PieceOutlineGenerator
 {
     public static void GenerateOutline(GameObject gameObject, Vector3[] points, float length, float width)

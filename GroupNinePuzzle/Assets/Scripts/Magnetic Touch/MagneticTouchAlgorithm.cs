@@ -1,9 +1,9 @@
-﻿//Main contributor: Gustav N Pederson
-
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static MagneticTouchCalculations;
+
+//Author: Gustav Nilsson Pedersen
 
 public class MagneticTouchAlgorithm : MonoBehaviour
 {

@@ -1,9 +1,9 @@
-﻿//main contributor: Gustav N Pedersen
-
+﻿
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//Author: Gustav Nilsson Pedersen
 
 // Helper object for MagneticTochAlgorithm.
 // Contains information needed for attempting to snap two pieces together.

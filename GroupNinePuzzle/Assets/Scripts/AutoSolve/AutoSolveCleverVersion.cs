@@ -1,5 +1,5 @@
 
-//Main contributor: Louise 
+//Author: Louise Noer Kolborg
 
 using System.Collections;
 using System.Collections.Generic;

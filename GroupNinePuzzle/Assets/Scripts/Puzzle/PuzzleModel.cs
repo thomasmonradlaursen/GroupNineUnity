@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using JSONPuzzleTypes;
 
+// Author: Thomas Monrad Laursen
+
 public class PuzzleModel : MonoBehaviour
 {
     public JSONPuzzle puzzle = new JSONPuzzle();

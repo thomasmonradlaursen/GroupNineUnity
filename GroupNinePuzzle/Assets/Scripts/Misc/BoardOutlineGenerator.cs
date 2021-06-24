@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using JSONPuzzleTypes;
 
+//Author: Gustav Nilsson Pedersen
+
 public class BoardOutlineGenerator : MonoBehaviour
 {
     LineRenderer lineRenderer;

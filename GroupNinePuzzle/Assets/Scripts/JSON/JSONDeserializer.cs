@@ -1,4 +1,4 @@
-//Main contributors: Thomas Monrad Laursen and Louise N Kolborg
+//Author: Louise Noer Kolborg
 
 using System.Collections;
 using System.Collections.Generic;
@@ -19,4 +19,3 @@ public class JSONDeserializer : MonoBehaviour
         GetComponent<PuzzleModel>().fileName = inputName;
     }
 }
-
