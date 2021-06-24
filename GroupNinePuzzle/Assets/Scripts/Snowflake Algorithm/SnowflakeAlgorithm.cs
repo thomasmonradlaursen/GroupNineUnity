@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿//Main contributors: Thomas Mondrad Laursen and Louise N Kolborg
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using JSONPuzzleTypes;
