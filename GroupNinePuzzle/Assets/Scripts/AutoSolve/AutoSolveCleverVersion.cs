@@ -52,7 +52,6 @@ public class AutoSolveCleverVersion : MonoBehaviour
             }else{
                 changedRows = CheckForRowChange();
                 FindPotentialPieces();
-                Debug.Log("number of potential pieces: "+potentialPieces.Count);
                 if(potentialPieces.Count == 0){
                     Debug.Log("no potential pieces were found");
                     Backtrack();
@@ -60,11 +59,7 @@ public class AutoSolveCleverVersion : MonoBehaviour
                 SetActivePiece();
                 PlacePiece();
             }   
-            
-            //Debug.Log("currentPoint: "+currentPoint);
-            //Debug.Log("Theta: "+theta);
-            //Debug.Log("Found "+potentialPieces.Count+" potential pieces.");
-            
+                        
             bool overlap = OverLapsBoard(); 
             while(overlap == true){
                 Debug.Log("Overlap detected!");
@@ -90,7 +85,6 @@ public class AutoSolveCleverVersion : MonoBehaviour
                     if(potentialPieces.Count > 0){
                         SetActivePiece();
                         PlacePiece();
-                        //Debug.Log("Now testing piece "+activePiece.GetComponent<PieceInfo>().name);
                         overlap = OverLapsBoard();
                     }else{
                         break;
@@ -113,13 +107,9 @@ public class AutoSolveCleverVersion : MonoBehaviour
         if(currentPoint.x >= upperRightCorner.x-0.01 && currentPoint.x <= upperRightCorner.x+0.01){   //check for row change
                 currentRow++;
                 currentColumn = 0;
-                //Debug.Log("currentRow: "+currentRow);
                 updateCurrentPoint(true);
                 findNextPoint();
                 CalculateNextAngle();
-                //Debug.Log("currentPoint updated to be: "+currentPoint + " by rowChange");
-                //Debug.Log("nextPoint updated to be: "+nextPoint+ " by rowChange");
-                //Debug.Log("Theta updated to be: "+theta + " by rowChange");
             return true;
         } else {
             findNextPoint();
@@ -145,7 +135,6 @@ public class AutoSolveCleverVersion : MonoBehaviour
             currentPoint = pieceToRemove.currentPoint;
 
             placedPieces.Remove(pieceToRemove);
-            //AutoTranslate(lowerLeftCorner);
             pieces.Add(piece);
             
             Debug.Log("Removed "+piece.GetComponent<PieceInfo>().name);
@@ -163,19 +152,15 @@ public class AutoSolveCleverVersion : MonoBehaviour
                     Backtrack();
                 }
             }
-            //Debug.Log("Bactracked and set the active piece to be: "+activePiece.GetComponent<PieceInfo>().name);
-            //Debug.Log("also, cp is now "+currentPoint);
-            //Debug.Log("and, next angle is "+theta);
         }
-        
     }
+
     void FindCorners(){
         var form = puzzle.puzzle.form;
         List<Vector3> corners = new List<Vector3>();
         int n = 0;
         while(n<form.Length){
             Vector3 vector = new Vector3(form[n].coord.x, form[n].coord.y, 0);
-            //Debug.Log("Corner "+n+": " +vector);
             corners.Add(vector);
             n++;
         }
@@ -244,7 +229,6 @@ public class AutoSolveCleverVersion : MonoBehaviour
         {
             translatedVertices[index].x = meshForActivePiece.vertices[index].x - displacement.x;
             translatedVertices[index].y = meshForActivePiece.vertices[index].y - displacement.y;
-            //Debug.Log("translated vertices: "+translatedVertices[index]);
         }
         activePiece.GetComponent<MeshFilter>().mesh.SetVertices(translatedVertices);
         meshForActivePiece.SetVertices(translatedVertices);
@@ -252,9 +236,7 @@ public class AutoSolveCleverVersion : MonoBehaviour
         activePiece.GetComponent<PieceInfo>().vertices = translatedVertices;
         
         float area = mM.CalculateAreaFromMesh(meshForActivePiece);
-        //Debug.Log("area: " + area);
         activePiece.GetComponent<PieceInfo>().centroid = mM.CalculateCentroid(translatedVertices, area);
-        //Debug.Log("centroid: "+ selectedPiece.GetComponent<PieceInfo>().centroid);
     }
     float CalculateRotationAngle(Vector3 pointToBeAligned){
 
@@ -293,38 +275,17 @@ public class AutoSolveCleverVersion : MonoBehaviour
                 n++;
             }
             Vector3 nextVertex;
-            //Debug.Log("n: "+n);
             if(n == 0){
                 nextVertex = vertices[vertices.Length-1];
             }else{
                 nextVertex = vertices[n-1];
             }
             theta = Vector3.SignedAngle(currentPoint-nextPoint, currentPoint-nextVertex, Vector3.down);
-            /*
-            Vector2 vec1 = new Vector2(currentPoint.x-nextPoint.x, currentPoint.y-nextPoint.y);
-            Vector2 vec2 = new Vector2(currentPoint.x-nextVertex.x, currentPoint.y-nextVertex.y);
-            theta = Vector2.SignedAngle(vec1, vec2);
-            */
-            //Debug.Log("CALCULATING NEXT ANGLE:");
-            //Debug.Log("currentPoint: "+currentPoint);
-            //Debug.Log("nextPoint: "+nextPoint);
-            //Debug.Log("nextVertex: "+nextVertex);
-            //Debug.Log("new theta: "+theta);
         }else{
             theta = Vector3.SignedAngle(currentPoint-nextPoint, currentPoint - lowerLeftCorner, Vector3.up);
-            /*
-            Vector2 vec1 = new Vector2(currentPoint.x-nextPoint.x, currentPoint.y-nextPoint.y);
-            Vector2 vec2 = new Vector2(currentPoint.x-lowerLeftCorner.x, currentPoint.y-lowerLeftCorner.y);
-            theta = Vector2.SignedAngle(vec1, vec2);
-            */
-            //Debug.Log("CALCULATING NEXT ANGLE:");
-            //Debug.Log("currentPoint: "+currentPoint);
-            //Debug.Log("nextPoint: "+nextPoint);
-            //Debug.Log("new theta: "+theta);
         }
     }
     void FindPotentialPieces(){
-        //Debug.Log("Number of pieces: "+pieces.Count);
         potentialPieces = new List<GameObject>();       //reset potPieces 
         foreach(GameObject testPiece in pieces){
             float[] angles = testPiece.GetComponent<PieceInfo>().angles;
@@ -380,26 +341,16 @@ public class AutoSolveCleverVersion : MonoBehaviour
                 biggestY = vertex.y;
             }
         }
-        /*
-        Debug.Log("smallestX : "+smallestX);
-        Debug.Log("biggestX : "+biggestX);
-        Debug.Log("smallestY : "+smallestY);
-        Debug.Log("biggestY : "+biggestY);
-        */
         if(smallestX < (lowerLeftCorner.x - 0.1) || biggestX > (lowerRightCorner.x + 0.1) 
            || smallestY < (lowerLeftCorner.y - 0.1) || biggestY > (upperRightCorner.y + 0.1) ){
                overlapExists = true;
            }
-        //Debug.Log("OVERLAP : " + overlapExists);
         return overlapExists;
     }
     void updateCurrentPoint(bool changedRows){
-        //Debug.Log("updating currentPoint");
         if(changedRows == false){
            Vector3[] vertices = activePiece.GetComponent<MeshFilter>().mesh.vertices; 
            Vector3 temp = vertices[0];
-            //Debug.Log("updating current point ********************");
-            //Debug.Log(temp);
             int n = 1;
             while(n<vertices.Length){
                 //find the upper left corner of the active piece
@@ -415,13 +366,10 @@ public class AutoSolveCleverVersion : MonoBehaviour
             foreach(Quadruple trip in placedPieces){
                 if(trip.row == currentRow-1 && trip.column == currentColumn){
                     pieceAbove = trip.piece;
-                    //Debug.Log("found piece "+trip.piece.GetComponent<PieceInfo>().name +" above at: ("+trip.row+", "+trip.column+")");
                 }
             }
             Vector3[] verticesInPieceAbove = pieceAbove.GetComponent<MeshFilter>().mesh.vertices; 
             Vector3[] verticesInActivePiece = activePiece.GetComponent<MeshFilter>().mesh.vertices; 
-            //Debug.Log("updating current point ********************");
-            //Debug.Log(temp);
             Vector3 temp = currentPoint;
             int n = 1;
             while(n<verticesInPieceAbove.Length){
@@ -432,16 +380,9 @@ public class AutoSolveCleverVersion : MonoBehaviour
                     }
                     i++;
                 }
-                //Debug.Log("testing: "+ vertices[n]);
-                /*
-                if(vertices[n].x >= temp.x && vertices[n].y <= (temp.y+0.01)){
-                    temp = vertices[n];
-                }
-                */
                 n++;
             }
             currentPoint = temp;
-            //Debug.Log("CURRENT POINT: "+currentPoint);
         }
     }   
     void findNextPoint(){
@@ -451,9 +392,7 @@ public class AutoSolveCleverVersion : MonoBehaviour
             GameObject nextPieceAbove = new GameObject();
             for(int i = 0; i < placedPieces.Count; i++){
                 if(placedPieces[i].row == currentRow-1 && placedPieces[i].column == (currentColumn)){
-                    //Debug.Log("CURRENT col: "+ currentColumn);
                     nextPieceAbove = placedPieces[i].piece;
-                    //Debug.Log("nextPieceAbove, name: "+placedPieces[i].piece.GetComponent<PieceInfo>().name + ", row and column: ("+placedPieces[i].row+", "+placedPieces[i].column+")");
                     break;
                 }
             }
@@ -510,7 +449,6 @@ public class AutoSolveCleverVersion : MonoBehaviour
         }
         return originalVertices;
     }
-    // Todo: already exists in Rotation.cs
     Vector3[] RestorePositionOfVertices(Vector3 centroid, Vector3[] rotatedVertices)
     {
         for (int index = 0; index < rotatedVertices.Length; index++)

@@ -32,21 +32,15 @@ public class MagneticTouchCalculations
             var radiansSelected = Mathf.Atan2(unitVectorSelected.y, unitVectorSelected.x); // Angle between line and x-axis
             var radiansPieceToSnapTo = Mathf.Atan2(unitVectorInPieceToSnapTo.y, unitVectorInPieceToSnapTo.x); // Angle between line and x-axis
             radiansToRotate = radiansPieceToSnapTo - radiansSelected; // Angle between between lines
-
-            // Debug.Log("degrees Selected " + radiansSelected * Mathf.Rad2Deg);
-            // Debug.Log("degrees PieceToSnapTo " + radiansPieceToSnapTo * Mathf.Rad2Deg);
-            // Debug.Log("Degrees to rotate: direct calculation " + radiansToRotate * Mathf.Rad2Deg);
         }
 
         // We use the smallest angle possible to reach the same rotation (because we compare angles when deciding which edges to snap together)
         if (Mathf.Abs(radiansToRotate) > Mathf.PI)
         {
-            Debug.Log("Degrees to rotate: direct calculation " + radiansToRotate * Mathf.Rad2Deg);
             // subtraction with 2*Pi will be negative, so we multiply by the initial sign of radiansToRotate to 
             // get the right sign of the new value for radiansToRotate.
             radiansToRotate = Mathf.Sign(radiansToRotate) * (Mathf.Abs(radiansToRotate) - Mathf.PI * 2);
         }
-        Debug.Log("Degrees to rotate: " + radiansToRotate * Mathf.Rad2Deg);
 
 
         return radiansToRotate;
@@ -89,7 +83,6 @@ public class MagneticTouchCalculations
         selectedPiece.GetComponent<MeshCollider>().sharedMesh = selectedPieceMesh;
     }
 
-    // Todo: already exists in Rotation.cs (not exactly like this though)
     public static Vector3[] CentralizeVertices(Vector3 centroid, Vector3[] originalVertices)
     {
         for (int index = 0; index < originalVertices.Length; index++)
@@ -100,7 +93,6 @@ public class MagneticTouchCalculations
         return originalVertices;
     }
 
-    // Todo: already exists in Rotation.cs (not exactly like this though)
     public static Vector3[] RestorePositionOfVertices(Vector3 centroid, Vector3[] rotatedVertices)
     {
         for (int index = 0; index < rotatedVertices.Length; index++)
@@ -159,8 +151,6 @@ public class MagneticTouchCalculations
             if (PolygonTriangulation.IsPointInTriangle(p1, p2, p3, vertexToCheck, 0.05f))
             {
                 Debug.Log("point is in triangle.");
-                Debug.Log("point: " + vertexToCheck);
-                Debug.Log("triangle: " + p1 + " " + p2 + " " + p3);
                 return true;
             }
         }
@@ -243,7 +233,6 @@ public class MagneticTouchCalculations
             && (IsValueInInterval(intersectionX, point1Line2.x, point2Line2.x, precision, decimals)
                 || IsValueInInterval(intersectionX, point2Line2.x, point1Line2.x, precision, decimals)))
         {
-            // Debug.Log("rounded decimal" + RoundToXDecimals(point1Line1.x, decimals));
             return true;
         }
 

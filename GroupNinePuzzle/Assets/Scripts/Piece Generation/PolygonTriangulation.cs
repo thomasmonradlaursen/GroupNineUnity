@@ -213,8 +213,6 @@ public class PolygonTriangulation
             //We only need to check if a reflex vertex is inside of the triangle
             if (vertices[i].isReflex)
             {
-                //Debug.Log("inner vertex reflex, index: " + i);
-
                 Vector2 p = vertices[i].GetXY();
 
                 //This means inside and not on the hull

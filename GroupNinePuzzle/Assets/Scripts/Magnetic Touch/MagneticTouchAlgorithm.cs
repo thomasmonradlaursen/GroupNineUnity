@@ -7,7 +7,6 @@ using static MagneticTouchCalculations;
 
 public class MagneticTouchAlgorithm : MonoBehaviour
 {
-    //Todo: probably move these fields somewhere else
     private List<GameObject> pieces;
     private Vector3 lowerLeftCorner;
     private Vector3 upperLeftCorner;
@@ -36,7 +35,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.K)) // Snap to corner of board
         {
-            FindCorners(); // Todo: move to some BoardModel/PuzzleModel object or something
+            FindCorners();
             SnapToCorner(GetComponentInParent<PuzzleModel>().selectedObject);
         }
     }
@@ -56,11 +55,6 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         var test1 = CalculateConstantsForLineThroughTwoVertices(snapInformation.PrimaryVertexInSelectedPiece, snapInformation.SecondaryVertexInSelectedPiece);
         var test2 = CalculateConstantsForLineThroughTwoVertices(snapInformation.PrimaryVertexInPieceToSnapTo, snapInformation.SecondaryVertexInPieceToSnapTo);
 
-        // if (rotation > 0.35 || rotation < -0.35)
-        // {
-        //     Debug.Log("Angle is too big.");
-        //     return;
-        // }
         Vector3[] originalVertices = selectedPiece.GetComponent<MeshFilter>().mesh.vertices;
         TranslateAndRotatePiece(selectedPiece, displacement, rotation, snapInformation.IndexOfPrimaryVertexInSelectedPiece);
 
@@ -149,11 +143,6 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         var meshTrianglesSelected = selectedPiece.GetComponent<MeshFilter>().mesh.triangles;
         var meshTrianglesSnapPiece = pieceToSnapTo.GetComponent<MeshFilter>().mesh.triangles;
 
-        //     Debug.Log("Vertices in selected piece");
-        // foreach(var vertex in verticesSelectedPiece){
-        //     Debug.Log(vertex);
-        // }
-
         #region Check for overlap with piece we are trying to snap to
 
         var linesInSelectedPiece = GetLinesInPiece(verticesSelectedPiece);
@@ -165,14 +154,12 @@ public class MagneticTouchAlgorithm : MonoBehaviour
             return true;
         }
 
-        Debug.Log("container piece is snap piece");
         if (CheckIfAnyPointIsContainedInTheOtherPiece(verticesSelectedPiece, verticesSnapPiece, meshTrianglesSnapPiece))
         {
             Debug.Log("Overlap with piece (first): " + pieceToSnapTo.name);
             return true;
         }
 
-        Debug.Log("container piece is selected piece");
         if (CheckIfAnyPointIsContainedInTheOtherPiece(verticesSnapPiece, verticesSelectedPiece, meshTrianglesSelected))
         {
             Debug.Log("Overlap with piece (first): " + pieceToSnapTo.name);
@@ -207,14 +194,12 @@ public class MagneticTouchAlgorithm : MonoBehaviour
                 return true;
             }
 
-            Debug.Log("container piece is connected piece");
             if (CheckIfAnyPointIsContainedInTheOtherPiece(verticesSelectedPiece, verticesConnectedPiece, meshTrianglesConnected))
             {
                 Debug.Log("Overlap with connected piece: " + connectedPiece.name);
                 return true;
             }
 
-            Debug.Log("container piece is selected piece");
             if (CheckIfAnyPointIsContainedInTheOtherPiece(verticesConnectedPiece, verticesSelectedPiece, meshTrianglesSelected))
             {
                 Debug.Log("Overlap with connected piece: " + connectedPiece.name);
@@ -260,12 +245,6 @@ public class MagneticTouchAlgorithm : MonoBehaviour
                         );
                 if (linesIntersect)
                 {
-                    Debug.Log("line1: " + line1);
-                    Debug.Log("line2: " + line2);
-                    Debug.Log("verticesPiece1: " + verticesPiece1[idx1]);
-                    Debug.Log("verticesPiece1: " + verticesPiece1[GetWrappingIndex(idx1 + 1, verticesPiece1.Length)]);
-                    Debug.Log("verticesPiece2: " + verticesPiece2[idx2]);
-                    Debug.Log("verticesPiece2: " + verticesPiece2[GetWrappingIndex(idx2 + 1, verticesPiece2.Length)]);
                     return true;
                 }
                 idx2++;
@@ -282,7 +261,6 @@ public class MagneticTouchAlgorithm : MonoBehaviour
 
     #region Snap to Corner
 
-    // Todo: maybe move to other class?
     private void FindCorners()
     {
         var form = GetComponentInParent<PuzzleModel>().puzzle.puzzle.form;
@@ -342,7 +320,6 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         if (distanceFromVertexToCorner > margin * 3)
         {
             Debug.Log("Too far away from corner");
-            Debug.Log("Distance: " + distanceFromVertexToCorner);
             return;
         }
 
@@ -350,7 +327,6 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         var borderEdge1 = (cornerToSnapTo, neighboringCorners.Item1);
         var borderEdge2 = (cornerToSnapTo, neighboringCorners.Item2);
 
-        // Todo: ??? Is it a problem if vertex closest to the border is on the "wrong" side of the border?
         var smallestDistanceToBorderResult = SmallestDistanceToBorder(pieceVertices, vertexToSnapToCorner, borderEdge1, borderEdge2);
 
         var distanceFromVertexToBorder = smallestDistanceToBorderResult.Item1;
@@ -362,14 +338,6 @@ public class MagneticTouchAlgorithm : MonoBehaviour
 
         Vector3 displacement = vertexToSnapToCorner - cornerToSnapTo;
         float rotation = CalculateRotation(vertexToSnapToCorner, cornerToSnapTo, vertexToMoveToBorder, otherCornerOfEdgeToSnapTo);
-
-        // // Angle is too big.
-        // // Either the rotation is not as intended or the player should try harder to place the pieces accurately
-        // if (rotation > 0.35 || rotation < -0.35)
-        // {
-        //     Debug.Log("Angle is too big.");
-        //     return;
-        // }
 
         var linesInPiece = GetLinesInPiece(pieceVertices);
         var linesInBorder = GetLinesInPiece(cornerVertices);
