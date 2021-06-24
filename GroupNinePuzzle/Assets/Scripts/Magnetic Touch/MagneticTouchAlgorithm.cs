@@ -230,7 +230,7 @@ public class MagneticTouchAlgorithm : MonoBehaviour
         for (int i = 0; i < pointPieceVertices.Length; i++)
         {
             // if (IsVertexContainedInOtherPiece(pointPieceVertices[i], containerPieceVertices, triangles))
-            if (IsPointInPiece(pointPieceVertices[i], containerPieceVertices, triangles))
+            if (IsVertexContainedInPiece(pointPieceVertices[i], containerPieceVertices, triangles))
             {
                 return true;
             }

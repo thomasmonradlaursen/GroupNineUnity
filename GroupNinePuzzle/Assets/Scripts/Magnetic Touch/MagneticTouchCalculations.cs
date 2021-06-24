@@ -147,7 +147,7 @@ public class MagneticTouchCalculations
         return lineConstants;
     }
 
-    public static bool IsPointInPiece(Vector3 vertexToCheck, Vector3[] vertices, int[] triangles)
+    public static bool IsVertexContainedInPiece(Vector3 vertexToCheck, Vector3[] vertices, int[] triangles)
     {
         for (int i = 0; i < triangles.Length; i += 3)
         {
