@@ -1,6 +1,9 @@
-﻿using System.Collections;
+﻿
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+// Author: Gustav Nilsson Pedersen
 
 public class PieceInfo : MonoBehaviour
 {
@@ -45,7 +48,7 @@ public class PieceInfo : MonoBehaviour
         return (minimum, maximum);
     }
 
-    public void RemoveConnectionsToOtherPieces()
+    public void RemoveConnectionsToOtherPieces()    
     {
         // Remove existing connections
         foreach (var pieceName in GetComponentInParent<PuzzleModel>().connectedPieces[this.name])

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using DivisionTriangles;
 using JSONPuzzleTypes;
+
+//Author: Thomas Monrad Laursen
 public class DivisionModel : MonoBehaviour
 {
     public Vector2 boardSize = new Vector2(5, 3);

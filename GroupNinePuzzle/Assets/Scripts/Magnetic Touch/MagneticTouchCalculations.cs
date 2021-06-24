@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//Author: Gustav Nilsson Pedersen
+
 public class MagneticTouchCalculations
 {
     public static float margin = 0.175f;

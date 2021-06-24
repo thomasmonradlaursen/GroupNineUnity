@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System;
 using UnityEngine.Serialization;
 
+// Author: Gustav Nilsson Pedersen
+
 namespace JSONPuzzleTypes
 {
     [Serializable]

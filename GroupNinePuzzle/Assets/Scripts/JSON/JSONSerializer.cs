@@ -4,6 +4,8 @@ using UnityEngine;
 using JSONPuzzleTypes;
 using DivisionTriangles;
 
+// Author: Thomas Monrad Laursen
+
 public class JSONSerializer : MonoBehaviour
 {
     public JSONPuzzle CreatePuzzle()

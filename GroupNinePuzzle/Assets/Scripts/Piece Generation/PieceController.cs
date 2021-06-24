@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using JSONPuzzleTypes;
 
+// Author: Thomas Monrad Laursen
+
 public class PieceController : MonoBehaviour
 {
     public void CreatePieces()

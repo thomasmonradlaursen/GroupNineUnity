@@ -6,6 +6,8 @@ using JSONPuzzleTypes;
 using UnityEditor;
 using DivisionTriangles;
 
+//Author: Gustav Nilsson Pedersen
+
 public class MeshGenerator : MonoBehaviour
 
 {

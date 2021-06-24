@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using static MagneticTouchCalculations;
 
+//Author: Gustav Nilsson Pedersen
+
 public class MagneticTouchAlgorithm : MonoBehaviour
 {
     //Todo: probably move these fields somewhere else

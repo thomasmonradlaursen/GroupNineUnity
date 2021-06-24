@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DivisionTriangles;
 
+//Author: Thomas Monrad Laursen
 public static class Transformer
 {
     public static List<DivisionTriangle> CenterTriangles(List<DivisionTriangle> triangles)

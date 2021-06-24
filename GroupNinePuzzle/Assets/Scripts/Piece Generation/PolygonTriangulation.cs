@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using JSONPuzzleTypes;
 
+// Author: Gustav Nilsson Pedersen
+// Note: A lot of the code in this class is based on: https://www.habrador.com/tutorials/math/10-triangulation/
+
 public class Vertex
 {
     public Vector3 vertex { get; set; }

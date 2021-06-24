@@ -1,3 +1,5 @@
+//Author: Louise Noer Kolborg
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,4 +19,3 @@ public class JSONDeserializer : MonoBehaviour
         GetComponent<PuzzleModel>().fileName = inputName;
     }
 }
-

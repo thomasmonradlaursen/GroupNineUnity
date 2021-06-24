@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using JSONPuzzleTypes;
 
+// Author: Louise Noer Kolborg
+
 public class LengthsAndAnglesSorting
 {
     MiscellaneousMath miscellaneousMath = new MiscellaneousMath();

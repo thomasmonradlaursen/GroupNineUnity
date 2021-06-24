@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//Author: Thomas Monrad Laursen
+
 public class PointGenerator : MonoBehaviour
 {
     public List<Vector3> GenerateRandomPoints(int numberOfPieces, Vector2 boardSize)

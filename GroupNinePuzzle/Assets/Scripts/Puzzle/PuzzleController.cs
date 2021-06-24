@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Author: Thomas Monrad Laursen
+
 public class PuzzleController : MonoBehaviour
 {
     void Start()

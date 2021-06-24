@@ -4,6 +4,8 @@ using UnityEngine;
 using System;
 using JSONPuzzleTypes;
 
+//Author: Louise Noer Kolborg
+
 public class MiscellaneousMath
 {   
     //https://gamedev.stackexchange.com/questions/165643/how-to-calculate-the-surface-area-of-a-mesh

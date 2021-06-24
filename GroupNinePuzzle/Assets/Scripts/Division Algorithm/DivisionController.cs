@@ -5,6 +5,8 @@ using DivisionTriangles;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
+//Author: Thomas Monrad Laursen
+
 public class DivisionController : MonoBehaviour
 {
     public void SetupRandomPuzzle()
