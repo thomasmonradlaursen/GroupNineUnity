@@ -1,4 +1,6 @@
-﻿using System;
+﻿//Main contributors: Thomas Monrad Laursen and Gustav N Pedersen
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
