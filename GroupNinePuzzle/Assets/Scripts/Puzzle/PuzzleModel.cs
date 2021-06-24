@@ -6,8 +6,8 @@ using JSONPuzzleTypes;
 public class PuzzleModel : MonoBehaviour
 {
     public JSONPuzzle puzzle = new JSONPuzzle();
-    public string fileName = "Classic-003-005-1331.json";
-    public string locationOfFile = "Assets/DataObjects/";
+    public string fileName = "puzzle_11_auto.json";
+    public string locationOfFile = "Data/";
     public List<GameObject> pieces;
     public Dictionary<string, List<string>> connectedPieces;
     public bool generateRandom = false;

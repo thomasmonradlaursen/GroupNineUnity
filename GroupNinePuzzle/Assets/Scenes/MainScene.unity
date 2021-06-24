@@ -1174,8 +1174,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a3f9ad7c339949e68fea3549306df98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boardSize: {x: 5, y: 5}
-  numberOfPieces: 2
+  boardSize: {x: 5, y: 3}
+  numberOfPieces: 5
   points: []
   corners: []
   triangles: []
@@ -1289,8 +1289,8 @@ MonoBehaviour:
     name: 
     nPieces: 0
     pieces: []
-  fileName: puzzle_12_auto.json
-  locationOfFile: Assets/ExamFiles/
+  fileName: puzzle_11_auto.json
+  locationOfFile: Data/
   pieces: []
   generateRandom: 0
   selectedObject: {fileID: 0}
