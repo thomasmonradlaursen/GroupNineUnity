@@ -1289,7 +1289,7 @@ MonoBehaviour:
     name: 
     nPieces: 0
     pieces: []
-  fileName: puzzle_12_auto.json
+  fileName: puzzle_02_auto.json
   locationOfFile: Assets/ExamFiles/
   pieces: []
   generateRandom: 0

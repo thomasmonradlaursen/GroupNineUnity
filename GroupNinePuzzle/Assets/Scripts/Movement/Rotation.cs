@@ -45,6 +45,7 @@ public class Rotation : MonoBehaviour
         lineRenderer.SetPositions(rotatedVertices);
         originalVertices = mesh.vertices;
         GetComponent<MeshCollider>().sharedMesh = mesh;
+        GetComponent<PieceInfo>().vertices = rotatedVertices;
     }
     void OnMouseDown()
     {

@@ -70,6 +70,7 @@ public class AutoSolveCleverVersion : MonoBehaviour
             }
             Debug.Log("*********************************************************");
             Debug.Log("row and column: (" + currentRow + ", " + currentColumn + ")");
+           
 
             bool changedRows = false;
 
@@ -164,6 +165,7 @@ public class AutoSolveCleverVersion : MonoBehaviour
                 Debug.Log("PLACED " + activePiece.GetComponent<PieceInfo>().name);
                 pieces.Remove(activePiece);
                 updateCurrentPoint(changedRows);
+                
                 currentColumn++;
                 FindPotentialPieces();
             }
@@ -186,14 +188,17 @@ public class AutoSolveCleverVersion : MonoBehaviour
             //Debug.Log("currentPoint updated to be: "+currentPoint + " by rowChange");
             //Debug.Log("nextPoint updated to be: "+nextPoint+ " by rowChange");
             //Debug.Log("Theta updated to be: "+theta + " by rowChange");
+            Debug.Log("Theta: "+theta);
             return true;
         }
         else
         {
             findNextPoint();
             CalculateNextAngle();
+            Debug.Log("Theta: "+theta);
             return false;
         }
+        
     }
     void SetActivePiece()
     {

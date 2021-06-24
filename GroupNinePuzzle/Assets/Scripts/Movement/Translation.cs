@@ -72,6 +72,7 @@ public class Translation : MonoBehaviour
         mesh.SetVertices(translatedVertices);
         lineRenderer.SetPositions(translatedVertices);
         GetComponentInParent<MeshCollider>().sharedMesh = mesh;
+        GetComponent<PieceInfo>().vertices = translatedVertices;
     }
     public void CalculateCentroidAfterTranslation()
     {
